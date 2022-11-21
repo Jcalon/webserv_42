@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 12:57:27 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/21 17:46:17 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/11/21 18:00:17 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,9 @@ int main(int ac, char **av)
 			file.push_back(line);
 	}
 	ifs.close();
-	// for (std::vector<std::string>::iterator it = file.begin(); it != file.end(); it++)
-	// 	std::cout << "line : " << *it << std::endl;
-	Config Config(file);
 
+	Config Config(file);
 	std::cout << Config << std::endl;
+
 	return (0);
 }
