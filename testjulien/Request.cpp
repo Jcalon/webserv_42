@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 17:55:06 by jcalon            #+#    #+#             */
-/*   Updated: 2022/11/21 19:09:57 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/11/22 11:48:38 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ Request::Request(const std::string & request): _request(request), _fields(), _in
 	size_t start = 0;
 	size_t end = request.find("\n");
 	size_t pos;
-	
+
 	while (end != std::string::npos)
 	{
 		this->_fields.push_back(request.substr(start, end - start));
@@ -60,7 +60,6 @@ Request::Request(const std::string & request): _request(request), _fields(), _in
 	{
 		if (this->_fields.size() < 1)
 			throw(throwMessage("Not valid header (size to low)"));
-		std::cout << "TEST " << this->_fields[0] << std::endl;
 		pos = this->_fields[0].find(" ");
 		if (pos != std::string::npos)
 		{

@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 12:57:27 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/22 10:15:35 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/11/22 13:05:52 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,16 @@
 
 int main(int ac, char **av)
 {
-	std::ifstream   ifs(av[ac - 1]);
-	std::vector<std::string> file;
-	if (!ifs.is_open())
+	try
 	{
-		std::cout << "Error opening infile!" << std::endl;
-		return (1);
+		Config Config(av[ac - 1]);
+		std::cout << Config << std::endl;
 	}
-	std::string	line;
-	while (std::getline(ifs, line, '\n'))
+	catch(const std::exception& e)
 	{
-		if (line.size())
-			file.push_back(line);
+		std::cerr << e.what() << '\n';
 	}
-	ifs.close();
 
-	Config Config(file);
-	std::cout << Config << std::endl;
 
 	return (0);
 }

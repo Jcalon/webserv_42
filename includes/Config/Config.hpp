@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 11:34:05 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/22 10:29:58 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/11/22 13:05:09 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ class Config
 {
 	public:
 		Config(void);
-		Config(std::vector<std::string> file);
+		Config(char *argv);
 		~Config(void);
 
 		void				parse_config(std::vector<std::string> file);
@@ -27,6 +27,11 @@ class Config
 		std::vector<Server>	get_server(void) const;
 		std::string 		get_max_connections(void) const;
 
+		class FileNotOpen : public std::exception
+		{
+			public:
+				virtual const char *what(void) const throw();
+		};
 	private:
 		std::vector<Server>	_server;
 		std::string 	_workers;

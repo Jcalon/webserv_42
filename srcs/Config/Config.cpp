@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 12:20:36 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/22 11:34:30 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/11/22 13:04:56 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,22 @@
 
 Config::Config(void) {}
 
-Config::Config(std::vector<std::string> file)
+Config::Config(char *argv)
 {
+	std::ifstream   ifs(argv);
+	std::vector<std::string> file;
+	if (ifs.is_open())
+	{
+		std::string	line;
+		while (std::getline(ifs, line, '\n'))
+		{
+			if (line.size())
+				file.push_back(line);
+		}
+	}
+	else
+		throw Config::FileNotOpen();
+	ifs.close();
 	parse_config(file);
 }
 
@@ -57,6 +71,11 @@ void	Config::parse_config(std::vector<std::string> file)
 std::string			Config::get_workers(void) const { return this->_workers; }
 std::vector<Server>	Config::get_server(void) const { return this->_server; }
 std::string			Config::get_max_connections(void) const { return this->_max_connections; }
+
+const char *Config::FileNotOpen::what() const throw()
+{
+	return ("Error opening infile!");
+}
 
 
 std::ostream &operator<<(std::ostream &o, Config const &rhs)

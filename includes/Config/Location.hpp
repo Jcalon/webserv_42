@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 11:37:28 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/22 11:20:43 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/11/22 12:49:27 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,11 @@ class Location
 		std::string							_name;
 		std::string							_root;
 		std::string							_upload;
-		std::vector<std::string>			_disable_method;
-		std::string							_max_client_body_size;
+		bool								_autoindex;
 		std::string 						_index;
 		std::map<std::string, std::string>	_cgi_ext;
-		bool								_autoindex;
+		std::vector<std::string>			_disable_method;
+		std::string							_max_client_body_size;
 };
 
 std::ostream	&operator<<(std::ostream &o, Location const &server);
