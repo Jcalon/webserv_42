@@ -1,30 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Server.hpp                                         :+:      :+:    :+:   */
+/*   Socket.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 11:36:00 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/22 10:28:27 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/11/22 14:33:53 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SERVER_HPP
-# define SERVER_HPP
+#ifndef SOCKET_HPP
+# define SOCKET_HPP
 
 #include "Location.hpp"
 
-class Server
+class Socket
 {
 	public:
-		Server(void);
-		~Server(void);
+		Socket(void);
+		~Socket(void);
 
 		std::vector<std::string>::iterator parse_server(std::vector<std::string>::iterator start, std::vector<std::string> file);
 
 		std::string get_root(void) const;
-		std::vector<std::string> get_listen(void) const;
+		std::vector<int> get_listen(void) const;
 		std::vector<std::string> get_name(void) const;
 		std::map<std::string, std::string> get_error_pages(void) const;
 		std::string get_body_size(void) const;
@@ -36,7 +36,7 @@ class Server
 
 
 	private:
-		std::vector<std::string>			_listen;
+		std::vector<int>			_listen;
 		std::vector<std::string>			_name;
 		std::string							_root;
 		std::map<std::string, std::string>	_error_pages; // Change les pages d'erreur des codes pour le fichier path
@@ -47,10 +47,10 @@ class Server
 		// std::string 						_index; //defines files that will be used as an index.
 		// bool								_auth_basic; // Change le nom de la popup d'authentification pour les ressources protégées par un mot de passe
 		// std::string						_auth_basic_user_file; // Définit le fichier contenant les logins et mot de passes pour accéder à la ressourc
-
+// RAJOUTER UN TRUC POU IP
 		std::vector<Location>	_location; // Indique la création d'une location name, qui pourra être utilisée dans un url
 };
 
-std::ostream	&operator<<(std::ostream &o, Server const &server);
+std::ostream	&operator<<(std::ostream &o, Socket const &Socket);
 
 #endif

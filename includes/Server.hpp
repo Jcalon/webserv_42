@@ -1,16 +1,7 @@
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
-#include <iostream>
-#include <string>
-#include <stdio.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <iostream>
-#include <sstream>
-#include <string>
+#include "utils.hpp"
 
 class Server
 {

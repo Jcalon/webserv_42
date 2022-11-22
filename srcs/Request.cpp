@@ -6,11 +6,11 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 17:55:06 by jcalon            #+#    #+#             */
-/*   Updated: 2022/11/22 11:48:38 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/11/22 13:42:02 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Request.hpp"
+#include "../includes/utils.hpp"
 
 class throwMessage : public std::exception {
 	private:
