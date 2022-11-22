@@ -6,14 +6,11 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 12:20:36 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/22 10:30:14 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/11/22 11:34:30 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/Config/Config.hpp"
-#include "../../includes/Config/Server.hpp"
-#include <string>
-#define WHITESPACES " \t;"
+#include "../../includes/utils.hpp"
 
 Config::Config(void) {}
 
@@ -45,7 +42,8 @@ void	Config::parse_config(std::vector<std::string> file)
 			}
 			it = server.parse_server(it, file);
 			this->_server.push_back(server);
-			if (*it != "}")
+			std::string verif = *it;
+			if (verif.find("}") < 0)
 			{
 				std::cout << "ERROR : server  doit se fermer avec }" << std::endl;
 				break;
@@ -61,13 +59,12 @@ std::vector<Server>	Config::get_server(void) const { return this->_server; }
 std::string			Config::get_max_connections(void) const { return this->_max_connections; }
 
 
-
 std::ostream &operator<<(std::ostream &o, Config const &rhs)
 {
-
+	std::cout << std::endl;
+	std::cout << RED << BOLD << "********* Config *********" << RESET << std::endl;
 	o << "workers : " << rhs.get_workers() << std::endl;
 	o << "max_connections : " << rhs.get_max_connections() << std::endl;
-	o << "servers : " << std::endl;
 	std::vector<Server> srv = rhs.get_server();
 	size_t i = 0;
 	while (i < srv.size())

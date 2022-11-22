@@ -6,13 +6,11 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 12:22:21 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/21 17:52:45 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/11/22 11:29:55 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/Config/Location.hpp"
-#include "../../includes/Config/Config.hpp"
-#define WHITESPACES " \t;"
+#include "../../includes/utils.hpp"
 
 Location::Location(void) {}
 
@@ -20,8 +18,10 @@ Location::~Location(void) {}
 
 std::vector<std::string>::iterator Location::parse_location(std::vector<std::string>::iterator start, std::vector<std::string> file)
 {
-	start++;
 	std::vector<std::string> line;
+	line = ft_cpp_split(*start, WHITESPACES);
+	this->_name = line[1];
+	start++;
 	for (;start != file.end(); ++start)
 	{
 		line = ft_cpp_split(*start, WHITESPACES);
@@ -30,7 +30,10 @@ std::vector<std::string>::iterator Location::parse_location(std::vector<std::str
 		else if (line[0] == "upload")
 			this->_upload = line[1];
 		else if (line[0] == "disable_method")
-			this->_disable_method.push_back(line[1]);
+		{
+			for (size_t i = 0; i < line.size(); i++)
+				this->_disable_method.push_back(line[i]);
+		}
 		else if (line[0] == "max_client_body_size")
 			this->_max_client_body_size = line[1];
 		else if (line[0] == "index")
@@ -46,6 +49,7 @@ std::vector<std::string>::iterator Location::parse_location(std::vector<std::str
 
 }
 
+std::string Location::get_name(void) const { return this->_name; }
 std::string Location::get_root(void) const { return this->_root; }
 std::string Location::get_upload(void) const { return this->_upload; }
 std::vector<std::string> Location::get_disable_method(void) const { return this->_disable_method; }
@@ -55,21 +59,27 @@ std::map<std::string, std::string> Location::get_cgi_ext(void) const { return th
 bool Location::get_autoindex(void) const { return this->_autoindex; }
 
 std::ostream	&operator<<(std::ostream &o, Location const &location) {
-	o << "Location :" << std::endl;
+	o << YELLOW << BOLD << "   Location :  " << RESET << location.get_name() << std::endl;
 	if (location.get_root().size())
-		o << "    root = [" << location.get_root() << "]" << std::endl;
+		o << "     root = [" << location.get_root() << "]" << std::endl;
 	if (location.get_upload().size())
-		o << "    upload = [" << location.get_upload() << "]" << std::endl;
-	if (location.get_disable_method().size())
-		o << "    disable method = [" << location.get_disable_method().front() << "]" << std::endl;
+		o << "     upload = [" << location.get_upload() << "]" << std::endl;
+	if (location.get_disable_method().size() > 1)
+	{
+		o << "     disable method = [";
+		std::vector<std::string> method = location.get_disable_method();
+		for (size_t i = 1; i < method.size(); i++)
+			o << method[i] << " | ";
+		o << "]" << std::endl;
+	}
 	if (location.get_body_size().size() )
-		o << "    body size = [" << location.get_body_size() << "]" << std::endl;
+		o << "     body size = [" << location.get_body_size() << "]" << std::endl;
 	if (location.get_index().size() )
-		o << "    body size = [" << location.get_index() << "]" << std::endl;
+		o << "     index = [" << location.get_index() << "]" << std::endl;
 	if (location.get_cgi_ext().size())
-		o << "    cgi ext = [\n" << location.get_cgi_ext().size() << "]" << std::endl;
-	if (location.get_autoindex())
-		o << "	autoindex" << location.get_autoindex() << std::endl;
+		o << "     cgi ext = [" << location.get_cgi_ext().size() << "]" << std::endl;
+	// if (location.get_autoindex())
+	o << "     autoindex = [" << location.get_autoindex() << "]" << std::endl;
 	return (o);
 };
 

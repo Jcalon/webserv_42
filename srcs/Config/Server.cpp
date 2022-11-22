@@ -6,14 +6,11 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 12:22:34 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/21 17:56:23 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/11/22 11:34:14 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/Config/Server.hpp"
-#include "../../includes/Config/Config.hpp"
-#define WHITESPACES " \t;"
-
+#include "../../includes/utils.hpp"
 
 Server::Server(void) {}
 
@@ -44,15 +41,16 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 			this->_cgi_dir = line[1];
 		else if (line[0] == "location")
 		{
+			Location location;
 			if (line[line.size() - 1] != "{")
 			{
 				std::cout << "ERROR : location doit ouvrir avec {\n";
 				break;
 			}
-			Location location;
 			start = location.parse_location(start, file);
 			this->_location.push_back(location);
-			if (*start != "  }")
+			std::string verif = *start;
+			if (verif.find("}") < 0)
 			{
 				std::cout << "ERROR : location doit se fermer avec }" << std::endl;
 				break;
@@ -79,33 +77,34 @@ std::vector<Location> Server::get_location(void) const { return this->_location;
 
 
 std::ostream	&operator<<(std::ostream &o, Server const &server) {
-	o << "server :" << std::endl;
+	o << BLUE << BOLD << " Server :" << RESET << std::endl;
 	if (server.get_listen().size())
 		o << "    listen = [" << server.get_listen().front() << "]" << std::endl;
 	if (server.get_name().size())
-		o << "    server_name = [" << server.get_name().front() << "]" << std::endl;
+	{
+		o << "    server_name = [";
+		std::vector<std::string> name = server.get_name();
+		for (size_t i = 0; i < server.get_name().size(); i++)
+			o << name[i] << " | ";
+		std::cout << "]" << std::endl;
+	}
 	if (server.get_root().size())
 		o << "    root = [" << server.get_root() << "]" << std::endl;
 	if (server.get_error_pages().size())
 		o << "    error_page = [" << server.get_error_pages().size() << "]" << std::endl;
-	if (server.get_body_size().size() )
+	if (server.get_body_size().size())
 		o << "    body size = [" << server.get_body_size() << "]" << std::endl;
 	if (server.get_cgi_dir().size() )
 		o << "    cgi dir = [" << server.get_cgi_dir() << "]" << std::endl;
 	if (server.get_cgi_ext().size())
-		o << "    cgi ext = [\n" << server.get_cgi_ext().at(0) << "]" << std::endl;
+		o << "    cgi ext = [" << server.get_cgi_ext().at(0) << "]" << std::endl;
 	if (server.get_autoindex())
 		o << "	autoindex" << server.get_autoindex() << std::endl;
 	if (server.get_location().size())
 	{
 		std::vector<Location> loc = server.get_location();
-		size_t i = 0;
-		while (i < loc.size())
-		{
-			o << "       location\n ";
+		for (size_t i = 0; i < loc.size(); i++)
 			o << loc[i];
-			i++;
-		}
 	}
 	return (o);
 };
