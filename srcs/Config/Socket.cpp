@@ -6,13 +6,17 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 12:22:34 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/22 13:50:55 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/11/22 16:00:39 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/utils.hpp"
 
-Socket::Socket(void) {}
+Socket::Socket(void) {
+	this->_ip_address = "0.0.0.0";
+	this->_listen.push_back(80);
+	this->_autoindex = false;
+}
 
 Socket::~Socket(void) {}
 
@@ -26,15 +30,29 @@ std::vector<std::string>::iterator Socket::parse_server(std::vector<std::string>
 		std::vector<std::string> line;
 		line = ft_cpp_split(*start, WHITESPACES);
 		if (line[0] == "listen")
-			this->_listen.push_back(std::atoi(line[1].c_str()));
-		else if (line[0] == "Socket_name")
+		{
+			//supprime valeur par default
+			this->_listen.pop_back();
+			for (size_t i = 1; i < line.size(); i++)
+			{
+				if (line[i].find(":") != std::string::npos)
+				{
+					std::vector<std::string> tmp = ft_cpp_split(line[i], ":");
+					this->_ip_address = tmp[0];
+					this->_listen.push_back(std::atoi(tmp[1].c_str()));
+				}
+				else
+					this->_listen.push_back(std::atoi(line[i].c_str()));
+			}
+		}
+		else if (line[0] == "server_name")
 			this->_name.push_back(line[1]);
 		else if (line[0] == "max_client_body_size")
 			this->_max_client_body_size = line[1];
 		else if (line[0] == "root")
 			this->_root = line[1];
 		else if (line[0] == "error_page" && line.size() > 2)
-			this->_error_pages.insert(std::make_pair(line[1], line[2]));
+			this->_error_pages.insert(std::make_pair(std::atoi(line[1].c_str()), line[2]));
 		else if (line[0] == "cgi_ext" && line.size() > 2)
 			this->_cgi_ext.insert(std::make_pair(line[1], line[2]));
 		else if (line[0] == "cgi_dir")
@@ -65,9 +83,10 @@ std::vector<std::string>::iterator Socket::parse_server(std::vector<std::string>
 }
 
 std::vector<int> Socket::get_listen(void) const { return this->_listen; }
+std::string Socket::get_ip(void) const { return this->_ip_address; }
 std::vector<std::string> Socket::get_name(void) const { return this->_name; }
 std::string Socket::get_root(void) const { return this->_root; }
-std::map<std::string, std::string> Socket::get_error_pages(void) const { return this->_error_pages; }
+std::map<int, std::string> Socket::get_error_pages(void) const { return this->_error_pages; }
 std::string Socket::get_body_size(void) const { return this->_max_client_body_size;}
 std::string Socket::get_cgi_dir(void) const { return this->_cgi_dir;}
 std::map<std::string, std::string> Socket::get_cgi_ext(void) const { return this->_cgi_ext; }
@@ -79,14 +98,22 @@ std::vector<Location> Socket::get_location(void) const { return this->_location;
 std::ostream	&operator<<(std::ostream &o, Socket const &Socket) {
 	o << BLUE << BOLD << " Socket :" << RESET << std::endl;
 	if (Socket.get_listen().size())
-		o << "    listen = [" << Socket.get_listen().front() << "]" << std::endl;
+	{
+		o << "    listen = [";
+		std::vector<int> listen = Socket.get_listen();
+		for (size_t i = 0; i < listen.size(); i++)
+			o << listen[i] << " | ";
+		o << "]" << std::endl;
+	}
+	if (Socket.get_ip().size())
+		o << "    ip = [" << Socket.get_ip() << "]" << std::endl;
 	if (Socket.get_name().size())
 	{
 		o << "    Socket_name = [";
 		std::vector<std::string> name = Socket.get_name();
 		for (size_t i = 0; i < Socket.get_name().size(); i++)
 			o << name[i] << " | ";
-		std::cout << "]" << std::endl;
+		o << "]" << std::endl;
 	}
 	if (Socket.get_root().size())
 		o << "    root = [" << Socket.get_root() << "]" << std::endl;

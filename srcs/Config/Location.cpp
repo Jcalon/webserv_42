@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 12:22:21 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/22 11:29:55 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/11/22 15:55:54 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,10 @@ std::vector<std::string>::iterator Location::parse_location(std::vector<std::str
 			this->_root = line[1];
 		else if (line[0] == "upload")
 			this->_upload = line[1];
-		else if (line[0] == "disable_method")
+		else if (line[0] == "allow_method")
 		{
 			for (size_t i = 0; i < line.size(); i++)
-				this->_disable_method.push_back(line[i]);
+				this->_allow_method.push_back(line[i]);
 		}
 		else if (line[0] == "max_client_body_size")
 			this->_max_client_body_size = line[1];
@@ -52,7 +52,7 @@ std::vector<std::string>::iterator Location::parse_location(std::vector<std::str
 std::string Location::get_name(void) const { return this->_name; }
 std::string Location::get_root(void) const { return this->_root; }
 std::string Location::get_upload(void) const { return this->_upload; }
-std::vector<std::string> Location::get_disable_method(void) const { return this->_disable_method; }
+std::vector<std::string> Location::get_allow_method(void) const { return this->_allow_method; }
 std::string Location::get_body_size(void) const { return this->_max_client_body_size;}
 std::string Location::get_index(void) const { return this->_index;}
 std::map<std::string, std::string> Location::get_cgi_ext(void) const { return this->_cgi_ext; }
@@ -64,10 +64,10 @@ std::ostream	&operator<<(std::ostream &o, Location const &location) {
 		o << "     root = [" << location.get_root() << "]" << std::endl;
 	if (location.get_upload().size())
 		o << "     upload = [" << location.get_upload() << "]" << std::endl;
-	if (location.get_disable_method().size() > 1)
+	if (location.get_allow_method().size() > 1)
 	{
-		o << "     disable method = [";
-		std::vector<std::string> method = location.get_disable_method();
+		o << "     allow method = [";
+		std::vector<std::string> method = location.get_allow_method();
 		for (size_t i = 1; i < method.size(); i++)
 			o << method[i] << " | ";
 		o << "]" << std::endl;

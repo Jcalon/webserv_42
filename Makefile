@@ -1,6 +1,5 @@
 NAME	= WebServ
 
-
 OBJS_PATH = objs/
 DEPS_PATH = deps/
 
