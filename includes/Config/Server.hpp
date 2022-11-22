@@ -6,16 +6,13 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 11:36:00 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/21 17:56:33 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/11/22 10:28:27 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
-#include <iostream>
-#include <vector>
-#include <map>
 #include "Location.hpp"
 
 class Server

@@ -6,16 +6,11 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 12:57:27 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/21 18:00:17 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/11/22 10:15:35 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/Config/Config.hpp"
-#include <iostream>
-#include <iomanip>
-#include <fstream>
-#include <string>
-#include <iterator>
+#include "../includes/utils.hpp"
 
 int main(int ac, char **av)
 {
