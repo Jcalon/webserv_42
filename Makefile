@@ -8,6 +8,7 @@ SRCS 	=	main.cpp \
 			srcs/Config/Location.cpp \
 			srcs/Config/Socket.cpp \
 			srcs/Request.cpp \
+			srcs/Response.cpp \
 			srcs/Server.cpp \
 			srcs/utils.cpp
 

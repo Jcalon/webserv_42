@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 12:20:36 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/22 13:36:24 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/11/22 16:22:53 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,15 +81,14 @@ const char *Config::FileNotOpen::what() const throw()
 std::ostream &operator<<(std::ostream &o, Config const &rhs)
 {
 	std::cout << std::endl;
-	std::cout << RED << BOLD << "********* Config *********" << RESET << std::endl;
+	std::cout << RED << BOLD << TAB << "*********** Config ***********" << RESET << std::endl;
 	o << "workers : " << rhs.get_workers() << std::endl;
 	o << "max_connections : " << rhs.get_max_connections() << std::endl;
 	std::vector<Socket> srv = rhs.get_server();
-	size_t i = 0;
-	while (i < srv.size())
-	{
+	for (size_t i = 0; i < srv.size(); i++)
 		o << srv[i];
-		i++;
-	}
+	std::cout << std::endl;
+	std::cout << RED << BOLD << TAB << "************ end *************" << RESET << std::endl;
+
 	return o;
 }

@@ -75,22 +75,20 @@ void Server::startListen()
 	}
 
 	std::ostringstream ss;
-	ss << "\n*** Listening on ADDRESS: " << "0.0.0.0" << " PORT: " << ntohs(_socketAddress.sin_port) << " ***\n\n"; // inet ntoa a recoder
+	ss << BLUE "\n*** Listening on ADDRESS: " << _ip_address << " PORT: " << ntohs(_socketAddress.sin_port) <<" ***\n\n" RESET; // inet ntoa a recoder
 	log(ss.str());
 
 	int bytesReceived;
 
 	while (true)
 	{
-		log("====== Waiting for a new connection ======\n\n\n");
+		log(BOLD "  ======= Waiting for a new connection =======\n\n" RESET);
 		acceptConnection(_new_socket);
 
 		char buffer[BUFFER_SIZE] = {0};
 		bytesReceived = recv(_new_socket, buffer, BUFFER_SIZE, 0);
 		if (bytesReceived < 0)
-		{
-			exitWithError("Failed to read bytes from client socket connection");
-		}
+			exitWithError(RED "Failed to read bytes from client socket connection" RESET);
 		std::cout << buffer << std::endl;
 		try
 		{
@@ -102,7 +100,7 @@ void Server::startListen()
 			std::cerr << &e << std::endl;
 		}
 		std::ostringstream ss;
-		ss << "------ Received Request from client ------\n\n";
+		ss << GREEN "------ Received Request from client ------\n\n" RESET;
 		log(ss.str());
 
 		sendResponse();
@@ -124,6 +122,7 @@ void Server::acceptConnection(int &new_socket)
 
 std::string Server::buildResponse() // La ca va dependre des LOCATIONS etde la methode demandee
 {
+	//si la method demandee n'est pas dans allow method > renvoi erreur
 	std::string htmlFile = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello from your Server :) </p></body></html>";
 	std::ostringstream ss;
 	ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << htmlFile.size() << "\n\n"

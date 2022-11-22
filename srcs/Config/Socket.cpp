@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 12:22:34 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/22 16:00:39 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/11/22 16:03:50 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,8 +92,6 @@ std::string Socket::get_cgi_dir(void) const { return this->_cgi_dir;}
 std::map<std::string, std::string> Socket::get_cgi_ext(void) const { return this->_cgi_ext; }
 bool Socket::get_autoindex(void) const { return this->_autoindex; }
 std::vector<Location> Socket::get_location(void) const { return this->_location; }
-
-
 
 std::ostream	&operator<<(std::ostream &o, Socket const &Socket) {
 	o << BLUE << BOLD << " Socket :" << RESET << std::endl;
