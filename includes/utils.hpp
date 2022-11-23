@@ -29,6 +29,7 @@
 #include <string>
 #include <stdlib.h>
 #include <sys/time.h>
+#include <cstring>
 
 #include "./Config/Location.hpp"
 #include "./Config/Socket.hpp"

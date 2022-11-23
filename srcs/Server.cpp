@@ -22,6 +22,9 @@ Server::Server(std::string ip_adress, int port) : _ip_address(ip_adress), _port(
 													_socketAddress(), _socketAddress_len(sizeof(_socketAddress)),
 													_serverMessage()
 {
+	std::cout << PINK "CONSTRUCTO SERVER FAMILY" << _socketAddress.sin_family << RESET << std::endl;
+	std::cout << PINK "CONSTRUCTO SERVER PORT" << _socketAddress.sin_port << RESET << std::endl;
+	std::cout << PINK "CONSTRUCTO SERVER s_addr" << _socketAddress.sin_addr.s_addr << RESET << std::endl;
 	_socketAddress.sin_family = AF_INET;
 	_socketAddress.sin_port = htons(_port);
 	_socketAddress.sin_addr.s_addr = inet_addr(_ip_address.c_str());
@@ -34,6 +37,10 @@ Server::Server(std::string ip_adress, int port) : _ip_address(ip_adress), _port(
 	}
 }
 
+int Server::get_socket() const
+{
+	return this->_socket;
+}
 
 /*
 ** -------------------------------- DESTRUCTOR --------------------------------
@@ -41,6 +48,8 @@ Server::Server(std::string ip_adress, int port) : _ip_address(ip_adress), _port(
 
 Server::~Server() // remplacer les closes
 {
+	std::cout << PINK "SOCKET " << _socket << RESET << std::endl;
+	std::cout << PINK "SOCKET NEW" << _new_socket << RESET << std::endl;
 	close(this->_socket);
 	close(this->_new_socket);
 }
@@ -53,13 +62,21 @@ int Server::startServer()
 {
 	//ouverture d'un fd. _socket = fd
 	_socket = socket(AF_INET, SOCK_STREAM, 0);
+	std::cout << PINK "SOCKET" << _socket << RESET << std::endl;
+	std::cout << PINK "SOCKET DREAM" << (sockaddr *)&_socketAddress << RESET << std::endl;
+	std::cout << PINK "SOCKET LEN" << _socketAddress_len << RESET << std::endl;
 	if (_socket < 0)
 	{
+
 		exitWithError("Cannot create socket");
 		return 1;
 	}
+	int opt = 1;
+	if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&opt), sizeof(opt)) < 0)
+			return 1;
 	if (bind(_socket, (sockaddr *)&_socketAddress, _socketAddress_len) < 0)
 	{
+		perror("yes");
 		exitWithError("Cannot connect socket to address");
 		return 1;
 	}
@@ -106,7 +123,6 @@ void Server::startListen()
 		_serverMessage = buildResponse(response);
 		// response.sendResponse();
 		sendResponse();
-
 		close(_new_socket); // mettre un if avec l'escape
 	}
 }
@@ -148,7 +164,6 @@ void Server::sendResponse()
 	}
 	else
 	{
-		//close la socket
 		log("Error sending response to client");
 	}
 }

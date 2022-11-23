@@ -9,6 +9,7 @@ class Server
 	        Server(std::string ip_adress, int port);
 	        ~Server();
 	        void startListen();
+                int get_socket() const;
 
 	private:
                 std::string             _ip_address;

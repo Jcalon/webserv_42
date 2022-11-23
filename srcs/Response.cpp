@@ -24,7 +24,8 @@ Response::Response(Request const &request)
 	this->_header = "";
 }
 
-Response::~Response() {}
+Response::~Response() {
+}
 
 int Response::allow_method(Request const &request)
 {
@@ -61,17 +62,22 @@ void Response::run_get_method(void)
 
 	//si le path est un fichier dans notre code
 		//open le fichier est mettre le contenu dans la string_response
-	// std::ifstream		ifs("../test.html");
-	// std::stringstream	buffer;
-
-	// if (ifs.is_open() == false)
-	// {
-	// 	std::cout << "ERROR" << std::endl;
-	// 	return ;
-	// }
+	std::ifstream		ifs("test.html");
+	// std::string	buffer;
+	std::string	line;
+	if (!ifs.is_open())
+	{
+		std::cout << "ERROR opening html" << std::endl;
+		return ;
+	}
+	while (std::getline(ifs, line, char(ifs.eof())))
+	{
+		this->_response = line;
+	}
 	// buffer << ifs.rdbuf();
-	this->_response = "<!DOCTYPE html><html><title>TEST</title><body><div><H1>TEST</H1><p>Coucou le test</p></div></body></html>;";
-	// ifs.close();
+	// this->_response = "<!DOCTYPE html><html><title>TEST</title><body><div><H1>TEST</H1><p>Coucou le test</p></div></body></html>;";
+	// this->_response = buffer;
+	ifs.close();
 	this->_content_length = _response.size();
 	this->_content_type = "text/html"; // a modifier avec une fonction en fonction du ype
 	this->_date = set_date();

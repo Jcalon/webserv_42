@@ -22,7 +22,9 @@ int main(int ac, char **av)
 		std::cout << Config << std::endl;
 		Socket test = Config.get_server()[0];
 		Server server = Server(test.get_ip(), test.get_listen()[0]);
+		std::cout << server.get_socket() << std::endl;
 		server.startListen();
+		// close(server.get_socket());
 	}
 	catch(const std::exception& e)
 	{
