@@ -6,9 +6,10 @@ DEPS_PATH = deps/
 SRCS 	=	main.cpp \
 			srcs/Config/Config.cpp \
 			srcs/Config/Location.cpp \
-			srcs/Config/Socket.cpp \
+			srcs/Config/Server.cpp \
 			srcs/Request.cpp \
-			srcs/Server.cpp \
+			srcs/Socket.cpp \
+			srcs/Manager.cpp \
 			srcs/utils.cpp
 
 OBJS 		= ${SRCS:%.cpp=${OBJS_PATH}%.o}

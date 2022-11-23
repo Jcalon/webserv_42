@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 12:20:36 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/22 13:36:24 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/11/23 12:53:22 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	Config::parse_config(std::vector<std::string> file)
 			this->_max_connections = line[1];
 		else if (line[0] == "server")
 		{
-			Socket server;
+			Server server;
 			if (line[1] != "{")
 			{
 				std::cout << " ERROR \n";
@@ -69,7 +69,7 @@ void	Config::parse_config(std::vector<std::string> file)
 }
 
 std::string			Config::get_workers(void) const { return this->_workers; }
-std::vector<Socket>	Config::get_server(void) const { return this->_server; }
+std::vector<Server>	Config::get_server(void) const { return this->_server; }
 std::string			Config::get_max_connections(void) const { return this->_max_connections; }
 
 const char *Config::FileNotOpen::what() const throw()
@@ -84,7 +84,7 @@ std::ostream &operator<<(std::ostream &o, Config const &rhs)
 	std::cout << RED << BOLD << "********* Config *********" << RESET << std::endl;
 	o << "workers : " << rhs.get_workers() << std::endl;
 	o << "max_connections : " << rhs.get_max_connections() << std::endl;
-	std::vector<Socket> srv = rhs.get_server();
+	std::vector<Server> srv = rhs.get_server();
 	size_t i = 0;
 	while (i < srv.size())
 	{
