@@ -1,25 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Socket.hpp                                         :+:      :+:    :+:   */
+/*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 11:36:00 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/22 16:00:04 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/11/23 11:47:09 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SOCKET_HPP
-# define SOCKET_HPP
+#ifndef SERVER_HPP
+# define SERVER_HPP
 
 #include "Location.hpp"
 
-class Socket
+class Server
 {
 	public:
-		Socket(void);
-		~Socket(void);
+		Server(void);
+		~Server(void);
 
 		std::vector<std::string>::iterator parse_server(std::vector<std::string>::iterator start, std::vector<std::string> file);
 
@@ -52,6 +52,6 @@ class Socket
 		std::vector<Location>	_location; // Indique la création d'une location name, qui pourra être utilisée dans un url
 };
 
-std::ostream	&operator<<(std::ostream &o, Socket const &Socket);
+std::ostream	&operator<<(std::ostream &o, Server const &Server);
 
 #endif

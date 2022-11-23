@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 12:57:27 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/22 16:01:30 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/11/23 14:23:52 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,18 @@ int main(int ac, char **av)
 	{
 		Config Config(av[ac - 1]);
 		std::cout << Config << std::endl;
-		Socket test = Config.get_server()[0];
-		Server server = Server(test.get_ip(), test.get_listen()[0]);
-		std::cout << server.get_socket() << std::endl;
-		server.startListen();
-		// close(server.get_socket());
+		std::vector<Server> servs= Config.get_server();
+		Manager serv;
+		for (std::vector<Server>::iterator it = servs.begin(); it != servs.end(); it++)
+		{
+			serv.addSocket(Socket(*it));
+		}
+		if (serv.setup() == -1)
+		{
+			std::cout << "Couldn't setup manager" << std::endl;
+			exit(1);
+		}
+		serv.run();
 	}
 	catch(const std::exception& e)
 	{

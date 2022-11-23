@@ -6,17 +6,19 @@ DEPS_PATH = deps/
 SRCS 	=	main.cpp \
 			srcs/Config/Config.cpp \
 			srcs/Config/Location.cpp \
-			srcs/Config/Socket.cpp \
+			srcs/Config/Server.cpp \
 			srcs/Request.cpp \
 			srcs/Response.cpp \
 			srcs/Server.cpp \
+			srcs/Socket.cpp \
+			srcs/Manager.cpp \
 			srcs/utils.cpp
 
 OBJS 		= ${SRCS:%.cpp=${OBJS_PATH}%.o}
 DEPS		= ${SRCS:%.cpp=${DEPS_PATH}%.d}
 
 CXX 		= c++
-CXXFLAGS 	= -Wall -Wextra -Werror -std=c++98
+CXXFLAGS 	= -Wall -Wextra -Werror -std=c++98 -g
 
 INCLUDES = -I includes -I includes/Config
 

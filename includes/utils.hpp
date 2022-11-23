@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 10:10:56 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/23 13:16:36 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/11/23 13:51:03 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,22 +21,35 @@
 #include <iterator>
 #include <cstdlib>
 #include <exception>
+#include <string>
+#include <fcntl.h>
+#include <iostream>
+#include <string>
 #include <stdio.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <sstream>
 #include <string>
+#include <cstring>
+
+#include <string>
+#include <vector>
+#include <iostream>
 #include <stdlib.h>
 #include <sys/time.h>
 #include <cstring>
 
 #include "./Config/Location.hpp"
-#include "./Config/Socket.hpp"
+#include "./Config/Server.hpp"
 #include "./Config/Config.hpp"
 #include "Request.hpp"
 #include "Response.hpp"
 #include "Server.hpp"
+
+#include "Socket.hpp"
+#include "Request.hpp"
+#include "Manager.hpp"
 
 #define BOLD "\033[1m"
 #define RESET "\033[0m"
