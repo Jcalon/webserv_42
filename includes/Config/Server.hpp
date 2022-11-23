@@ -38,6 +38,7 @@ class Server
 
 	private:
 		std::string							_ip_address;
+		//creer un server par port // setup chaque server avec son port
 		std::vector<int>					_listen;
 		std::vector<std::string>			_name;
 		std::string							_root;

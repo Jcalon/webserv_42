@@ -128,7 +128,6 @@ int Socket::startSocket()
 
 long Socket::acceptConnection()
 {
-	std::cout << "COUCOU" << std::endl;
 	_new_socket = accept(_socket, (sockaddr *)&_socketAddress, &_socketAddress_len);
 	fcntl(_socket, F_SETFL, O_NONBLOCK);
 	if (_new_socket < 0)
@@ -208,7 +207,7 @@ long Socket::sendResponse(long socket)
 		<< htmlFile;
 		bytesSent = send(socket, sts.str().c_str(), sts.str().length(), 0);
 
-		if (bytesSent == _SocketMessage.size())
+		if (bytesSent == sts.str().size())
 		{
 			log("------ Socket Response sent to client ------\n\n");
 		}

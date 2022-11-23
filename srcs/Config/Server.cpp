@@ -25,7 +25,7 @@ Server::~Server(void) {}
 std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>::iterator start, std::vector<std::string> file)
 {
 	start++;
-	for (;start != file.end(); ++start)
+	for (;start != file.end(); start++)
 	{
 		std::vector<std::string> line;
 		line = ft_cpp_split(*start, WHITESPACES);
@@ -77,7 +77,7 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 		else if (line[0] == "autoindex")
 			(line[1] == "on" )? this->_autoindex = true : this->_autoindex = false;
 		else
-			break;
+			break ;
 	}
 	return start;
 }

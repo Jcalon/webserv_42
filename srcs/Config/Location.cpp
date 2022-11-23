@@ -34,12 +34,14 @@ std::vector<std::string>::iterator Location::parse_location(std::vector<std::str
 			for (size_t i = 0; i < line.size(); i++)
 				this->_allow_method.push_back(line[i]);
 		}
-		else if (line[0] == "max_client_body_size")
+		else if (line[0] == "client_max_body_size")
 			this->_max_client_body_size = line[1];
 		else if (line[0] == "index")
 			this->_index = line[1];
-		else if (line[0] == "cgi")
+		else if (line[0] == "cgi_ext")
 			this->_cgi_ext.insert(std::make_pair(line[1], line[2]));
+		else if (line[0] == "cgi_dir")
+			this->_cgi_dir = line[1];
 		else if (line[0] == "autoindex")
 			(line[1] == "on" )? this->_autoindex = true : this->_autoindex = false;
 		else

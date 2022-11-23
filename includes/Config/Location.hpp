@@ -41,6 +41,7 @@ class Location
 		bool								_autoindex;
 		std::string 						_index;
 		std::map<std::string, std::string>	_cgi_ext;
+		std::string							_cgi_dir;
 		std::vector<std::string>			_allow_method;
 		std::string							_max_client_body_size;
 };
