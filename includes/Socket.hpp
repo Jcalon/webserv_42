@@ -22,15 +22,12 @@ class Socket
 		std::string			_receivedMessage;
 	
 	public:
-        int			startSocket();
-        void		closeSocket();
-
-        long		acceptConnection();
-		long			receiveMessage(long socket);
-        long		sendResponse(long socket);
-
-        std::string	buildResponse();
-		int			getSocket() const;
+        int		startSocket();
+        long	acceptConnection();
+		long	receiveMessage(long socket);
+        long	sendResponse(long socket);
+		int		getSocket() const;
+		Server 	getServer() const;
 		void	clean(void);
 };
 

@@ -16,7 +16,7 @@ OBJS 		= ${SRCS:%.cpp=${OBJS_PATH}%.o}
 DEPS		= ${SRCS:%.cpp=${DEPS_PATH}%.d}
 
 CXX 		= c++
-CXXFLAGS 	= -Wall -Wextra -Werror -std=c++98
+CXXFLAGS 	= -Wall -Wextra -Werror -std=c++98 -g
 
 INCLUDES = -I includes -I includes/Config
 

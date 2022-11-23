@@ -6,7 +6,7 @@
 class	Manager
 {
 	public:
-		Manager(std::vector<Socket>	Sockets);
+		Manager(std::vector<Socket>	sockets);
 		Manager();
 		~Manager();
 
@@ -21,7 +21,7 @@ class	Manager
 	private:
 		void						handleIncompleteRequests(fd_set reading_set);
 
-		std::vector<Socket>			_vecSockets;
+		std::vector<Socket>			_sockets;
 		std::map<long, Socket *>		_listen_fds;
 		std::map<long, Socket *>		_read_fds;
 		std::vector<int>			_write_fds;
