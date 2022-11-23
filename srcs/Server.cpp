@@ -20,7 +20,7 @@ void exitWithError(const std::string &errorMessage)
 Server::Server(std::string ip_adress, int port) : _ip_address(ip_adress), _port(port),
 													_socket(), _new_socket(), _incomingMessage(),
 													_socketAddress(), _socketAddress_len(sizeof(_socketAddress)),
-													_serverMessage(buildResponse())
+													_serverMessage()
 {
 	_socketAddress.sin_family = AF_INET;
 	_socketAddress.sin_port = htons(_port);
@@ -42,7 +42,7 @@ Server::Server(std::string ip_adress, int port) : _ip_address(ip_adress), _port(
 Server::~Server() // remplacer les closes
 {
 	close(this->_socket);
-    close(this->_new_socket);
+	close(this->_new_socket);
 }
 
 /*
@@ -51,19 +51,18 @@ Server::~Server() // remplacer les closes
 
 int Server::startServer()
 {
+	//ouverture d'un fd. _socket = fd
 	_socket = socket(AF_INET, SOCK_STREAM, 0);
 	if (_socket < 0)
 	{
 		exitWithError("Cannot create socket");
 		return 1;
 	}
-
 	if (bind(_socket, (sockaddr *)&_socketAddress, _socketAddress_len) < 0)
 	{
 		exitWithError("Cannot connect socket to address");
 		return 1;
 	}
-
 	return 0;
 }
 
@@ -90,19 +89,22 @@ void Server::startListen()
 		if (bytesReceived < 0)
 			exitWithError(RED "Failed to read bytes from client socket connection" RESET);
 		std::cout << buffer << std::endl;
-		try
-		{
+		// try
+		// {
 			Request request = Request(buffer);
 			std::cout << request;
-		}
-		catch (const std::exception& e)
-		{
-			std::cerr << &e << std::endl;
-		}
+		// }
+		// catch (const std::exception& e)
+		// {
+			// std::cerr << &e << std::endl;
+		// }
 		std::ostringstream ss;
 		ss << GREEN "------ Received Request from client ------\n\n" RESET;
 		log(ss.str());
 
+		Response response(request);
+		_serverMessage = buildResponse(response);
+		// response.sendResponse();
 		sendResponse();
 
 		close(_new_socket); // mettre un if avec l'escape
@@ -120,13 +122,16 @@ void Server::acceptConnection(int &new_socket)
 	}
 }
 
-std::string Server::buildResponse() // La ca va dependre des LOCATIONS etde la methode demandee
+std::string Server::buildResponse(Response &res) // La ca va dependre des LOCATIONS etde la methode demandee
 {
 	//si la method demandee n'est pas dans allow method > renvoi erreur
-	std::string htmlFile = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello from your Server :) </p></body></html>";
+	// std::string htmlFile = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello from your Server :) </p></body></html>";
+	// std::cout << "coucouc " << res.get_response() << std::endl;
+	res.call_method();
 	std::ostringstream ss;
-	ss << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << htmlFile.size() << "\n\n"
-		<< htmlFile;
+	ss << res.get_header() << "\n\n"
+		<< res.get_response();
+	std::cout << res.get_header() << std::endl;
 
 	return ss.str();
 }
@@ -143,6 +148,7 @@ void Server::sendResponse()
 	}
 	else
 	{
+		//close la socket
 		log("Error sending response to client");
 	}
 }

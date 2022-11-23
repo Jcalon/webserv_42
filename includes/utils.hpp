@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 10:10:56 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/22 18:01:08 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/11/23 13:16:36 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,31 +19,23 @@
 #include <vector>
 #include <map>
 #include <iterator>
-#include <string>
-# include <exception>
-
-#include <iostream>
-#include <string>
+#include <cstdlib>
+#include <exception>
 #include <stdio.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include <stdlib.h>
 #include <unistd.h>
-#include <iostream>
 #include <sstream>
 #include <string>
-
-#include <string>
-#include <vector>
-#include <iostream>
 #include <stdlib.h>
+#include <sys/time.h>
 
 #include "./Config/Location.hpp"
 #include "./Config/Socket.hpp"
 #include "./Config/Config.hpp"
-#include "Server.hpp"
 #include "Request.hpp"
 #include "Response.hpp"
+#include "Server.hpp"
 
 #define BOLD "\033[1m"
 #define RESET "\033[0m"

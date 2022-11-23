@@ -15,7 +15,7 @@ class Server
                 int		        _port;
                 int		        _socket;
                 int		        _new_socket;
-                long		        _incomingMessage;
+                long		        _incomingMessage; // la request ?
                 struct sockaddr_in	_socketAddress;
                 unsigned int		_socketAddress_len;
                 std::string		_serverMessage;
@@ -23,7 +23,7 @@ class Server
                 int		startServer();
                 void		closeServer();
                 void		acceptConnection(int &new_socket);
-                std::string	buildResponse();
+                std::string	buildResponse(Response &res);
                 void		sendResponse();
 
 };
