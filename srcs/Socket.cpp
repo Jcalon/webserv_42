@@ -200,12 +200,16 @@ long Socket::sendResponse(long socket)
 		log(ss.str());
 
 		unsigned long bytesSent;
-
-		std::string htmlFile = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello from your Socket :) </p></body></html>";
+		Response response(request);
+		response.call_method();
+		std::cout << response.get_header() << std::endl;
+		// std::string htmlFile = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello from your Socket :) </p></body></html>";
 		std::ostringstream sts;
-		sts << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << htmlFile.size() << "\n\n"
-		<< htmlFile;
-		bytesSent = send(socket, sts.str().c_str(), sts.str().length(), 0);
+		sts << response.get_header() << "\n\n"
+		<< response.get_response();
+		// sts << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << htmlFile.size() << "\n\n"
+		// << htmlFile;
+		bytesSent = send(socket, sts.str().c_str(), sts.str().size(), 0);
 
 		if (bytesSent == sts.str().size())
 		{

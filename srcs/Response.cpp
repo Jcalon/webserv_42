@@ -14,6 +14,7 @@
 
 Response::Response(Request const &request)
 {
+	std::cout << PINK "constructor response" RESET << std::endl;
 	//mettre dans map quand on aura fait la map des codes erreurs
 	this->_code = allow_method(request);
 	this->_http = request.getRequest()._http;
@@ -35,15 +36,8 @@ int Response::allow_method(Request const &request)
 	return 200;
 }
 
-std::string Response::get_header(void) const
-{
-	return this->_header;
-}
-
-std::string Response::get_response(void) const
-{
-	return this->_response;
-}
+std::string Response::get_header(void) const { return this->_header; }
+std::string Response::get_response(void) const { return this->_response; }
 
 
 void Response::call_method()
