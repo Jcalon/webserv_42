@@ -92,6 +92,18 @@ void Response::run_get_method(void)
 
 void Response::run_post_method(void)
 {
+	//pour le moment fait la meme que get en attendant CGI
+	// for (std::map<std::string, std::string>::iterator it = _body.begin(); it != _body.end(); it++)
+	// 		std::cout << YELLOW << "map[" << it->first << "] = " << it->second << std::endl;
+	run_get_method();
+	for (std::map<std::string, std::string>::iterator it = _body.begin(); it != _body.end(); it++)
+	{
+		size_t pos = _response.find("</div>");
+		std::string str = "\n<h4> " + it->first + "</h4>" + "<p>: " + it->second + "</p>";
+		_response.insert(pos, str);
+		this->_content_length = _response.size();
+	}
+	set_header();
 	return ;
 }
 
