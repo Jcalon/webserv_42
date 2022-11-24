@@ -25,10 +25,29 @@ Response::Response(Request const &request, Server const &server)
 		this->_content_location = request.getRequest()._target;
 	this->_content_type = "";
 	this->_header = "";
+	// this->_body = parse_body(request.getFields());
+	parse_body(request.getFields());
 }
 
 Response::~Response() {
 }
+
+void Response::parse_body(std::vector<std::string> fields)
+{
+	if (!fields.back().empty())
+	{
+		std::vector<std::string> tmp = ft_cpp_split(fields.back(), "&");
+		for (std::vector<std::string>::iterator it = tmp.begin(); it != tmp.end(); it++)
+		{
+			std::vector<std::string> map = ft_cpp_split(*it, "=");
+			this->_body.insert(make_pair(map[0], map[1]));
+		}
+		// for (std::map<std::string, std::string>::iterator it = _body.begin(); it != _body.end(); it++)
+		// 	std::cout << YELLOW << "map[" << it->first << "] = " << it->second << std::endl;
+	}
+
+}
+
 
 int Response::allow_method(Request const &request)
 {
@@ -46,8 +65,8 @@ void Response::call_method()
 {
 	if (this->_method == "GET")
 		run_get_method();
-	// else if (method == "POST")
-	// 	run_post_method();
+	else if (this->_method == "POST")
+		run_post_method();
 	// else if (method == "DELETE")
 	// 	run_delete_method();
 }
@@ -69,6 +88,11 @@ void Response::run_get_method(void)
 
 	set_header();
 	//gerer le autoindex ?
+}
+
+void Response::run_post_method(void)
+{
+	return ;
 }
 
 void	Response::set_header(void)

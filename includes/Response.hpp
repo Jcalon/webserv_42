@@ -24,11 +24,14 @@ class Response
 		int allow_method(Request const &request);
 		void call_method();
 		void run_get_method(void);
+		void run_post_method(void);
 
 		std::string get_header(void) const;
 		std::string get_response(void) const;
 		std::string		set_date(void);
 		void			set_header(void);
+		void 	parse_body(std::vector<std::string> fields);
+
 
 		class FileNotOpen : public std::exception
 		{
@@ -47,6 +50,7 @@ class Response
 		std::string _response;
 		std::string _header;
 		std::string _method;
+		std::map<std::string, std::string> _body;
 };
 
 #endif
