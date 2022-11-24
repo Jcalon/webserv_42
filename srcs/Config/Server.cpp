@@ -14,6 +14,7 @@
 
 Server::Server(void) {
 	this->_ip_address = "0.0.0.0";
+	this->_index = "index.html";
 	this->_listen.push_back(80);
 	this->_autoindex = false;
 }
@@ -57,6 +58,8 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 			this->_cgi_ext.insert(std::make_pair(line[1], line[2]));
 		else if (line[0] == "cgi_dir")
 			this->_cgi_dir = line[1];
+		else if (line[0] == "index")
+			this->_cgi_dir = line[1];
 		else if (line[0] == "location")
 		{
 			Location location;
@@ -84,6 +87,7 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 
 std::vector<int> Server::get_listen(void) const { return this->_listen; }
 std::string Server::get_ip(void) const { return this->_ip_address; }
+std::string Server::get_index(void) const { return this->_index; }
 std::vector<std::string> Server::get_name(void) const { return this->_name; }
 std::string Server::get_root(void) const { return this->_root; }
 std::map<int, std::string> Server::get_error_pages(void) const { return this->_error_pages; }

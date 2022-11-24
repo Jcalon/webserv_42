@@ -23,16 +23,17 @@ class Server
 
 		std::vector<std::string>::iterator parse_server(std::vector<std::string>::iterator start, std::vector<std::string> file);
 
-		std::string get_root(void) const;
-		std::string get_ip(void) const;
-		std::vector<int> get_listen(void) const;
-		std::vector<std::string> get_name(void) const;
-		std::map<int, std::string> get_error_pages(void) const;
-		std::string get_body_size(void) const;
-		std::string get_cgi_dir(void) const;
-		bool get_autoindex(void) const;
+		std::string 				get_root(void) const;
+		std::string 				get_ip(void) const;
+		std::vector<int> 			get_listen(void) const;
+		std::vector<std::string> 	get_name(void) const;
+		std::map<int, std::string> 	get_error_pages(void) const;
+		std::string 				get_body_size(void) const;
+		std::string 				get_index(void) const;
+		std::string 				get_cgi_dir(void) const;
+		bool 						get_autoindex(void) const;
 		std::map<std::string, std::string> get_cgi_ext(void) const;
-		std::vector<Location> get_location(void) const;
+		std::vector<Location> 		get_location(void) const;
 
 
 
@@ -47,6 +48,7 @@ class Server
 		std::string							_cgi_dir; //chemin du dossier contenant les executables CGI
 		std::map<std::string, std::string>	_cgi_ext; // CGI binary that will be executed for the given extension.
 		bool								_autoindex; // Si une requête est faite sur un dossier, l'autoindex liste les fichiers présents dans le dossier
+		std::string 						_index;
 		// std::string 						_index; //defines files that will be used as an index.
 		// bool								_auth_basic; // Change le nom de la popup d'authentification pour les ressources protégées par un mot de passe
 		// std::string						_auth_basic_user_file; // Définit le fichier contenant les logins et mot de passes pour accéder à la ressourc

@@ -46,3 +46,12 @@ bool	ft_in_charset(char const c, const std::string &charset)
 	}
 	return false;
 }
+
+
+std::string	ft_to_string(int i)
+{
+	std::stringstream ss;
+	ss << i;
+	std::string n = ss.str();
+	return n;
+}

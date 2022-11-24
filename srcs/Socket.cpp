@@ -194,22 +194,20 @@ long Socket::sendResponse(long socket)
 	try
 	{
 		Request request = Request(_receivedMessage);
-		std::cout << request;
+		std::cout << BLUE << request << RESET;
 		std::ostringstream ss;
 		ss << "------ Received Request from client ------\n\n";
 		log(ss.str());
 
-		unsigned long bytesSent;
-		Response response(request);
+		Response response(request, getServer());
 		response.call_method();
-		std::cout << response.get_header() << std::endl;
-		// std::string htmlFile = "<!DOCTYPE html><html lang=\"en\"><body><h1> HOME </h1><p> Hello from your Socket :) </p></body></html>";
+		std::cout << GREEN << response.get_header() << RESET << std::endl;
 		std::ostringstream sts;
-		sts << response.get_header() << "\n\n"
+		sts << response.get_header() << response.get_response().size() << "\n\n"
 		<< response.get_response();
-		// sts << "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: " << htmlFile.size() << "\n\n"
-		// << htmlFile;
-		bytesSent = send(socket, sts.str().c_str(), sts.str().size(), 0);
+
+		unsigned long bytesSent;
+		bytesSent = send(socket, sts.str().c_str(), sts.str().length(), 0);
 
 		if (bytesSent == sts.str().size())
 		{

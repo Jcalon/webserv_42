@@ -18,7 +18,7 @@
 class Response
 {
 	public:
-		Response(Request const &request);
+		Response(Request const &request, Server const &server);
 		~Response();
 
 		int allow_method(Request const &request);
@@ -28,12 +28,19 @@ class Response
 		std::string get_header(void) const;
 		std::string get_response(void) const;
 		std::string		set_date(void);
+		void			set_header(void);
+
+		class FileNotOpen : public std::exception
+		{
+			public:
+				virtual const char *what(void) const throw();
+		};
 
 	private:
 		std::map<std::string, std::string> _status_code;
 		std::string _http;
 		int _code;
-		std::string	_content_length;
+		int	_content_length;
 		std::string	_content_location;
 		std::string	_content_type;
 		std::string	_date;

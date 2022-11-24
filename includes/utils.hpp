@@ -70,9 +70,9 @@
 #define STAR "\033[93m > \033[0m"
 #define WHITESPACES " \t;"
 
-std::vector<std::string> ft_cpp_split(const std::string &str, const std::string &charset);
-bool	ft_in_charset(char const c, const std::string &charset);
-
+std::vector<std::string> 	ft_cpp_split(const std::string &str, const std::string &charset);
+bool						ft_in_charset(char const c, const std::string &charset);
+std::string					ft_to_string(int i);
 
 
 #endif
