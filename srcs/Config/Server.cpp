@@ -26,6 +26,7 @@ Server::~Server(void) {}
 std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>::iterator start, std::vector<std::string> file)
 {
 	start++;
+	std::string verif = *start;
 	for (;start != file.end(); start++)
 	{
 		std::vector<std::string> line;
@@ -48,6 +49,11 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 		}
 		else if (line[0] == "server_name")
 			this->_name.push_back(line[1]);
+		else if (line[0] == "allow_method")
+		{
+			for (size_t i = 0; i < line.size(); i++)
+				this->_allow_method.push_back(line[i]);
+		}
 		else if (line[0] == "max_client_body_size")
 			this->_max_client_body_size = line[1];
 		else if (line[0] == "root")
@@ -71,10 +77,10 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 			start = location.parse_location(start, file);
 			this->_location.push_back(location);
 			std::string verif = *start;
-			if (verif.find("}") < 0)
+			if (verif.find("}") < 0 )
 			{
 				std::cout << "ERROR : location doit se fermer avec }" << std::endl;
-				break;
+				break ;
 			}
 		}
 		else if (line[0] == "autoindex")
@@ -96,6 +102,7 @@ std::string Server::get_cgi_dir(void) const { return this->_cgi_dir;}
 std::map<std::string, std::string> Server::get_cgi_ext(void) const { return this->_cgi_ext; }
 bool Server::get_autoindex(void) const { return this->_autoindex; }
 std::vector<Location> Server::get_location(void) const { return this->_location; }
+std::vector<std::string> Server::get_allow_method(void) const { return this->_allow_method; }
 
 
 
@@ -117,6 +124,14 @@ std::ostream	&operator<<(std::ostream &o, Server const &Server) {
 		std::vector<std::string> name = Server.get_name();
 		for (size_t i = 0; i < name.size(); i++)
 			o << name[i] << " | ";
+		o << "]" << std::endl;
+}
+		if (Server.get_allow_method().size() > 1)
+	{
+		o << "     allow method = [";
+		std::vector<std::string> method = Server.get_allow_method();
+		for (size_t i = 1; i < method.size(); i++)
+			o << method[i] << " | ";
 		o << "]" << std::endl;
 	}
 	if (Server.get_root().size())

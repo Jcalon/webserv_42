@@ -55,7 +55,7 @@ size_t						extractContentLength(std::string const & request)
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-Socket::Socket(Server serv) : _server(serv)
+Socket::Socket(Server serv) : _server(serv), _socket(-1), _new_socket(-1)
 {
 }
 
@@ -71,8 +71,10 @@ Socket::~Socket() // remplacer les closes
 
 void	Socket::clean(void)
 {
-	close(this->_socket);
-    close(this->_new_socket);
+	if (this->_socket > -1)
+		close(this->_socket);
+	if (this->_new_socket > -1)
+    	close(this->_new_socket);
 }
 /*
 ** --------------------------------- METHODS ----------------------------------
@@ -109,6 +111,7 @@ int Socket::startSocket()
 	_socketAddress.sin_family = AF_INET;
 	_socketAddress.sin_port = htons(_server.get_listen()[0]); // recup le premier port
 	_socketAddress.sin_addr.s_addr = inet_addr((_server.get_ip().c_str()));
+	_socketAddress_len = sizeof(_socketAddress);
 	rc = bind(_socket, (struct sockaddr *)&_socketAddress, sizeof(_socketAddress));
 	if (rc < 0)
 	{
@@ -155,32 +158,33 @@ long Socket::receiveMessage(long socket)
 	_receivedMessage = std::string(buffer);
 
 	ret = 0;
-	size_t i = _receivedMessage.find("\r\n\r\n");
-	if (i != std::string::npos)
-	{
-		if (_receivedMessage.find("Transfer-Encoding: chunked") != std::string::npos)	// Si on a Transfer-Encoding: chunked, y a une prio. Si on recoit la fin du chunked message, on arrete de receive peinard.
-		{
-			if (receivedLastChunk(_receivedMessage))
-				ret = 0;
-			else
-				ret = 1;
-		}
-		else if (_receivedMessage.find("Content-Length: ") != std::string::npos)		//On check la Content-Length.
-		{
-			size_t len = extractContentLength(_receivedMessage);
-			if (_receivedMessage.size() >= i + 4 + len)
-			{
-				_receivedMessage = _receivedMessage.substr(0, i + 4 + len); // On drop tout le superflu apres la Content-Length
-				ret = 0;
-			}
-			else
-				ret = 1;
-		}
-		else
-			ret = 0; // Si on a fini et qu'il y a pas de body
-	}
-	else
-		ret = 1;
+	// size_t i = _receivedMessage.find("\r\n\r\n");
+	// if (i != std::string::npos)
+	// {
+	// 	std::cout << "RET " << ret << std::endl;
+	// 	if (_receivedMessage.find("Transfer-Encoding: chunked") != std::string::npos)	// Si on a Transfer-Encoding: chunked, y a une prio. Si on recoit la fin du chunked message, on arrete de receive peinard.
+	// 	{
+	// 		if (receivedLastChunk(_receivedMessage))
+	// 			ret = 0;
+	// 		else
+	// 			ret = 1;
+	// 	}
+	// 	else if (_receivedMessage.find("Content-Length: ") != std::string::npos)		//On check la Content-Length.
+	// 	{
+	// 		size_t len = extractContentLength(_receivedMessage);
+	// 		if (_receivedMessage.size() >= i + 4 + len)
+	// 		{
+	// 			_receivedMessage = _receivedMessage.substr(0, i + 4 + len); // On drop tout le superflu apres la Content-Length
+	// 			ret = 0;
+	// 		}
+	// 		else
+	// 			ret = 1;
+	// 	}
+	// 	else
+	// 		ret = 0; // Si on a fini et qu'il y a pas de body
+	// }
+	// else
+	// 	ret = 1;
 
 	if (ret == 0 && _receivedMessage.size() < 2000)
 		std::cout << std::endl << "------ Received request ------" << std::endl << "[" << std::endl << _receivedMessage << "]" << std::endl << std::endl;
@@ -194,10 +198,10 @@ long Socket::sendResponse(long socket)
 	try
 	{
 		Request request = Request(_receivedMessage);
-		std::cout << BLUE << request << RESET;
-		std::ostringstream ss;
-		ss << "------ Received Request from client ------\n\n";
-		log(ss.str());
+		// std::cout << BLUE << request << RESET;
+		// std::ostringstream ss;
+		// ss << "------ Received Request from client ------\n\n";
+		// log(ss.str());
 
 		Response response(request, getServer());
 		response.call_method();

@@ -22,7 +22,7 @@ std::vector<std::string>::iterator Location::parse_location(std::vector<std::str
 	line = ft_cpp_split(*start, WHITESPACES);
 	this->_name = line[1];
 	start++;
-	for (;start != file.end(); ++start)
+	for (;start != file.end() - 1; ++start)
 	{
 		line = ft_cpp_split(*start, WHITESPACES);
 		if (line[0] == "root")
@@ -48,7 +48,6 @@ std::vector<std::string>::iterator Location::parse_location(std::vector<std::str
 			break ;
 	}
 	return start;
-
 }
 
 std::string Location::get_name(void) const { return this->_name; }

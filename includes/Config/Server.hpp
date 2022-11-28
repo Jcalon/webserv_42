@@ -34,6 +34,7 @@ class Server
 		bool 						get_autoindex(void) const;
 		std::map<std::string, std::string> get_cgi_ext(void) const;
 		std::vector<Location> 		get_location(void) const;
+		std::vector<std::string> 	get_allow_method(void) const;
 
 
 
@@ -49,6 +50,7 @@ class Server
 		std::map<std::string, std::string>	_cgi_ext; // CGI binary that will be executed for the given extension.
 		bool								_autoindex; // Si une requête est faite sur un dossier, l'autoindex liste les fichiers présents dans le dossier
 		std::string 						_index;
+		std::vector<std::string>			_allow_method;
 		// std::string 						_index; //defines files that will be used as an index.
 		// bool								_auth_basic; // Change le nom de la popup d'authentification pour les ressources protégées par un mot de passe
 		// std::string						_auth_basic_user_file; // Définit le fichier contenant les logins et mot de passes pour accéder à la ressourc
