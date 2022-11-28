@@ -19,7 +19,7 @@ int main(int ac, char **av)
 	try
 	{
 		Config Config(av[ac - 1]);
-		//std::cout << Config << std::endl;
+		std::cout << Config << std::endl;
 		std::vector<Server> servs= Config.get_server();
 		Manager serv;
 		for (std::vector<Server>::iterator it = servs.begin(); it != servs.end(); it++)

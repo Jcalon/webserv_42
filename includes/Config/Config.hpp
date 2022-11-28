@@ -32,6 +32,8 @@ class Config
 			public:
 				virtual const char *what(void) const throw();
 		};
+
+		std::vector<Server>::iterator check_server(std::vector<std::string> listen);
 	private:
 		std::vector<Server>	_server;
 		std::string 	_workers;

@@ -25,7 +25,7 @@ class Server
 
 		std::string 				get_root(void) const;
 		std::string 				get_ip(void) const;
-		std::vector<int> 			get_listen(void) const;
+		std::vector<std::string> 			get_listen(void) const;
 		std::vector<std::string> 	get_name(void) const;
 		std::map<int, std::string> 	get_error_pages(void) const;
 		std::string 				get_body_size(void) const;
@@ -41,7 +41,7 @@ class Server
 	private:
 		std::string							_ip_address;
 		//creer un server par port // setup chaque server avec son port
-		std::vector<int>					_listen;
+		std::vector<std::string>			_listen;
 		std::vector<std::string>			_name;
 		std::string							_root;
 		std::map<int, std::string>			_error_pages; // Change les pages d'erreur des codes pour le fichier path
