@@ -149,19 +149,20 @@ long Socket::receiveMessage(long socket)
 	long ret;
 
 	ret = recv(socket, buffer, BUFFER_SIZE - 1, 0);
-	if (ret == 0 || ret == -1)
+	if (ret == -1)
 	{
 		close(socket);
-		exitWithError("Failed to read bytes from client socket connection");
+		std::cout << "Failed to read bytes from client socket connection" << std::endl;
 		return 1;
 	}
+	else if (ret == 0)
+		return 1;
 	_receivedMessage = std::string(buffer);
 
 	ret = 0;
 	// size_t i = _receivedMessage.find("\r\n\r\n");
 	// if (i != std::string::npos)
 	// {
-	// 	std::cout << "RET " << ret << std::endl;
 	// 	if (_receivedMessage.find("Transfer-Encoding: chunked") != std::string::npos)	// Si on a Transfer-Encoding: chunked, y a une prio. Si on recoit la fin du chunked message, on arrete de receive peinard.
 	// 	{
 	// 		if (receivedLastChunk(_receivedMessage))
@@ -198,16 +199,16 @@ long Socket::sendResponse(long socket)
 	try
 	{
 		Request request = Request(_receivedMessage);
-		// std::cout << BLUE << request << RESET;
-		// std::ostringstream ss;
-		// ss << "------ Received Request from client ------\n\n";
-		// log(ss.str());
+		std::cout << BLUE << request << RESET;
+		std::ostringstream ss;
+		ss << "------ Received Request from client ------\n\n";
+		log(ss.str());
 
 		Response response(request, getServer());
 		response.call_method();
 		std::cout << GREEN << response.get_header() << RESET << std::endl;
 		std::ostringstream sts;
-		sts << response.get_header() << response.get_response().size() << "\n\n"
+		sts << response.get_header() << "\r\n"
 		<< response.get_response();
 
 		unsigned long bytesSent;

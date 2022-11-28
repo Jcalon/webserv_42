@@ -175,7 +175,7 @@ void			Manager::handleIncompleteRequests(fd_set reading_set)
 		time_t comp = time(NULL);
 		if (_incompleteRequests.find(socket) != _incompleteRequests.end() && !FD_ISSET(socket, &reading_set) && difftime(comp, _incompleteRequests[socket]) > 1200)
 		{
-			//LOG("Client stopped transmitting data on an incomplete request ; bouncing the client with socket " ...
+			std::cout << "Client stopped transmitting data on an incomplete request ; bouncing the client with socket " << std::endl;
 			close(socket);
 			FD_CLR(socket, &_fd_set);
 			_read_fds.erase(socket);

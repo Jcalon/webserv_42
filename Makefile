@@ -1,17 +1,18 @@
 NAME	= WebServ
 
+SRCS_PATH = srcs/
 OBJS_PATH = objs/
 DEPS_PATH = deps/
 
 SRCS 	=	main.cpp \
-			srcs/Config/Config.cpp \
-			srcs/Config/Location.cpp \
-			srcs/Config/Server.cpp \
-			srcs/Request.cpp \
-			srcs/Response.cpp \
-			srcs/Socket.cpp \
-			srcs/Manager.cpp \
-			srcs/utils.cpp
+			Config/Config.cpp \
+			Config/Location.cpp \
+			Config/Server.cpp \
+			Request.cpp \
+			Response.cpp \
+			Socket.cpp \
+			Manager.cpp \
+			utils.cpp
 
 OBJS 		= ${SRCS:%.cpp=${OBJS_PATH}%.o}
 DEPS		= ${SRCS:%.cpp=${DEPS_PATH}%.d}
@@ -23,17 +24,17 @@ INCLUDES = -I includes -I includes/Config
 
 all: 	${NAME}
 
-${OBJS_PATH}%.o: %.cpp ${DEPS_PATH}%.d
+${OBJS_PATH}%.o: ${SRCS_PATH}%.cpp ${DEPS_PATH}%.d
 		@mkdir -p ${@D}
 		${CXX} ${CXXFLAGS} ${INCLUDES} -MMD -MF ${DEPS_PATH}$*.d -c $< -o $@
 
-${DEPS_PATH}%.d: %.cpp
+${DEPS_PATH}%.d: ${SRCS_PATH}%.cpp
 		@mkdir -p ${@D}
 
 ${NAME}: Makefile ${OBJS}
-		@echo -e "\n----Compiling ft_containers----\n"
+		@echo "\n----Compiling webserv----\n"
 		${CXX} ${CXXFLAGS} ${OBJS} ${INCLUDES} -o ${NAME}
-		@echo -e "\nft_containers Compiled!\n"
+		@echo "\nwebserv Compiled!\n"
 
 -include ${DEPS}
 
@@ -43,11 +44,9 @@ clean:
 
 fclean: clean
 		@rm -f ${NAME}
-		@echo -e "\nDeleting everything!\n"
+		@echo "\nDeleting everything!\n"
 
 re:		fclean
 		make all
-
-re_bonus: fclean bonus
 
 .PHONY: all clean fclean re re_bonus bonus

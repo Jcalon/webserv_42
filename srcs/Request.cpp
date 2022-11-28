@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 17:55:06 by jcalon            #+#    #+#             */
-/*   Updated: 2022/11/22 13:42:02 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/11/28 15:15:12 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,19 +31,12 @@ void throwError(const std::exception& ex)
 
 static bool isValidHTTPVersion(std::string http_version)
 {
-	if (http_version.length() != 8)
-		return (false);
-	if (http_version[0] == 'H'
-			&& http_version[1] == 'T' && http_version[2] == 'T'
-			&& http_version[3] == 'P' && http_version[4] == '/'
-			&& isdigit(http_version[5])
-			&& http_version[6] == '.'
-			&& isdigit(http_version[7]))
+	if (http_version == "HTTP/1.1")
 		return (true);
 	return (false);
 }
 
-Request::Request(const std::string & request): _request(request), _fields(), _infos()
+Request::Request(const std::string & request): _request(request), _fields(), _infos(), _body("")
 {
 	size_t start = 0;
 	size_t end = request.find("\n");
@@ -78,7 +71,7 @@ Request::Request(const std::string & request): _request(request), _fields(), _in
 			this->_fields[0].erase(0, this->_infos._target.length() + 1);
 		}
 		else
-			throw(throwMessage("Not valid headeeeer "));
+			throw(throwMessage("Not valid header "));
 
 		pos = this->_fields[0].find("\r");
 		if (pos != std::string::npos)
@@ -88,7 +81,18 @@ Request::Request(const std::string & request): _request(request), _fields(), _in
 				throw(throwMessage("Request line not well formated (http version) : " + this->_infos._http));
 		}
 		else
-			throw(throwMessage("Not valid headerrrrrrrrr "));
+			throw(throwMessage("Not valid header "));
+		std::vector<std::string>::iterator it = this->_fields.begin();
+		for (; it != this->_fields.end(); it++)
+		{
+			if (*it == "\r")
+			{
+				it++;
+				for (; it != this->_fields.end(); it++)
+					this->_body += *it;
+				break;
+			}
+		}
 	}
 	catch (const std::exception& e)
 	{
@@ -116,11 +120,18 @@ Request::request_info	Request::getRequest() const
 	return this->_infos;
 }
 
+std::string	Request::getBody() const
+{
+	return this->_body;
+}
+
 std::ostream &operator<<(std::ostream &out, const Request &request)
 {
 	out << "START LINE = ";
 	out << request.getRequest()._http << " | ";
 	out << request.getRequest()._method;
 	out << " | " << request.getRequest()._target << std::endl;
+	if (request.getBody() != "")
+		out << request.getBody() << std::endl;
 	return (out);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 17:48:13 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/23 14:00:05 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/11/28 16:36:50 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,12 +110,12 @@ void Response::run_post_method(void)
 void	Response::set_header(void)
 {
 	this->_header = this->_http + " " + ft_to_string(this->_code) + " OK";
-	this->_header += "\nContent-Length: " + ft_to_string(this->_content_length);
-	this->_header += "\nContent-Location: " + this->_content_location;
-	this->_header += "\nContent-Type: " + this->_content_type;
-	this->_header += "\nDate: " + this->_date;
-	this->_header += RED "\nServer: ??????" RESET;
-	this->_header += RED "\nTransfer-Encoding: ??????\n\r" RESET;
+	this->_header += "\r\nContent-Length: " + ft_to_string(this->_content_length);
+	this->_header += "\r\nContent-Location: " + this->_content_location;
+	this->_header += "\r\nContent-Type: " + this->_content_type;
+	this->_header += "\r\nDate: " + this->_date;
+	this->_header += RED "\nServer: webserv\r\n\r\n" RESET;
+	// this->_header += RED "\nTransfer-Encoding: ??????\n\r" RESET;
 }
 
 std::string	Response::set_date(void)
