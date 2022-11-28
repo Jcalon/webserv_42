@@ -55,7 +55,17 @@ void	Config::parse_config(std::vector<std::string> file)
 				return ;
 			}
 			it = server.parse_server(it, file);
-			this->_server.push_back(server);
+			std::vector<std::string> listen = server.get_listen();
+			std::vector<Server>::iterator it_check = check_server(listen);
+			if (it_check == _server.end())
+			{
+				this->_server.push_back(server);
+			}
+			else if ((it_check != _server.end()) && listen[listen.size() - 1] == "default")
+			{
+				this->_server.erase(it_check);
+				this->_server.push_back(server);
+			}
 			std::string verif = *it;
 			if (verif.find("}") < 0)
 			{
@@ -72,10 +82,32 @@ std::string			Config::get_workers(void) const { return this->_workers; }
 std::vector<Server>	Config::get_server(void) const { return this->_server; }
 std::string			Config::get_max_connections(void) const { return this->_max_connections; }
 
+std::vector<Server>::iterator Config::check_server(std::vector<std::string> listen)
+{
+	std::vector<Server>::iterator it = _server.begin();
+	size_t i = 0;
+	for (; it != _server.end(); it++)
+	{
+		std::vector<std::string> to_check = _server[i].get_listen();
+		for (size_t j = 0; j < to_check.size(); j++)
+		{
+			if (listen[j] == to_check[j])
+			{
+				return it;
+			}
+		}
+		i++;
+	}
+	return it;
+}
+
+
 const char *Config::FileNotOpen::what() const throw()
 {
 	return ("Error opening infile!");
 }
+
+
 
 
 std::ostream &operator<<(std::ostream &o, Config const &rhs)

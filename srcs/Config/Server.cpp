@@ -15,7 +15,7 @@
 Server::Server(void) {
 	this->_ip_address = "0.0.0.0";
 	this->_index = "index.html";
-	this->_listen.push_back(80);
+	this->_listen.push_back("80");
 	this->_autoindex = false;
 }
 
@@ -26,13 +26,18 @@ Server::~Server(void) {}
 std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>::iterator start, std::vector<std::string> file)
 {
 	start++;
-	std::string verif = *start;
 	for (;start != file.end(); start++)
 	{
 		std::vector<std::string> line;
 		line = ft_cpp_split(*start, WHITESPACES);
 		if (line[0] == "listen")
 		{
+			//si server avec meme listen et defaut
+				//ecrase le server
+			// else if meme listen sans defaut
+				//ne rien faire et passer au server d'apres
+			//else
+				//parse le server
 			//supprime valeur par default
 			this->_listen.pop_back();
 			for (size_t i = 1; i < line.size(); i++)
@@ -41,10 +46,10 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 				{
 					std::vector<std::string> tmp = ft_cpp_split(line[i], ":");
 					this->_ip_address = tmp[0];
-					this->_listen.push_back(std::atoi(tmp[1].c_str()));
+					this->_listen.push_back(tmp[1]);
 				}
 				else
-					this->_listen.push_back(std::atoi(line[i].c_str()));
+					this->_listen.push_back(line[i]);
 			}
 		}
 		else if (line[0] == "server_name")
@@ -65,7 +70,7 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 		else if (line[0] == "cgi_dir")
 			this->_cgi_dir = line[1];
 		else if (line[0] == "index")
-			this->_cgi_dir = line[1];
+			this->_index = line[1];
 		else if (line[0] == "location")
 		{
 			Location location;
@@ -91,7 +96,7 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 	return start;
 }
 
-std::vector<int> Server::get_listen(void) const { return this->_listen; }
+std::vector<std::string> Server::get_listen(void) const { return this->_listen; }
 std::string Server::get_ip(void) const { return this->_ip_address; }
 std::string Server::get_index(void) const { return this->_index; }
 std::vector<std::string> Server::get_name(void) const { return this->_name; }
@@ -111,7 +116,7 @@ std::ostream	&operator<<(std::ostream &o, Server const &Server) {
 	if (Server.get_listen().size())
 	{
 		o << "    listen = [";
-		std::vector<int> listen = Server.get_listen();
+		std::vector<std::string> listen = Server.get_listen();
 		for (size_t i = 0; i < listen.size(); i++)
 			o << listen[i] << " | ";
 		o << "]" << std::endl;
@@ -146,6 +151,8 @@ std::ostream	&operator<<(std::ostream &o, Server const &Server) {
 		o << "    cgi ext = [" << Server.get_cgi_ext().at(0) << "]" << std::endl;
 	if (Server.get_autoindex())
 		o << "	autoindex" << Server.get_autoindex() << std::endl;
+	if (Server.get_index().size())
+		o << "    index = [" << Server.get_index() << "]" << std::endl;
 	if (Server.get_location().size())
 	{
 		std::vector<Location> loc = Server.get_location();
