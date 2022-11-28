@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Request.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 15:52:28 by jcalon            #+#    #+#             */
-/*   Updated: 2022/11/22 13:43:02 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/11/28 14:54:24 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ class Request
 		std::string					_request;
 		std::vector<std::string>	_fields;
 		struct request_info			_infos;
+		std::string					_body;
 
 	public:
 		Request(const std::string &request);
@@ -36,6 +37,7 @@ class Request
 		std::string					getRawRequest() const;
 		std::vector<std::string> 	getFields() const;
 		struct request_info			getRequest() const;
+		std::string					getBody() const;
 
 };
 
