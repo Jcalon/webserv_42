@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/utils.hpp"
+#include "../includes/utils.hpp"
 
 Location::Location(void)
 {

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/utils.hpp"
+#include "../includes/utils.hpp"
 
 Config::Config(void) {}
 
