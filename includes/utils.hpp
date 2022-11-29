@@ -40,16 +40,14 @@
 #include <sys/time.h>
 #include <cstring>
 
-#include "./Config/Location.hpp"
-#include "./Config/Server.hpp"
-#include "./Config/Config.hpp"
+#include "Location.hpp"
+#include "Server.hpp"
+#include "Config.hpp"
 #include "Request.hpp"
 #include "Response.hpp"
-#include "Server.hpp"
 #include "CGI.hpp"
 
 #include "Socket.hpp"
-#include "Request.hpp"
 #include "Manager.hpp"
 
 #define BOLD "\033[1m"

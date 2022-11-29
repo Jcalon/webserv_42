@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/utils.hpp"
+#include "../includes/utils.hpp"
 
 Server::Server(void) {
 	this->_ip_address = "0.0.0.0";
@@ -115,18 +115,18 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 	return start;
 }
 
-std::vector<std::string> Server::get_listen(void) const { return this->_listen; }
-std::string Server::get_ip(void) const { return this->_ip_address; }
-std::string Server::get_index(void) const { return this->_index; }
-std::vector<std::string> Server::get_name(void) const { return this->_name; }
-std::string Server::get_root(void) const { return this->_root; }
-std::map<int, std::string> Server::get_error_pages(void) const { return this->_error_pages; }
-std::string Server::get_body_size(void) const { return this->_max_client_body_size;}
-std::string Server::get_cgi_dir(void) const { return this->_cgi_dir;}
-std::map<std::string, std::string> Server::get_cgi_ext(void) const { return this->_cgi_ext; }
-bool Server::get_autoindex(void) const { return this->_autoindex; }
-std::vector<Location> Server::get_location(void) const { return this->_location; }
-std::vector<std::string> Server::get_allow_method(void) const { return this->_allow_method; }
+std::vector<std::string> 			Server::get_listen(void) const { return this->_listen; }
+std::string 						Server::get_ip(void) const { return this->_ip_address; }
+std::string 						Server::get_index(void) const { return this->_index; }
+std::vector<std::string> 			Server::get_name(void) const { return this->_name; }
+std::string 						Server::get_root(void) const { return this->_root; }
+std::map<int, std::string> 			Server::get_error_pages(void) const { return this->_error_pages; }
+std::string 						Server::get_body_size(void) const { return this->_max_client_body_size;}
+std::string 						Server::get_cgi_dir(void) const { return this->_cgi_dir;}
+std::map<std::string, std::string> 	Server::get_cgi_ext(void) const { return this->_cgi_ext; }
+bool 								Server::get_autoindex(void) const { return this->_autoindex; }
+std::vector<Location> 				Server::get_location(void) const { return this->_location; }
+std::vector<std::string> 			Server::get_allow_method(void) const { return this->_allow_method; }
 
 
 std::ostream	&operator<<(std::ostream &o, Server const &Server) {

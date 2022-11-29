@@ -13,7 +13,7 @@
 #ifndef CONFIG_HPP
 # define CONFIG_HPP
 
-#include "../utils.hpp"
+#include "utils.hpp"
 
 class Config
 {
@@ -40,9 +40,6 @@ class Config
 		std::string		_max_connections;
 
 };
-
-std::vector<std::string> ft_cpp_split(const std::string &str, const std::string &charset);
-bool	ft_in_charset(char const c, const std::string &charset);
 
 std::ostream &operator<<(std::ostream &o, Config const &rhs);
 

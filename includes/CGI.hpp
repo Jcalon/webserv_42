@@ -13,7 +13,7 @@ class CGI
 
 	private:
 		std::map<std::string, std::string>	_env;
-		char **mapEnvToTab(void);
+		char 								**mapEnvToTab(void);
 
 };
 #endif
