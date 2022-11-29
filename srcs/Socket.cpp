@@ -160,7 +160,6 @@ long Socket::receiveMessage(long socket)
 	_receivedMessage = std::string(buffer);
 
 	ret = 0;
-	int i = 0;
 	// size_t i = _receivedMessage.find("\r\n\r\n");
 	// if (i != std::string::npos)
 	// {
