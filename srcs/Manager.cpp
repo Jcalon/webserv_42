@@ -115,7 +115,7 @@ void			Manager::run(void)
 						if (incompleteIt != _incompleteRequests.end())
 							_incompleteRequests.erase(incompleteIt);
 					}
-					else if (ret == 1)
+					else if (ret == -1)
 					{
 						FD_CLR(socket, &_fd_set);
 						FD_CLR(socket, &reading_set);

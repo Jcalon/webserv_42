@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 17:55:06 by jcalon            #+#    #+#             */
-/*   Updated: 2022/11/29 14:29:02 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/11/29 16:46:45 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ Request::Request(const std::string & request): _request(request), _fields(), _in
 		if (pos != std::string::npos)
 		{
 			this->_infos._method = this->_fields[0].substr(0, this->_fields[0].find(' '));
-			if (this->_infos._method != "GET" && this->_infos._method != "POST" && this->_infos._method != "DELETE")
+			if (this->_infos._method != "GET" && this->_infos._method != "POST" && this->_infos._method != "HEAD" && this->_infos._method != "DELETE")
 				throw(throwMessage("Request line not well formated (method)."));
 			this->_fields[0].erase(0, this->_infos._method.length() + 1);
 		}

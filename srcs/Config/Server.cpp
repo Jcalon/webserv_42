@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 12:22:34 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/23 11:49:01 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/11/29 16:48:26 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ void Server::init_allow_methods(void)
 	this->_allow_method.push_back("GET");
 	this->_allow_method.push_back("POST");
 	this->_allow_method.push_back("DELETE");
+	this->_allow_method.push_back("HEAD");
 }
 
 //surement appeler des fonctions pour chaque item . fonctions qui checkeront les cas d'erreur et syntax pour cahcun

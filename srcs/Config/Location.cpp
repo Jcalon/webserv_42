@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Location.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 12:22:21 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/22 15:55:54 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/11/29 16:48:30 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ void Location::init_allow_methods(void)
 	this->_allow_method.push_back("GET");
 	this->_allow_method.push_back("POST");
 	this->_allow_method.push_back("DELETE");
+	this->_allow_method.push_back("HEAD");
 }
 
 std::string Location::get_name(void) const { return this->_name; }

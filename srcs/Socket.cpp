@@ -153,39 +153,39 @@ long Socket::receiveMessage(long socket)
 	{
 		close(socket);
 		std::cout << "Failed to read bytes from client socket connection" << std::endl;
-		return 1;
+		return -1;
 	}
 	else if (ret == 0)
-		return 1;
-	_receivedMessage = std::string(buffer);
+		return -1;
+	_receivedMessage += std::string(buffer);
 
 	ret = 0;
-	// size_t i = _receivedMessage.find("\r\n\r\n");
-	// if (i != std::string::npos)
-	// {
-	// 	if (_receivedMessage.find("Transfer-Encoding: chunked") != std::string::npos)	// Si on a Transfer-Encoding: chunked, y a une prio. Si on recoit la fin du chunked message, on arrete de receive peinard.
-	// 	{
-	// 		if (receivedLastChunk(_receivedMessage))
-	// 			ret = 0;
-	// 		else
-	// 			ret = 1;
-	// 	}
-	// 	else if (_receivedMessage.find("Content-Length: ") != std::string::npos)		//On check la Content-Length.
-	// 	{
-	// 		size_t len = extractContentLength(_receivedMessage);
-	// 		if (_receivedMessage.size() >= i + 4 + len)
-	// 		{
-	// 			_receivedMessage = _receivedMessage.substr(0, i + 4 + len); // On drop tout le superflu apres la Content-Length
-	// 			ret = 0;
-	// 		}
-	// 		else
-	// 			ret = 1;
-	// 	}
-	// 	else
-	// 		ret = 0; // Si on a fini et qu'il y a pas de body
-	// }
-	// else
-	// 	ret = 1;
+	size_t i = _receivedMessage.find("\r\n\r\n");
+	if (i != std::string::npos)
+	{
+		if (_receivedMessage.find("Transfer-Encoding: chunked") != std::string::npos)	// Si on a Transfer-Encoding: chunked, y a une prio. Si on recoit la fin du chunked message, on arrete de receive peinard.
+		{
+			if (receivedLastChunk(_receivedMessage))
+				ret = 0;
+			else
+				ret = 1;
+		}
+		else if (_receivedMessage.find("Content-Length: ") != std::string::npos)		//On check la Content-Length.
+		{
+			size_t len = extractContentLength(_receivedMessage);
+			if (_receivedMessage.size() >= i + 4 + len)
+			{
+				_receivedMessage = _receivedMessage.substr(0, i + 4 + len); // On drop tout le superflu apres la Content-Length
+				ret = 0;
+			}
+			else
+				ret = 1;
+		}
+		else
+			ret = 0; // Si on a fini et qu'il y a pas de body
+	}
+	else
+		ret = 1;
 
 	if (ret == 0 && _receivedMessage.size() < 2000)
 		std::cout << std::endl << "------ Received request ------" << std::endl << "[" << std::endl << _receivedMessage << "]" << std::endl << std::endl;
@@ -208,12 +208,16 @@ long Socket::sendResponse(long socket)
 		Response response(request, getServer());
 		response.call_method();
 		std::ostringstream sts;
-		sts << response.get_header() << "\r\n"
-		<< response.get_response();
-
-
-		std::cout << GREEN << response.get_header() << "\r\n"
-		<< response.get_response() << RESET << std::endl;
+		if (request.getRequest()._method == "HEAD")
+		{
+			sts << response.get_header() << "\r\n";
+			std::cout << GREEN << response.get_header() << "\r\n" << response.get_response() << RESET << std::endl;
+		}
+		else
+		{
+			sts << response.get_header() << "\r\n" << response.get_response();
+			std::cout << GREEN << response.get_header() << "\r\n" << RESET << std::endl;
+		}
 
 		unsigned long bytesSent;
 		bytesSent = send(socket, sts.str().c_str(), sts.str().length(), 0);
@@ -231,6 +235,7 @@ long Socket::sendResponse(long socket)
 	{
 		std::cerr << &e << std::endl;
 	}
+	_receivedMessage = "";
 	return 0;
 	// Response				response; a la place de ce qu'il y a dans cette fct
 

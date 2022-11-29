@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 17:48:22 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/29 16:42:50 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/11/29 16:56:26 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ class Response
 		void 						call_method();
 		void 						run_get_method(void);
 		void 						run_post_method(void);
+		void 						run_head_method(void);
 
 		std::string 				get_header(void) const;
 		std::string 				get_response(void) const;

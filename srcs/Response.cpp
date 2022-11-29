@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 17:48:13 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/29 16:44:41 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/11/29 16:56:23 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,8 @@ void Response::call_method()
 		run_get_method();
 	else if (this->_method == "POST")
 		run_post_method();
+	else if (this->_method == "HEAD")
+		run_head_method();
 	// else if (method == "DELETE")
 	// 	run_delete_method();
 }
@@ -119,6 +121,24 @@ void Response::run_get_method(void)
 
 	set_header();
 	//gerer le autoindex ?
+}
+
+void Response::run_head_method(void)
+{
+	std::ifstream		ifs(_content_location.c_str());
+	std::string	line;
+
+	if (!ifs.is_open())
+		throw Config::FileNotOpen();
+	while (std::getline(ifs, line, char(ifs.eof())))
+		this->_response.append(line);
+	ifs.close();
+
+	this->_content_length = _response.size();
+	this->_content_type = "text/html"; // a modifier avec une fonction en fonction du ype
+	this->_date = set_date();
+
+	set_header();
 }
 
 //ouvre fichier de l'url (content location ? )
