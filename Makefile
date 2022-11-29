@@ -12,7 +12,6 @@ SRCS 	=	main.cpp \
 			Response.cpp \
 			Socket.cpp \
 			Manager.cpp \
-			CGI.cpp \
 			utils.cpp
 
 OBJS 		= ${SRCS:%.cpp=${OBJS_PATH}%.o}

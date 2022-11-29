@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 17:48:13 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/28 16:36:50 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/11/29 16:44:41 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,17 +24,17 @@ Response::Response(Request const &request, Server const &server)
 		this->_content_location = request.getRequest()._target;
 	this->_content_type = "";
 	this->_header = "";
-	parse_body(request.getFields());
+	parse_body(request.getBody());
 }
 
 Response::~Response() {
 }
 
-void Response::parse_body(std::vector<std::string> fields)
+void Response::parse_body(std::string fields)
 {
-	if (!fields.back().empty() && _code_status.first == 200)
+	if (fields != "" && _code_status.first == 200)
 	{
-		std::vector<std::string> tmp = ft_cpp_split(fields.back(), "&");
+		std::vector<std::string> tmp = ft_cpp_split(fields, "&");
 		for (std::vector<std::string>::iterator it = tmp.begin(); it != tmp.end(); it++)
 		{
 			std::vector<std::string> map = ft_cpp_split(*it, "=");
@@ -43,7 +43,6 @@ void Response::parse_body(std::vector<std::string> fields)
 		// for (std::map<std::string, std::string>::iterator it = _body.begin(); it != _body.end(); it++)
 		// 	std::cout << YELLOW << "map[" << it->first << "] = " << it->second << std::endl;
 	}
-
 }
 
 

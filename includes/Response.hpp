@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 17:48:22 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/23 13:22:55 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/11/29 16:42:50 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ class Response
 		std::string 				get_response(void) const;
 		std::string					set_date(void);
 		void						set_header(void);
-		void 						parse_body(std::vector<std::string> fields);
+		void 						parse_body(std::string fields);
 		std::pair<int, std::string> find_pair(int code);
 
 		class FileNotOpen : public std::exception
