@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 15:52:28 by jcalon            #+#    #+#             */
-/*   Updated: 2022/11/28 14:54:24 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/11/29 14:20:44 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ class Request
 		{
 			std::string _method;
 			std::string _target;
+			std::string _query;
 			std::string _http;
 		};
 

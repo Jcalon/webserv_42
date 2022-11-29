@@ -160,32 +160,32 @@ long Socket::receiveMessage(long socket)
 	_receivedMessage = std::string(buffer);
 
 	ret = 0;
-	// size_t i = _receivedMessage.find("\r\n\r\n");
-	// if (i != std::string::npos)
-	// {
-	// 	if (_receivedMessage.find("Transfer-Encoding: chunked") != std::string::npos)	// Si on a Transfer-Encoding: chunked, y a une prio. Si on recoit la fin du chunked message, on arrete de receive peinard.
-	// 	{
-	// 		if (receivedLastChunk(_receivedMessage))
-	// 			ret = 0;
-	// 		else
-	// 			ret = 1;
-	// 	}
-	// 	else if (_receivedMessage.find("Content-Length: ") != std::string::npos)		//On check la Content-Length.
-	// 	{
-	// 		size_t len = extractContentLength(_receivedMessage);
-	// 		if (_receivedMessage.size() >= i + 4 + len)
-	// 		{
-	// 			_receivedMessage = _receivedMessage.substr(0, i + 4 + len); // On drop tout le superflu apres la Content-Length
-	// 			ret = 0;
-	// 		}
-	// 		else
-	// 			ret = 1;
-	// 	}
-	// 	else
-	// 		ret = 0; // Si on a fini et qu'il y a pas de body
-	// }
-	// else
-	// 	ret = 1;
+	size_t i = _receivedMessage.find("\r\n\r\n");
+	if (i != std::string::npos)
+	{
+		if (_receivedMessage.find("Transfer-Encoding: chunked") != std::string::npos)	// Si on a Transfer-Encoding: chunked, y a une prio. Si on recoit la fin du chunked message, on arrete de receive peinard.
+		{
+			if (receivedLastChunk(_receivedMessage))
+				ret = 0;
+			else
+				ret = 1;
+		}
+		else if (_receivedMessage.find("Content-Length: ") != std::string::npos)		//On check la Content-Length.
+		{
+			size_t len = extractContentLength(_receivedMessage);
+			if (_receivedMessage.size() >= i + 4 + len)
+			{
+				_receivedMessage = _receivedMessage.substr(0, i + 4 + len); // On drop tout le superflu apres la Content-Length
+				ret = 0;
+			}
+			else
+				ret = 1;
+		}
+		else
+			ret = 0; // Si on a fini et qu'il y a pas de body
+	}
+	else
+		ret = 1;
 
 	if (ret == 0 && _receivedMessage.size() < 2000)
 		std::cout << std::endl << "------ Received request ------" << std::endl << "[" << std::endl << _receivedMessage << "]" << std::endl << std::endl;
