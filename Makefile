@@ -1,4 +1,4 @@
-NAME	= WebServ
+NAME	= webserv
 
 SRCS_PATH = srcs/
 OBJS_PATH = objs/

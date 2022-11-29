@@ -12,7 +12,7 @@
 
 #include "../includes/utils.hpp"
 
-Location::Location(void)
+Location::Location(void): _root(""), _index("index.html")
 {
 	this->_autoindex = false;
 	init_allow_methods();

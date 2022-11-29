@@ -21,7 +21,7 @@ Response::Response(Request const &request, Server const &server)
 	if (request.getRequest()._target == "/" || request.getRequest()._target == "/favicon.ico")
 		this->_content_location = server.get_index();
 	else
-		this->_content_location = request.getRequest()._target;
+		this->_content_location = server.get_index_path(request.getRequest()._target);
 	this->_content_type = "";
 	this->_header = "";
 	parse_body(request.getBody());

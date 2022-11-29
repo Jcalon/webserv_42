@@ -33,6 +33,7 @@ class Server
 		std::map<int, std::string> 			get_error_pages(void) const;
 		std::string 						get_body_size(void) const;
 		std::string 						get_index(void) const;
+		std::string 						get_index_path(std::string location) const;
 		std::string 						get_cgi_dir(void) const;
 		bool 								get_autoindex(void) const;
 		std::map<std::string, std::string> 	get_cgi_ext(void) const;

@@ -129,6 +129,22 @@ bool 								Server::get_autoindex(void) const { return this->_autoindex; }
 std::vector<Location> 				Server::get_location(void) const { return this->_location; }
 std::vector<std::string> 			Server::get_allow_method(void) const { return this->_allow_method; }
 
+std::string 						Server::get_index_path(std::string location) const
+{
+	std::vector<Location> tmp = get_location();
+	for (std::vector<Location>::iterator it = tmp.begin(); it != tmp.end(); it++)
+	{
+		if (it->get_name() == location)
+		{
+			if (it->get_root() != "")
+				return it->get_root() + it->get_index();
+			else
+				return it->get_index();
+		}
+	}
+	return _index;
+}
+
 
 std::ostream	&operator<<(std::ostream &o, Server const &Server) {
 	o << BLUE << BOLD << " Server :" << RESET << std::endl;
