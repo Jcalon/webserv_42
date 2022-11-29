@@ -21,18 +21,17 @@ class Response
 		Response(Request const &request, Server const &server);
 		~Response();
 
-		std::pair<int, std::string> allow_method(Request const &request);
-		void call_method();
-		void run_get_method(void);
-		void run_post_method(void);
+		std::pair<int, std::string>	allow_method(Request const &request, Server const &server);
+		void 						call_method();
+		void 						run_get_method(void);
+		void 						run_post_method(void);
 
-		std::string get_header(void) const;
-		std::string get_response(void) const;
-		std::string		set_date(void);
-		void			set_header(void);
-		void 	parse_body(std::vector<std::string> fields);
+		std::string 				get_header(void) const;
+		std::string 				get_response(void) const;
+		std::string					set_date(void);
+		void						set_header(void);
+		void 						parse_body(std::vector<std::string> fields);
 		std::pair<int, std::string> find_pair(int code);
-
 
 		class FileNotOpen : public std::exception
 		{
@@ -41,18 +40,18 @@ class Response
 		};
 
 	private:
-		std::map<std::string, std::string> _status_code;
-		std::string _http;
+		// std::map<std::string, std::string> 	_status_code;
 		// int _code;
-		std::pair<int, std::string> _code_status;
-		int	_content_length;
-		std::string	_content_location;
-		std::string	_content_type;
-		std::string	_date;
-		std::string _response;
-		std::string _header;
-		std::string _method;
-		std::map<std::string, std::string> _body;
+		std::string 						_http;
+		std::pair<int, std::string> 		_code_status;
+		int									_content_length;
+		std::string							_content_location;
+		std::string							_content_type;
+		std::string							_date;
+		std::string 						_response;
+		std::string							_header;
+		std::string							_method;
+		std::map<std::string, std::string> 	_body;
 };
 
 #endif
