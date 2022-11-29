@@ -12,7 +12,11 @@
 
 #include "../../includes/utils.hpp"
 
-Location::Location(void) {}
+Location::Location(void)
+{
+	this->_autoindex = false;
+	init_allow_methods();
+}
 
 Location::~Location(void) {}
 
@@ -31,6 +35,7 @@ std::vector<std::string>::iterator Location::parse_location(std::vector<std::str
 			this->_upload = line[1];
 		else if (line[0] == "allow_method")
 		{
+			this->_allow_method.clear();
 			for (size_t i = 0; i < line.size(); i++)
 				this->_allow_method.push_back(line[i]);
 		}
@@ -48,6 +53,13 @@ std::vector<std::string>::iterator Location::parse_location(std::vector<std::str
 			break ;
 	}
 	return start;
+}
+
+void Location::init_allow_methods(void)
+{
+	this->_allow_method.push_back("GET");
+	this->_allow_method.push_back("POST");
+	this->_allow_method.push_back("DELETE");
 }
 
 std::string Location::get_name(void) const { return this->_name; }

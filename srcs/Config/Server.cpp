@@ -17,10 +17,29 @@ Server::Server(void) {
 	this->_index = "index.html";
 	this->_listen.push_back("80");
 	this->_autoindex = false;
+	init_error_pages();
+	init_allow_methods();
 }
 
 Server::~Server(void) {}
 
+void Server::init_error_pages(void)
+{
+	this->_error_pages.insert(std::make_pair(400, "www/error_pages/400.html"));
+	this->_error_pages.insert(std::make_pair(403, "www/error_pages/403.html"));
+	this->_error_pages.insert(std::make_pair(404, "www/error_pages/404.html"));
+	this->_error_pages.insert(std::make_pair(405, "www/error_pages/405.html"));
+	this->_error_pages.insert(std::make_pair(413, "www/error_pages/413.html"));
+	this->_error_pages.insert(std::make_pair(500, "www/error_pages/500.html"));
+	this->_error_pages.insert(std::make_pair(502, "www/error_pages/502.html"));
+}
+
+void Server::init_allow_methods(void)
+{
+	this->_allow_method.push_back("GET");
+	this->_allow_method.push_back("POST");
+	this->_allow_method.push_back("DELETE");
+}
 
 //surement appeler des fonctions pour chaque item . fonctions qui checkeront les cas d'erreur et syntax pour cahcun
 std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>::iterator start, std::vector<std::string> file)
@@ -32,13 +51,6 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 		line = ft_cpp_split(*start, WHITESPACES);
 		if (line[0] == "listen")
 		{
-			//si server avec meme listen et defaut
-				//ecrase le server
-			// else if meme listen sans defaut
-				//ne rien faire et passer au server d'apres
-			//else
-				//parse le server
-			//supprime valeur par default
 			this->_listen.pop_back();
 			for (size_t i = 1; i < line.size(); i++)
 			{
@@ -56,6 +68,7 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 			this->_name.push_back(line[1]);
 		else if (line[0] == "allow_method")
 		{
+			this->_allow_method.clear();
 			for (size_t i = 0; i < line.size(); i++)
 				this->_allow_method.push_back(line[i]);
 		}
@@ -64,7 +77,13 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 		else if (line[0] == "root")
 			this->_root = line[1];
 		else if (line[0] == "error_page" && line.size() > 2)
-			this->_error_pages.insert(std::make_pair(std::atoi(line[1].c_str()), line[2]));
+		{
+			std::map<int, std::string>::iterator it = this->_error_pages.find(std::atoi(line[1].c_str()));
+			if (it != _error_pages.end())
+				it->second = line[2];
+			else
+				this->_error_pages.insert(std::make_pair(std::atoi(line[1].c_str()), line[2]));
+		}
 		else if (line[0] == "cgi_ext" && line.size() > 2)
 			this->_cgi_ext.insert(std::make_pair(line[1], line[2]));
 		else if (line[0] == "cgi_dir")
@@ -110,7 +129,6 @@ std::vector<Location> Server::get_location(void) const { return this->_location;
 std::vector<std::string> Server::get_allow_method(void) const { return this->_allow_method; }
 
 
-
 std::ostream	&operator<<(std::ostream &o, Server const &Server) {
 	o << BLUE << BOLD << " Server :" << RESET << std::endl;
 	if (Server.get_listen().size())
@@ -142,7 +160,14 @@ std::ostream	&operator<<(std::ostream &o, Server const &Server) {
 	if (Server.get_root().size())
 		o << "    root = [" << Server.get_root() << "]" << std::endl;
 	if (Server.get_error_pages().size())
-		o << "    error_page = [" << Server.get_error_pages().size() << "]" << std::endl;
+	{
+		o << "    error_page = [";
+		std::map<int, std::string> error_pages = Server.get_error_pages();
+		std::map<int, std::string>::iterator it = error_pages.begin();
+		for (; it != error_pages.end(); it++)
+			o << it->first << " , (" << it->second << ") | ";
+		o << "]" << std::endl;
+	}
 	if (Server.get_body_size().size())
 		o << "    body size = [" << Server.get_body_size() << "]" << std::endl;
 	if (Server.get_cgi_dir().size() )

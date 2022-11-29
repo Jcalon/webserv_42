@@ -199,18 +199,21 @@ long Socket::sendResponse(long socket)
 	try
 	{
 		Request request = Request(_receivedMessage);
-		std::cout << BLUE << request << RESET;
+		// std::cout << BLUE << request << RESET;
 		std::ostringstream ss;
 		ss << "------ Received Request from client ------\n\n";
 		log(ss.str());
+
 
 		Response response(request, getServer());
 		response.call_method();
 		std::ostringstream sts;
 		sts << response.get_header() << "\r\n"
 		<< response.get_response();
-		// std::cout << response.get_header() << response.get_response().size() << "\r\n"
-		// << response.get_response() << std::endl;
+
+
+		std::cout << GREEN << response.get_header() << "\r\n"
+		<< response.get_response() << RESET << std::endl;
 
 		unsigned long bytesSent;
 		bytesSent = send(socket, sts.str().c_str(), sts.str().length(), 0);

@@ -15,7 +15,8 @@
 Response::Response(Request const &request, Server const &server)
 {
 	//mettre dans map quand on aura fait la map des codes erreurs
-	this->_code = allow_method(request);
+	// this->_code = allow_method(request);
+	this->_code_status = allow_method(request);
 	this->_http = request.getRequest()._http;
 	this->_response = "";
 	this->_content_length = 0;
@@ -28,6 +29,26 @@ Response::Response(Request const &request, Server const &server)
 	// this->_body = parse_body(request.getFields());
 	parse_body(request.getFields());
 }
+
+
+	// this->_error_pages.insert(std::make_pair(200, "200 OK"));
+	// this->_error_pages.insert(std::make_pair(201, "201 Created"));
+	// this->_error_pages.insert(std::make_pair(204, "204 No Content"));
+	// this->_error_pages.insert(std::make_pair(300, "300 Multiple Choices"));
+	// this->_error_pages.insert(std::make_pair(301, "301 Moved Permanently"));
+	// this->_error_pages.insert(std::make_pair(302, "302 Found"));
+	// this->_error_pages.insert(std::make_pair(303, "303 See Other"));
+	// this->_error_pages.insert(std::make_pair(307, "307 Temporary Redirect"));
+	// this->_error_pages.insert(std::make_pair(400, "400 Bad Request"));
+	// this->_error_pages.insert(std::make_pair(404, "404 Not Found"));
+	// this->_error_pages.insert(std::make_pair(405, "405 Method Not Allowed"));
+	// this->_error_pages.insert(std::make_pair(408, "408 Request Timeout"));
+	// this->_error_pages.insert(std::make_pair(411, "411 Length Required"));
+	// this->_error_pages.insert(std::make_pair(413, "413 Request Entity Too Large"));
+	// this->_error_pages.insert(std::make_pair(414, "414 Request-URI Too Long"));
+	// this->_error_pages.insert(std::make_pair(500, "500 Internal Server Error"));
+	// this->_error_pages.insert(std::make_pair(502, "502 Bad Gateway"));
+	// this->_error_pages.insert(std::make_pair(505, "505 HTTP Version Not Supported"));
 
 Response::~Response() {
 }
@@ -49,12 +70,40 @@ void Response::parse_body(std::vector<std::string> fields)
 }
 
 
-int Response::allow_method(Request const &request)
+std::pair<int, std::string> Response::allow_method(Request const &request)
 {
 	this->_method = request.getRequest()._method;
+	// if (this->allow_method.at(_method))
+	// 	std::cout << RED << " COUCOU \n";
 	//if _method n'est dans les method allow
 		//envoyer code erreur correspondant
-	return 200;
+	return find_pair(200);
+}
+
+std::pair<int, std::string> Response::find_pair(int code)
+{
+	std::map<int, std::string> map_error;
+	map_error.insert(std::make_pair(200, "200 OK"));
+	map_error.insert(std::make_pair(201, "201 Created"));
+	map_error.insert(std::make_pair(204, "204 No Content"));
+	map_error.insert(std::make_pair(300, "300 Multiple Choices"));
+	map_error.insert(std::make_pair(301, "301 Moved Permanently"));
+	map_error.insert(std::make_pair(302, "302 Found"));
+	map_error.insert(std::make_pair(303, "303 See Other"));
+	map_error.insert(std::make_pair(307, "307 Temporary Redirect"));
+	map_error.insert(std::make_pair(400, "400 Bad Request"));
+	map_error.insert(std::make_pair(404, "404 Not Found"));
+	map_error.insert(std::make_pair(405, "405 Method Not Allowed"));
+	map_error.insert(std::make_pair(408, "408 Request Timeout"));
+	map_error.insert(std::make_pair(411, "411 Length Required"));
+	map_error.insert(std::make_pair(413, "413 Request Entity Too Large"));
+	map_error.insert(std::make_pair(414, "414 Request-URI Too Long"));
+	map_error.insert(std::make_pair(500, "500 Internal Server Error"));
+	map_error.insert(std::make_pair(502, "502 Bad Gateway"));
+	map_error.insert(std::make_pair(505, "505 HTTP Version Not Supported"));
+
+	std::map<int, std::string>::iterator it = map_error.find(code);
+	return (std::make_pair(it->first, it->second));
 }
 
 std::string Response::get_header(void) const { return this->_header; }
@@ -109,7 +158,7 @@ void Response::run_post_method(void)
 
 void	Response::set_header(void)
 {
-	this->_header = this->_http + " " + ft_to_string(this->_code) + " OK";
+	this->_header = this->_http + " " + this->_code_status.second;
 	this->_header += "\r\nContent-Length: " + ft_to_string(this->_content_length);
 	this->_header += "\r\nContent-Location: " + this->_content_location;
 	this->_header += "\r\nContent-Type: " + this->_content_type;
