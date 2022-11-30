@@ -6,13 +6,13 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 17:48:13 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/30 14:51:06 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/11/30 20:44:56 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/utils.hpp"
 
-Response::Response(Request const &request, Server const &server)
+Response::Response(Request const &request, Server const &server): _server(server), _request(request)
 {
 	this->_http = request.getRequest()._http;
 	this->_response = "\r\n";
@@ -24,6 +24,7 @@ Response::Response(Request const &request, Server const &server)
 	this->_code_status = allow_method(request, server, request.getRequest()._target);
 	this->_content_type = "";
 	this->_header = "";
+	this->_cgi = test_cgi(server, request.getRequest()._target);
 	parse_body(request.getBody());
 }
 
@@ -42,11 +43,58 @@ void Response::parse_body(std::string fields)
 		for (std::vector<std::string>::iterator it = tmp.begin(); it != tmp.end(); it++)
 		{
 			std::vector<std::string> map = ft_cpp_split(*it, "=");
-			this->_body.insert(make_pair(map[0], map[1]));
+			if (map.size() > 1)
+				this->_body.insert(make_pair(map[0], map[1]));
+			else
+				this->_body.insert(make_pair("1", map[0]));
 		}
 		// for (std::map<std::string, std::string>::iterator it = _body.begin(); it != _body.end(); it++)
 		// 	std::cout << YELLOW << "map[" << it->first << "] = " << it->second << std::endl;
 	}
+}
+
+bool	Response::test_cgi(Server const &server, std::string loc_name)
+{
+	if (this->_method == "POST" && this->_code_status.first == 200)
+	{
+		if (loc_name != "/")
+			loc_name = ft_cpp_split(loc_name, "/").front();
+		loc_name.insert(0, "/");
+		if (is_cgi_in_location(server, loc_name) || is_cgi_in_extension(server))
+			return true;
+	}
+	return false;
+}
+
+bool	Response::is_cgi_in_extension(Server const &server)
+{
+	std::vector<Location> locations = server.get_location();
+	std::string ext = ft_cpp_split(_content_location, ".").back();
+	ext.insert(0, ".");
+	for (std::vector<Location>::iterator it = locations.begin(); it != locations.end(); it++)
+	{
+		if (ext == it->get_name() && it->get_cgi_dir() != "")
+		{
+			this->_binary = it->get_cgi_dir();
+			return true;
+		}
+	}
+	return false;
+}
+
+bool	Response::is_cgi_in_location(Server const &server, std::string loc_name)
+{
+	std::vector<Location> locations = server.get_location();
+	//si le path est une location
+	for (std::vector<Location>::iterator it = locations.begin(); it != locations.end(); it++)
+	{
+		if (loc_name == it->get_name() && it->get_cgi_dir() != "")
+		{
+			this->_binary = it->get_cgi_dir();
+			return true;
+		}
+	}
+	return false;
 }
 
 std::pair<int, std::string> Response::allow_method(Request const &request, Server const &server, std::string loc_name)
@@ -140,7 +188,13 @@ void Response::run_head_method(void)
 
 void Response::run_post_method(void)
 {
-	if (_code_status.first == 200)
+	if (_code_status.first == 200 && _cgi == true)
+	{
+		CGI cgi(this->_request, this->_server, this->_binary);
+		this->_response = cgi.interpreter();
+		this->_response.insert(this->_response.find("\r\n\r\n"), "\r\n");
+	}
+	else if (_code_status.first == 200)
 	{
 		std::ifstream		ifs(_content_location.c_str());
 		std::string	line;
@@ -196,9 +250,13 @@ void	Response::set_header(void)
 	this->_header = this->_http + " " + this->_code_status.second;
 	this->_header += "\r\nContent-Length: " + ft_to_string(this->_content_length);
 	this->_header += "\r\nContent-Location: " + this->_content_location;
-	this->_header += "\r\nContent-Type: " + this->_content_type;
+	if (this->_cgi == false)
+		this->_header += "\r\nContent-Type: " + this->_content_type;
 	this->_header += "\r\nDate: " + this->_date;
-	this->_header += "\nServer: webserv\r\n";
+	if (this->_cgi == false)
+		this->_header += "\r\nServer: webserv\r\n";
+	else
+		this->_header += "\r\nServer: webserv";
 	// this->_header += RED "\nTransfer-Encoding: ??????\n\r" RESET;
 }
 
@@ -322,3 +380,4 @@ std::string		Response::init_mime_types()
 
 std::string Response::get_header(void) const { return this->_header; }
 std::string Response::get_response(void) const { return this->_response; }
+

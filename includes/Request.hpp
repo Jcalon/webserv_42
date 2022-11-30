@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 15:52:28 by jcalon            #+#    #+#             */
-/*   Updated: 2022/11/29 14:20:44 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/11/30 18:16:58 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ class Request
 		std::vector<std::string>	_fields;
 		struct request_info			_infos;
 		std::string					_body;
+		void						parseBody();
+		void						parseChunkedBody();
 
 	public:
 		Request(const std::string &request);

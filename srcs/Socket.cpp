@@ -208,19 +208,22 @@ long Socket::sendResponse(long socket)
 		std::ostringstream sts;
 		if (request.getRequest()._method == "HEAD")
 		{
-			sts << response.get_header() << "\r\n";
-			std::cout << GREEN << response.get_header() << "\r\n" << response.get_response() << RESET << std::endl;
+			sts << response.get_header() << "\r\n\r\n";
+			std::cout << GREEN << response.get_header() << "\r\n\r\n" << RESET << std::endl;
 		}
 		else
 		{
 			sts << response.get_header() << "\r\n" << response.get_response();
-			std::cout << GREEN << response.get_header() << "\r\n" << RESET << std::endl;
+			if (response.get_response().size() < 2000)
+				std::cout << GREEN << response.get_header()  << "\r\n" << response.get_response() << "\r\n" << RESET << std::endl;
+			else
+				std::cout << GREEN << response.get_header()  << "\r\n" << response.get_response().substr(0, 500) << "\r\n" << RESET << std::endl;
 		}
 
 		unsigned long bytesSent;
 		bytesSent = send(socket, sts.str().c_str(), sts.str().length(), 0);
 
-		if (bytesSent == sts.str().size())
+		if (bytesSent == sts.str().length())
 		{
 			log("------ Socket Response sent to client ------\n\n");
 		}

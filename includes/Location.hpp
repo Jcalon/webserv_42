@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 11:37:28 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/30 14:37:19 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/11/30 17:21:24 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ class Location
 		std::string 						get_body_size(void) const;
 		std::string 						get_index(void) const;
 		std::map<std::string, std::string>	get_cgi_ext(void) const;
+		std::string							get_cgi_dir(void) const;
 		bool 								get_autoindex(void) const;
 
 	private:

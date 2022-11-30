@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 17:48:22 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/30 13:34:31 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/11/30 17:40:13 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,9 @@ class Response
 		void						set_header(void);
 		void 						parse_body(std::string fields);
 		std::pair<int, std::string> find_pair(int code);
-
+		bool						test_cgi(Server const &server, std::string loc_name);
+		bool						is_cgi_in_extension(Server const &server);
+		bool						is_cgi_in_location(Server const &server, std::string loc_name);
 		bool						is_allowed_in_extension(Server const &server);
 		bool						is_allowed_in_location(Server const &server, std::string loc_name);
 		std::string					init_mime_types(void);
@@ -48,6 +50,8 @@ class Response
 	private:
 		// std::map<std::string, std::string> 	_status_code;
 		// int _code;
+		Server 								_server;
+		Request								_request;
 		std::string 						_http;
 		std::pair<int, std::string> 		_code_status;
 		int									_content_length;
@@ -58,6 +62,8 @@ class Response
 		std::string							_header;
 		std::string							_method;
 		std::map<std::string, std::string> 	_body;
+		bool								_cgi;
+		std::string							_binary;
 };
 
 #endif

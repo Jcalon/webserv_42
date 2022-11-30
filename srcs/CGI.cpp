@@ -4,7 +4,7 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-CGI::CGI(Request const &request, Server const &server)
+CGI::CGI(Request const &request, Server const &server, std::string binary)
 {
 	std::string contenttype = "text/html";
 	std::vector<std::string> tmp = request.getFields();
@@ -17,6 +17,7 @@ CGI::CGI(Request const &request, Server const &server)
 		}
 	}
 
+	_binary = binary;
 	_target = request.getRequest()._target;
 	_inputbody = request.getBody();
 
@@ -89,7 +90,6 @@ std::string		CGI::interpreter(void)
 
 	write(input_fd, _inputbody.c_str(), _inputbody.length());
 	lseek(input_fd, 0, SEEK_SET);
-
 	pid = fork();
 	if (pid == -1)
 		return "ERROR 500";
