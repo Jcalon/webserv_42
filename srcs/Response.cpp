@@ -14,7 +14,6 @@
 
 Response::Response(Request const &request, Server const &server)
 {
-	this->_code_status = allow_method(request, server);
 	this->_http = request.getRequest()._http;
 	this->_response = "\r\n";
 	this->_content_length = 0;
@@ -22,6 +21,7 @@ Response::Response(Request const &request, Server const &server)
 		this->_content_location = server.get_index();
 	else
 		this->_content_location = server.get_index_path(request.getRequest()._target);
+	this->_code_status = allow_method(request, server);
 	this->_content_type = "";
 	this->_header = "";
 	parse_body(request.getBody());
@@ -65,6 +65,7 @@ std::pair<int, std::string> Response::allow_method(Request const &request, Serve
 std::pair<int, std::string> Response::find_pair(int code)
 {
 	std::map<int, std::string> map_error;
+
 	map_error.insert(std::make_pair(200, "200 OK"));
 	map_error.insert(std::make_pair(201, "201 Created"));
 	map_error.insert(std::make_pair(204, "204 No Content"));
@@ -110,7 +111,7 @@ void Response::run_get_method(void)
 	std::string	line;
 
 	if (!ifs.is_open())
-		throw Config::FileNotOpen();
+		this->_code_status = find_pair(404);
 	while (std::getline(ifs, line, char(ifs.eof())))
 		this->_response.append(line);
 	ifs.close();
@@ -129,7 +130,7 @@ void Response::run_head_method(void)
 	std::string	line;
 
 	if (!ifs.is_open())
-		throw Config::FileNotOpen();
+		this->_code_status = find_pair(404);
 	while (std::getline(ifs, line, char(ifs.eof())))
 		this->_response.append(line);
 	ifs.close();
@@ -141,20 +142,8 @@ void Response::run_head_method(void)
 	set_header();
 }
 
-//ouvre fichier de l'url (content location ? )
-//mettre dans response
-//mettre content length
-//mettre date
-//set le body
-
-
 void Response::run_post_method(void)
 {
-	//pour le moment fait la meme que get en attendant CGI
-	// for (std::map<std::string, std::string>::iterator it = _body.begin(); it != _body.end(); it++)
-	// 		std::cout << YELLOW << "map[" << it->first << "] = " << it->second << std::endl;
-	//renvoyer le cas d'erreur si body invalid
-	// run_get_method();
 	if (_code_status.first == 200)
 	{
 		std::ifstream		ifs(_content_location.c_str());
@@ -185,7 +174,6 @@ void Response::run_post_method(void)
 	this->_content_type = "text/html"; // a modifier avec une fonction en fonction du ype
 	this->_date = set_date();
 	set_header();
-	return ;
 }
 
 void	Response::set_header(void)

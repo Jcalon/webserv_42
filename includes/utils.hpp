@@ -39,6 +39,9 @@
 #include <stdlib.h>
 #include <sys/time.h>
 #include <cstring>
+#include <sys/types.h>
+#include <sys/stat.h>
+
 
 #include "Location.hpp"
 #include "Server.hpp"

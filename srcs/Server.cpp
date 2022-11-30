@@ -129,20 +129,38 @@ bool 								Server::get_autoindex(void) const { return this->_autoindex; }
 std::vector<Location> 				Server::get_location(void) const { return this->_location; }
 std::vector<std::string> 			Server::get_allow_method(void) const { return this->_allow_method; }
 
+
 std::string 						Server::get_index_path(std::string location) const
 {
-	std::vector<Location> tmp = get_location();
+	std::vector<Location> 		tmp = get_location();
+	std::vector<std::string> 	split_path = ft_cpp_split(location, "/");
+	std::string 				path = "";
+
+	for (std::vector<std::string>::iterator it = split_path.begin(); it != split_path.end(); it++)
+		it->insert(0, "/");
+
 	for (std::vector<Location>::iterator it = tmp.begin(); it != tmp.end(); it++)
 	{
-		if (it->get_name() == location)
+		if (it->get_name() == split_path[0])
 		{
 			if (it->get_root() != "")
-				return it->get_root() + it->get_index();
+				path = it->get_root();
 			else
-				return it->get_index();
+				path = get_root();
+
+			for (std::vector<std::string>::iterator itsplit = split_path.begin()+1; itsplit != split_path.end(); itsplit++)
+			{
+				if (*itsplit != "/")
+					path += *itsplit;
+			}
+			struct stat check;
+			lstat(path.c_str(), &check);
+			if (it->get_index() != "" && S_ISDIR(check.st_mode))
+				path += "/" + it->get_index();
+			return path;
 		}
 	}
-	return _index;
+	return location;
 }
 
 
