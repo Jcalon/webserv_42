@@ -76,7 +76,6 @@ bool	Response::is_allowed_in_extension(Server const &server)
 	}
 	for (std::vector<std::string>::iterator it = allow_method.begin(); it != allow_method.end(); it++)
 	{
-		std::cout << *it << std::endl;
 		if (*it == this->_method)
 			return true;
 	}
@@ -95,7 +94,6 @@ bool	Response::is_allowed_in_location(Server const &server, std::string loc_name
 	}
 	for (std::vector<std::string>::iterator it = allow_method.begin(); it != allow_method.end(); it++)
 	{
-		std::cout << *it << std::endl;
 		if (*it == this->_method)
 			return true;
 	}
@@ -128,8 +126,6 @@ void Response::run_get_method(void)
 	ifs.close();
 
 	this->_content_length = _response.size();
-
-	std::cout << RED << _content_type << "location " << _content_location << RESET << std::endl;
 	this->_content_type = init_mime_types(); // a modifier avec une fonction en fonction du ype
 	this->_date = set_date();
 
@@ -322,7 +318,6 @@ std::string		Response::init_mime_types()
 		return it->second;
 	else
 		return "text/html";
-	// return (it->second);
 }
 
 std::string Response::get_header(void) const { return this->_header; }
