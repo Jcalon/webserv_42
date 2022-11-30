@@ -6,47 +6,39 @@
 
 CGI::CGI(Request const &request, Server const &server)
 {
-	// std::string contentlength;
-	// std::vector<std::string>::iterator it = request.getFields().begin();
-	// for (; it != request.getFields().end(); it++)
-	// {
-	// 	if (*it->find("Content-Length: ") != std::string::npos)
-	// 	{
-	// 		contentlength == **it + 16;
-	// 		break ;
-	// 	}
-	// }
+	std::string contenttype = "text/html";
+	std::vector<std::string> tmp = request.getFields();
+	for (std::vector<std::string>::iterator it = tmp.begin(); it != tmp.end(); it++)
+	{
+		if (it->find("Content-Type: ") != std::string::npos)
+		{
+			contenttype = it->substr(14, it->length() - 14);
+			break ;
+		}
+	}
 
-	// std::string contenttype;
-	// std::vector<std::string>::iterator it = request.getFields().begin();
-	// for (; it != request.getFields().end(); it++)
-	// {
-	// 	if (*it.find("Content-Type: ") != std::string::npos)
-	// 	{
-	// 		contenttype == **it + 14;
-	// 		break ;
-	// 	}
-	// }
+	_target = request.getRequest()._target;
+	_inputbody = request.getBody();
 
-	// _env["REDIRECT_STATUS"] = "200";
-	// _env["GATEWAY_INTERFACE"] = "CGI/1.1";
-	// _env["SCRIPT_NAME"] = request.getRequest()._target;
-	// _env["SCRIPT_FILENAME"] = request.getRequest()._target;
-	// _env["REQUEST_METHOD"] = request.getRequest()._method;
-	// _env["CONTENT_LENGTH"] = contentlength;
-	// _env["CONTENT_TYPE"] = contenttype;
-	// _env["PATH_INFO"] = request.getRequest()._target;
-	// _env["PATH_TRANSLATED"] = request.getRequest()._target;
-	// _env["QUERY_STRING"] = request.getRequest()._query;
-	// _env["REMOTEaddr"] = server.get_ip();
-	// _env["AUTH_TYPE"] = "";
-	// _env["REMOTE_IDENT"] = "";
-	// _env["REMOTE_USER"] = "";
-	// _env["REQUEST_URI"] = request.getRequest()._target;
-	// _env["SERVER_NAME"] = server.get_name()[0];
-	// _env["SERVER_PORT"] = server.get_listen()[0];
-	// _env["SERVER_PROTOCOL"] = "HTTP/1.1";
-	// _env["SERVER_SOFTWARE"] = "webserv";
+	_env["REDIRECT_STATUS"] = "200";
+	_env["GATEWAY_INTERFACE"] = "CGI/1.1";
+	_env["SCRIPT_NAME"] = server.get_cgi_dir();
+	_env["REQUEST_METHOD"] = request.getRequest()._method;
+	_env["CONTENT_LENGTH"] = ft_to_string(request.getBody().length());
+	_env["CONTENT_TYPE"] = contenttype;
+	_env["REQUEST_URI"] = request.getRequest()._target; //URL
+	_env["PATH_INFO"] = request.getRequest()._target; //URL
+	_env["PATH_TRANSLATED"] = request.getRequest()._target; // NBUILD TARGET LOCAL PATH
+	_env["QUERY_STRING"] = request.getRequest()._query;
+	_env["REMOTE_ADDR"] = server.get_ip();
+	_env["AUTH_TYPE"] = "";
+	_env["REMOTE_IDENT"] = "";
+	_env["REMOTE_USER"] = "user";
+	_env["REQUEST_URI"] = request.getRequest()._target;
+	_env["SERVER_NAME"] = server.get_name()[0];
+	_env["SERVER_PORT"] = server.get_listen()[0];
+	_env["SERVER_PROTOCOL"] = "HTTP/1.1";
+	_env["SERVER_SOFTWARE"] = "webserv";
 }
 
 
@@ -69,11 +61,11 @@ char **CGI::mapEnvToTab(void)
 	std::string tmp;
 	int i = 0;
 
-	for (stringMap::iterator it = _env.begin(); it != _env.end(); it++, i++)
+	for (std::map<std::string, std::string>::iterator it = _env.begin(); it != _env.end(); it++, i++)
 	{
 		tmp = it->first + "=" + it->second;
 		env[i] = new char[tmp.size() + 1];
-		env[i] = std::strcpy(CgiEnv[i], tmp.c_str());
+		env[i] = std::strcpy(env[i], tmp.c_str());
 	}
 	env[i] = NULL;
 	return env;
@@ -81,56 +73,60 @@ char **CGI::mapEnvToTab(void)
 
 std::string		CGI::interpreter(void)
 {
-	char	**env = mapEnvToTab();
 	std::string	body;
-	int tube[2];
-	int status;
+	pid_t					pid;
+	int						std_fd[2];
+	char					tmp[BUFFER_SIZE + 1];
+	int						ret = 1;
 
-	int fdin = dup(STDIN_FILENO);
-	if (fdin < 0)
-	{
-		std::cerr << "Error: dup\n";
-		return "ERROR";
-	}
+	std_fd[0] = dup(STDIN_FILENO);
+	std_fd[1] = dup(STDOUT_FILENO);
 
-	if (pipe(tube) < 0)
-	{
-		std::cerr << "Error: pipe\n";
-		return "ERROR";
-	}
+	FILE	*input_tmpfile = tmpfile();
+	FILE	*output_tmpfile = tmpfile();
+	int		input_fd = fileno(input_tmpfile);
+	int		output_fd = fileno(output_tmpfile);
 
-	pid_t cgi_pid = fork();
-	if (cgi_pid == -1)
-		return ("Status: 500\r\n");
-	else if (cgi_pid == 0)
+	write(input_fd, _inputbody.c_str(), _inputbody.length());
+	lseek(input_fd, 0, SEEK_SET);
+
+	pid = fork();
+	if (pid == -1)
+		return "ERROR 500";
+	else if (pid == 0)
 	{
-		dup2(tube[0], STDIN_FILENO);
-		dup2(tube[1], STDOUT_FILENO);
-		close(fdin);
-		close(tube[0]);
-		close(tube[1]);
-		//execve(INTERPRETER, NULL, env)
-		write(STDOUT_FILENO, "Status: 500\r\n", 15);
-		exit(0);
+		char **av = new char * [3];
+		av[0] = new char [_binary.length() + 1];
+		av[1] = new char [_target.length() + 1];
+
+		dup2(output_fd, STDOUT_FILENO);
+		dup2(input_fd, STDIN_FILENO);
+
+		strcpy(av[0], _binary.c_str());
+		strcpy(av[1], _target.c_str());
+		av[2] = NULL;
+		execve(_binary.c_str(), av, mapEnvToTab());
+		write(2, "ERROR 500", 9);
 	}
 	else
 	{
-		waitpid(cgi_pid, &status, 0);
+		waitpid(-1, NULL, 0);
+		lseek(output_fd, 0, SEEK_SET);
 
-		char	buffer[BUFFER_SIZE + 1];
-		int ret = 1;
 		while (ret > 0)
 		{
-			ret = read(tube[0], buffer, BUFFER_SIZE);
-			buffer[ret] = '\0';
-			body += buffer;
+			memset(tmp, 0, BUFFER_SIZE);
+			ret = read(output_fd, tmp, BUFFER_SIZE);
+			tmp[BUFFER_SIZE] = '\0';
+			body += tmp;
 		}
+
+		close(output_fd);
+		close(input_fd);
+
+		dup2(std_fd[0], STDIN_FILENO);
+		dup2(std_fd[1], STDOUT_FILENO);
 	}
-	close(tube[1]);	//close write side
-	if (dup2(fdin, STDIN_FILENO) < 0)
-		std::cerr << "Error execute_cgi: dup2 failed\n" << std::endl;
-	close(tube[0]);
-	close(fdin);
 	return body;
 }
 
