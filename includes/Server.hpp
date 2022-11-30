@@ -6,14 +6,14 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 11:36:00 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/23 11:47:09 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/11/30 14:36:56 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
-#include "Location.hpp"
+#include "utils.hpp"
 // #include "Location.hpp"
 
 class Server

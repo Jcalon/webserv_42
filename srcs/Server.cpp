@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 12:22:34 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/30 13:18:20 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/11/30 14:35:38 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 		else if (line[0] == "allow_method")
 		{
 			this->_allow_method.clear();
-			for (size_t i = 0; i < line.size(); i++)
+			for (size_t i = 1; i < line.size(); i++)
 				this->_allow_method.push_back(line[i]);
 		}
 		else if (line[0] == "max_client_body_size")
@@ -94,7 +94,7 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 			this->_index = line[1];
 		else if (line[0] == "location")
 		{
-			Location location;
+			Location location(*this);
 			if (line[line.size() - 1] != "{")
 			{
 				std::cout << "ERROR : location doit ouvrir avec {\n";

@@ -6,16 +6,17 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 12:22:21 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/30 14:07:04 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/11/30 14:35:04 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/utils.hpp"
 
-Location::Location(void): _root(""), _index("index.html")
+Location::Location(Server &serv): _root(""), _index("index.html")
 {
 	this->_autoindex = false;
-	init_allow_methods();
+	this->_allow_method = serv.get_allow_method();
+	// init_allow_methods();
 }
 
 Location::~Location(void) {}
@@ -36,7 +37,7 @@ std::vector<std::string>::iterator Location::parse_location(std::vector<std::str
 		else if (line[0] == "allow_method")
 		{
 			this->_allow_method.clear();
-			for (size_t i = 0; i < line.size(); i++)
+			for (size_t i = 1; i < line.size(); i++)
 				this->_allow_method.push_back(line[i]);
 		}
 		else if (line[0] == "client_max_body_size")
@@ -55,14 +56,14 @@ std::vector<std::string>::iterator Location::parse_location(std::vector<std::str
 	return start;
 }
 
-void Location::init_allow_methods(void)
-{
-	this->_allow_method.push_back("GET");
-	this->_allow_method.push_back("POST");
-	this->_allow_method.push_back("DELETE");
-	this->_allow_method.push_back("HEAD");
-	this->_allow_method.push_back("PUT");
-}
+// void Location::init_allow_methods(void)
+// {
+// 	this->_allow_method.push_back("GET");
+// 	this->_allow_method.push_back("POST");
+// 	this->_allow_method.push_back("DELETE");
+// 	this->_allow_method.push_back("HEAD");
+// 	this->_allow_method.push_back("PUT");
+// }
 
 std::string Location::get_name(void) const { return this->_name; }
 std::string Location::get_root(void) const { return this->_root; }

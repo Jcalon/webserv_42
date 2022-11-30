@@ -3,24 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   Location.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 11:37:28 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/22 15:56:05 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/11/30 14:37:19 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LOCATION_HPP
 # define LOCATION_HPP
 
-#include <iostream>
-#include <vector>
-#include <map>
+#include "utils.hpp"
+
+class Server;
 
 class Location
 {
 	public:
-		Location(void);
+		Location(Server &server);
 		~Location(void);
 
 		std::vector<std::string>::iterator 	parse_location(std::vector<std::string>::iterator start, std::vector<std::string> file);
