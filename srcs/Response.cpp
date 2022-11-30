@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 17:48:13 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/29 16:56:23 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/11/30 14:05:55 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,11 @@ Response::~Response() {
 
 void Response::parse_body(std::string fields)
 {
+	if (this->_method == "PUT")
+	{
+		this->_body.insert(make_pair("1", fields));
+		return ;
+	}
 	if (fields != "" && _code_status.first == 200)
 	{
 		std::vector<std::string> tmp = ft_cpp_split(fields, "&");
@@ -59,6 +64,8 @@ std::pair<int, std::string> Response::allow_method(Request const &request, Serve
 	if (!count)
 		return find_pair(405);
 	//si longueur body depasse le max size > error 413
+	if (this->_method == "PUT")
+		return find_pair(201);
 	return find_pair(200);
 }
 
@@ -101,6 +108,8 @@ void Response::call_method()
 		run_post_method();
 	else if (this->_method == "HEAD")
 		run_head_method();
+	else if (this->_method == "PUT")
+		run_put_method();
 	// else if (method == "DELETE")
 	// 	run_delete_method();
 }
@@ -126,20 +135,7 @@ void Response::run_get_method(void)
 
 void Response::run_head_method(void)
 {
-	std::ifstream		ifs(_content_location.c_str());
-	std::string	line;
-
-	if (!ifs.is_open())
-		this->_code_status = find_pair(404);
-	while (std::getline(ifs, line, char(ifs.eof())))
-		this->_response.append(line);
-	ifs.close();
-
-	this->_content_length = _response.size();
-	this->_content_type = "text/html"; // a modifier avec une fonction en fonction du ype
-	this->_date = set_date();
-
-	set_header();
+	run_get_method();
 }
 
 void Response::run_post_method(void)
@@ -170,6 +166,25 @@ void Response::run_post_method(void)
 	else
 		this->_response = "";
 
+	this->_content_length = _response.size();
+	this->_content_type = "text/html"; // a modifier avec une fonction en fonction du ype
+	this->_date = set_date();
+	set_header();
+}
+
+void Response::run_put_method(void)
+{
+	if (_code_status.first == 201)
+	{
+		std::ofstream		ofs(_content_location.c_str());
+		std::string	line;
+
+		if (!ofs.is_open())
+			throw Config::FileNotOpen();
+		ofs << this->_body["1"];
+		ofs.close();
+	}
+	this->_response = "";
 	this->_content_length = _response.size();
 	this->_content_type = "text/html"; // a modifier avec une fonction en fonction du ype
 	this->_date = set_date();

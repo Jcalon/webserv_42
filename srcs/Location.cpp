@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 12:22:21 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/29 16:48:30 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/11/30 14:07:04 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ void Location::init_allow_methods(void)
 	this->_allow_method.push_back("POST");
 	this->_allow_method.push_back("DELETE");
 	this->_allow_method.push_back("HEAD");
+	this->_allow_method.push_back("PUT");
 }
 
 std::string Location::get_name(void) const { return this->_name; }
