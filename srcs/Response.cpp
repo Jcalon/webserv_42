@@ -117,7 +117,7 @@ void Response::run_get_method(void)
 	ifs.close();
 
 	this->_content_length = _response.size();
-	this->_content_type = "text/html"; // a modifier avec une fonction en fonction du ype
+	this->_content_type = "text/html, text/css"; // a modifier avec une fonction en fonction du ype
 	this->_date = set_date();
 
 	set_header();
