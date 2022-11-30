@@ -1,6 +1,6 @@
 
 body {
-  background-color: #F8F1F3;
+  background-color: #ebb7c6;
   text-align: center;
   color: #0B3C49;
 }
@@ -12,7 +12,7 @@ h1 {
   font-size: 40px;
 }
 
-h2 {
+/* h2 {
   font-style: italic;
   font-size: 30px;
 }
@@ -70,4 +70,4 @@ a:hover {
 .container {
   width: 700px;
   margin: 40px auto;
-}
+} */

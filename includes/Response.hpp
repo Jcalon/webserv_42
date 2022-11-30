@@ -21,7 +21,7 @@ class Response
 		Response(Request const &request, Server const &server);
 		~Response();
 
-		std::pair<int, std::string>	allow_method(Request const &request, Server const &server);
+		std::pair<int, std::string>	allow_method(Request const &request, Server const &server, std::string loc_name);
 		void 						call_method();
 		void 						run_get_method(void);
 		void 						run_post_method(void);
