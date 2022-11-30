@@ -38,6 +38,7 @@ class Response
 		bool						is_allowed_in_extension(Server const &server);
 		bool						is_allowed_in_location(Server const &server, std::string loc_name);
 		std::string					init_mime_types(void);
+		void						load_error_pages(void);
 
 		class FileNotOpen : public std::exception
 		{

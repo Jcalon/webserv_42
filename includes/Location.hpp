@@ -38,13 +38,13 @@ class Location
 	private:
 		std::string							_name;
 		std::string							_root;
-		std::string							_upload;
-		bool								_autoindex;
+		std::vector<std::string>			_allow_method;
 		std::string 						_index;
+		bool								_autoindex;
+		std::string							_max_client_body_size;
+		std::string							_upload;
 		std::map<std::string, std::string>	_cgi_ext;
 		std::string							_cgi_dir;
-		std::vector<std::string>			_allow_method;
-		std::string							_max_client_body_size;
 };
 
 std::ostream	&operator<<(std::ostream &o, Location const &server);

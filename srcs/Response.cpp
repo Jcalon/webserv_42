@@ -114,17 +114,31 @@ void Response::call_method()
 	// 	run_delete_method();
 }
 
+void Response::load_error_pages()
+{
+	std::string			line;
+	std::string 		page = "www/error_pages/" + ft_to_string(_code_status.first) + ".html";
+	std::ifstream 		ifs(page.c_str());
+
+	ifs.is_open();
+	_response.clear();
+	while (std::getline(ifs, line, char(ifs.eof())))
+		this->_response.append(line);
+	ifs.close();
+}
+
 void Response::run_get_method(void)
 {
 	std::ifstream		ifs(_content_location.c_str());
-	std::string	line;
+	std::string			line;
 
 	if (!ifs.is_open())
 		this->_code_status = find_pair(404);
 	while (std::getline(ifs, line, char(ifs.eof())))
 		this->_response.append(line);
 	ifs.close();
-
+	if (_code_status.first != 200)
+		load_error_pages();
 	this->_content_length = _response.size();
 	this->_content_type = init_mime_types(); // a modifier avec une fonction en fonction du ype
 	this->_date = set_date();
