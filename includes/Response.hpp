@@ -35,6 +35,10 @@ class Response
 		void 						parse_body(std::string fields);
 		std::pair<int, std::string> find_pair(int code);
 
+		bool						is_allowed_in_extension(Server const &server);
+		bool						is_allowed_in_location(Server const &server, std::string loc_name);
+		std::string					init_mime_types(void);
+
 		class FileNotOpen : public std::exception
 		{
 			public:

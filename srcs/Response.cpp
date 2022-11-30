@@ -17,7 +17,7 @@ Response::Response(Request const &request, Server const &server)
 	this->_http = request.getRequest()._http;
 	this->_response = "\r\n";
 	this->_content_length = 0;
-	if (request.getRequest()._target == "/" || request.getRequest()._target == "/favicon.ico")
+	if (request.getRequest()._target == "/")
 		this->_content_location = server.get_index();
 	else
 		this->_content_location = server.get_index_path(request.getRequest()._target);
@@ -27,8 +27,7 @@ Response::Response(Request const &request, Server const &server)
 	parse_body(request.getBody());
 }
 
-Response::~Response() {
-}
+Response::~Response() {}
 
 void Response::parse_body(std::string fields)
 {
@@ -50,68 +49,58 @@ void Response::parse_body(std::string fields)
 	}
 }
 
-
 std::pair<int, std::string> Response::allow_method(Request const &request, Server const &server, std::string loc_name)
 {
-	std::vector<std::string> loc;
-	if (loc_name.size() > 1)
-		loc = ft_cpp_split(loc_name, "/");
-	else
-		loc.push_back("/");
-	loc[0].insert(0, "/");
-    this->_method = request.getRequest()._method;
-    std::vector<std::string> allow_method = server.get_allow_method();
-    std::vector<Location> tmp = server.get_location();
-    int count = 0;
-    for (std::vector<Location>::iterator it = tmp.begin(); it != tmp.end(); it++)
-    {
-        if (loc[0] == it->get_name())
-            allow_method = it->get_allow_method();
-    }
-    for (std::vector<std::string>::iterator it = allow_method.begin(); it != allow_method.end(); it++)
-    {
-        std::cout << *it << std::endl;
-		if (*it == this->_method)
-            count++;
-    }
-    if (!count)
-        return find_pair(405);
-    //si longueur body depasse le max size > error 413
-    if (this->_method == "PUT")
-        return find_pair(201);
-    return find_pair(200);
+	if (loc_name != "/")
+		loc_name = ft_cpp_split(loc_name, "/").front();
+	loc_name.insert(0, "/");
+
+	this->_method = request.getRequest()._method;
+	if (!is_allowed_in_location(server, loc_name) && !is_allowed_in_extension(server))
+		return find_pair(405);
+	if (this->_method == "PUT")
+		return find_pair(201);
+	return find_pair(200);
 }
 
-std::pair<int, std::string> Response::find_pair(int code)
+bool	Response::is_allowed_in_extension(Server const &server)
 {
-	std::map<int, std::string> map_error;
-
-	map_error.insert(std::make_pair(200, "200 OK"));
-	map_error.insert(std::make_pair(201, "201 Created"));
-	map_error.insert(std::make_pair(204, "204 No Content"));
-	map_error.insert(std::make_pair(300, "300 Multiple Choices"));
-	map_error.insert(std::make_pair(301, "301 Moved Permanently"));
-	map_error.insert(std::make_pair(302, "302 Found"));
-	map_error.insert(std::make_pair(303, "303 See Other"));
-	map_error.insert(std::make_pair(307, "307 Temporary Redirect"));
-	map_error.insert(std::make_pair(400, "400 Bad Request"));
-	map_error.insert(std::make_pair(404, "404 Not Found"));
-	map_error.insert(std::make_pair(405, "405 Method Not Allowed"));
-	map_error.insert(std::make_pair(408, "408 Request Timeout"));
-	map_error.insert(std::make_pair(411, "411 Length Required"));
-	map_error.insert(std::make_pair(413, "413 Request Entity Too Large"));
-	map_error.insert(std::make_pair(414, "414 Request-URI Too Long"));
-	map_error.insert(std::make_pair(500, "500 Internal Server Error"));
-	map_error.insert(std::make_pair(502, "502 Bad Gateway"));
-	map_error.insert(std::make_pair(505, "505 HTTP Version Not Supported"));
-
-	std::map<int, std::string>::iterator it = map_error.find(code);
-	return (std::make_pair(it->first, it->second));
+	std::vector<Location> locations = server.get_location();
+	std::vector<std::string> allow_method = server.get_allow_method();
+	std::string ext = ft_cpp_split(_content_location, ".").back();
+	ext.insert(0, ".");
+	for (std::vector<Location>::iterator it = locations.begin(); it != locations.end(); it++)
+	{
+		if (ext == it->get_name())
+			allow_method = it->get_allow_method();
+	}
+	for (std::vector<std::string>::iterator it = allow_method.begin(); it != allow_method.end(); it++)
+	{
+		std::cout << *it << std::endl;
+		if (*it == this->_method)
+			return true;
+	}
+	return false;
 }
 
-std::string Response::get_header(void) const { return this->_header; }
-std::string Response::get_response(void) const { return this->_response; }
-
+bool	Response::is_allowed_in_location(Server const &server, std::string loc_name)
+{
+	std::vector<Location> locations = server.get_location();
+	std::vector<std::string> allow_method = server.get_allow_method();
+	//si le path est une location
+	for (std::vector<Location>::iterator it = locations.begin(); it != locations.end(); it++)
+	{
+		if (loc_name == it->get_name())
+			allow_method = it->get_allow_method();
+	}
+	for (std::vector<std::string>::iterator it = allow_method.begin(); it != allow_method.end(); it++)
+	{
+		std::cout << *it << std::endl;
+		if (*it == this->_method)
+			return true;
+	}
+	return false;
+}
 
 void Response::call_method()
 {
@@ -139,7 +128,9 @@ void Response::run_get_method(void)
 	ifs.close();
 
 	this->_content_length = _response.size();
-	this->_content_type = "text/html"; // a modifier avec une fonction en fonction du ype
+
+	std::cout << RED << _content_type << "location " << _content_location << RESET << std::endl;
+	this->_content_type = init_mime_types(); // a modifier avec une fonction en fonction du ype
 	this->_date = set_date();
 
 	set_header();
@@ -231,3 +222,108 @@ const char *Response::FileNotOpen::what() const throw()
 {
 	return ("Error opening html file");
 }
+
+std::pair<int, std::string> Response::find_pair(int code)
+{
+	std::map<int, std::string> map_error;
+
+	map_error.insert(std::make_pair(200, "200 OK"));
+	map_error.insert(std::make_pair(201, "201 Created"));
+	map_error.insert(std::make_pair(204, "204 No Content"));
+	map_error.insert(std::make_pair(300, "300 Multiple Choices"));
+	map_error.insert(std::make_pair(301, "301 Moved Permanently"));
+	map_error.insert(std::make_pair(302, "302 Found"));
+	map_error.insert(std::make_pair(303, "303 See Other"));
+	map_error.insert(std::make_pair(307, "307 Temporary Redirect"));
+	map_error.insert(std::make_pair(400, "400 Bad Request"));
+	map_error.insert(std::make_pair(404, "404 Not Found"));
+	map_error.insert(std::make_pair(405, "405 Method Not Allowed"));
+	map_error.insert(std::make_pair(408, "408 Request Timeout"));
+	map_error.insert(std::make_pair(411, "411 Length Required"));
+	map_error.insert(std::make_pair(413, "413 Request Entity Too Large"));
+	map_error.insert(std::make_pair(414, "414 Request-URI Too Long"));
+	map_error.insert(std::make_pair(500, "500 Internal Server Error"));
+	map_error.insert(std::make_pair(502, "502 Bad Gateway"));
+	map_error.insert(std::make_pair(505, "505 HTTP Version Not Supported"));
+
+	std::map<int, std::string>::iterator it = map_error.find(code);
+	return (std::make_pair(it->first, it->second));
+}
+
+std::string		Response::init_mime_types()
+{
+    std::map<std::string, std::string> mime_types;
+
+	mime_types[".aac"]      = "audio/aac";
+	mime_types[".abw"]      = "application/x-abiword";
+	mime_types[".arc"]      = "application/octet-stream";
+	mime_types[".avi"]      = "video/x-msvideo";
+	mime_types[".azw"]      = "application/vnd.amazon.ebook";
+	mime_types[".bin"]      = "application/octet-stream";
+	mime_types[".bz"]       = "application/x-bzip";
+	mime_types[".bz2"]      = "application/x-bzip2";
+	mime_types[".csh"]      = "application/x-csh";
+	mime_types[".css"]      = "text/css";
+	mime_types[".csv"]      = "text/csv";
+	mime_types[".doc"]      = "application/msword";
+	mime_types[".epub"]     = "application/epub+zip";
+	mime_types[".gif"]      = "image/gif";
+	mime_types[".htm"]      = "text/html";
+	mime_types[".html"]     = "text/html";
+	mime_types[".ico"]      = "image/x-icon";
+	mime_types[".ics"]      = "text/calendar";
+	mime_types[".jar"]      = "Temporary Redirect";
+	mime_types[".jpeg"]     = "image/jpeg";
+	mime_types[".jpg"]      = "image/jpeg";
+	mime_types[".js"]       = "application/js";
+	mime_types[".json"]     = "application/json";
+	mime_types[".mid"]      = "audio/midi";
+	mime_types[".midi"]     = "audio/midi";
+	mime_types[".mpeg"]     = "video/mpeg";
+	mime_types[".mpkg"]     = "application/vnd.apple.installer+xml";
+	mime_types[".odp"]      = "application/vnd.oasis.opendocument.presentation";
+	mime_types[".ods"]      = "application/vnd.oasis.opendocument.spreadsheet";
+	mime_types[".odt"]      = "application/vnd.oasis.opendocument.text";
+	mime_types[".oga"]      = "audio/ogg";
+	mime_types[".ogv"]      = "video/ogg";
+	mime_types[".ogx"]      = "application/ogg";
+	mime_types[".png"]      = "image/png";
+	mime_types[".pdf"]      = "application/pdf";
+	mime_types[".ppt"]      = "application/vnd.ms-powerpoint";
+	mime_types[".rar"]      = "application/x-rar-compressed";
+	mime_types[".rtf"]      = "application/rtf";
+	mime_types[".sh"]       = "application/x-sh";
+	mime_types[".svg"]      = "image/svg+xml";
+	mime_types[".swf"]      = "application/x-shockwave-flash";
+	mime_types[".tar"]      = "application/x-tar";
+	mime_types[".tif"]      = "image/tiff";
+	mime_types[".tiff"]     = "image/tiff";
+	mime_types[".ttf"]      = "application/x-font-ttf";
+	mime_types[".txt"]      = "text/plain";
+	mime_types[".vsd"]      = "application/vnd.visio";
+	mime_types[".wav"]      = "audio/x-wav";
+	mime_types[".weba"]     = "audio/webm";
+	mime_types[".webm"]     = "video/webm";
+	mime_types[".webp"]     = "image/webp";
+	mime_types[".woff"]     = "application/x-font-woff";
+	mime_types[".xhtml"]    = "application/xhtml+xml";
+	mime_types[".xls"]      = "application/vnd.ms-excel";
+	mime_types[".xml"]      = "application/xml";
+	mime_types[".xul"]      = "application/vnd.mozilla.xul+xml";
+	mime_types[".zip"]      = "application/zip";
+	mime_types[".3gp"]      = "video/3gpp audio/3gpp";
+	mime_types[".3g2"]      = "video/3gpp2 audio/3gpp2";
+	mime_types[".7z"]       = "application/x-7z-compressed";
+
+	std::string ext = ft_cpp_split(_content_location, ".").back();
+	ext.insert(0, ".");
+	std::map<std::string, std::string>::iterator it = mime_types.find(ext);
+	if (it != mime_types.end())
+		return it->second;
+	else
+		return "text/html";
+	// return (it->second);
+}
+
+std::string Response::get_header(void) const { return this->_header; }
+std::string Response::get_response(void) const { return this->_response; }
