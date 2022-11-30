@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 10:10:56 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/29 12:54:44 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/11/30 11:52:40 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,13 @@
 #include "Socket.hpp"
 #include "Request.hpp"
 #include "Manager.hpp"
+
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
+#define BUFFER_SIZE 30720
 
 #define BOLD "\033[1m"
 #define RESET "\033[0m"

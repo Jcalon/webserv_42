@@ -13,7 +13,11 @@ class CGI
 
 	private:
 		std::map<std::string, std::string>	_env;
-		char **mapEnvToTab(void);
+		std::string							_inputbody;
+		std::string							_binary;
+		std::string							_target;
+
+		char 								**mapEnvToTab(void);
 
 };
 #endif
