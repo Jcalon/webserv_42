@@ -12,6 +12,7 @@ SRCS 	=	main.cpp \
 			Response.cpp \
 			Socket.cpp \
 			Manager.cpp \
+			CGI.cpp \
 			utils.cpp
 
 OBJS 		= $(addprefix $(OBJS_PATH), ${SRCS:.cpp=.o})
