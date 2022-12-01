@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:06:39 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/01 17:26:59 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/01 17:46:57 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,6 +158,8 @@ bool	Response::is_allowed_in_extension(Server const &server)
 {
 	std::vector<Location> locations = server.get_location();
 	std::vector<std::string> allow_method = server.get_allow_method();
+	if (_content_location.find(".") == std::string::npos)
+		return false;
 	std::string ext = ft_cpp_split(_content_location, ".").back();
 	ext.insert(0, ".");
 	for (std::vector<Location>::iterator it = locations.begin(); it != locations.end(); it++)
@@ -220,8 +222,6 @@ void Response::load_error_pages()
 
 void Response::run_get_method(void)
 {
-	std::cout << YELLOW << "CONTENT LOCATION " << _content_location << RESET << std::endl;
-	std::cout << YELLOW << "PATH " << _path << RESET << std::endl;
 	std::string			line;
 	bool 				autoindex = _server.get_autoindex();
 	std::vector<Location> locations = _server.get_location();
