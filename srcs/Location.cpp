@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   Location.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 12:22:21 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/30 14:35:04 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/01 15:55:46 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/utils.hpp"
 
-Location::Location(Server &serv): _root(""), _index("index.html")
+Location::Location(Server &serv): _root(""), _index(""), _cgi_dir(serv.get_cgi_dir())
 {
 	this->_autoindex = false;
 	this->_allow_method = serv.get_allow_method();
@@ -71,6 +71,7 @@ std::string Location::get_upload(void) const { return this->_upload; }
 std::vector<std::string> Location::get_allow_method(void) const { return this->_allow_method; }
 std::string Location::get_body_size(void) const { return this->_max_client_body_size;}
 std::string Location::get_index(void) const { return this->_index;}
+std::string Location::get_cgi_dir(void) const { return this->_cgi_dir;}
 std::map<std::string, std::string> Location::get_cgi_ext(void) const { return this->_cgi_ext; }
 bool Location::get_autoindex(void) const { return this->_autoindex; }
 

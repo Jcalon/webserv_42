@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 17:55:06 by jcalon            #+#    #+#             */
-/*   Updated: 2022/11/30 13:19:29 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/11/30 19:23:08 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,27 +92,52 @@ Request::Request(const std::string & request): _request(request), _fields(), _in
 		}
 		else
 			throw(throwMessage("Not valid header "));
-		std::vector<std::string>::iterator it = this->_fields.begin();
-		for (; it != this->_fields.end(); it++)
-		{
-			if (*it == "\r")
-			{
-				it++;
-				for (; it != this->_fields.end(); it++)
-					this->_body += *it;
-				break;
-			}
-		}
+		if (_request.find("Transfer-Encoding: chunked") != std::string::npos)
+			parseChunkedBody();
+		else
+			parseBody();
 	}
 	catch (const std::exception& e)
 	{
 		throwError(e);
 		throw(throwMessage("Can't parse header."));
 	}
+	
 }
 
 Request::~Request()
 {
+}
+
+void	Request::parseBody()
+{
+	std::vector<std::string>::iterator it = this->_fields.begin();
+	for (; it != this->_fields.end(); it++)
+	{
+		if (*it == "\r")
+		{
+			it++;
+			for (; it != this->_fields.end(); it++)
+				this->_body += *it;
+			break;
+		}
+	}
+}
+
+void	Request::parseChunkedBody()
+{
+	std::string	chunks = _request.substr(_request.find("\r\n\r\n") + 4, _request.size() - 1);
+	std::string	subchunk = chunks.substr(0, 100);
+	int			chunksize = strtol(subchunk.c_str(), NULL, 16);
+	size_t		i = 0;
+	while (chunksize)
+	{
+		i = chunks.find("\r\n", i) + 2;
+		_body += chunks.substr(i, chunksize);
+		i += chunksize + 2;
+		subchunk = chunks.substr(i, 100);
+		chunksize = strtol(subchunk.c_str(), NULL, 16);
+	}
 }
 
 std::string	Request::getRawRequest() const

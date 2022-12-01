@@ -196,38 +196,83 @@ long Socket::sendResponse(long socket)
 {
 	try
 	{
-		Request request = Request(_receivedMessage);
-		// std::cout << BLUE << request << RESET;
-		std::ostringstream ss;
-		ss << "------ Received Request from client ------\n\n";
-		log(ss.str());
-
-
-		Response response(request, getServer());
-		response.call_method();
-		std::ostringstream sts;
-		if (request.getRequest()._method == "HEAD")
+		if (_sent.find(socket) == _sent.end())
 		{
-			sts << response.get_header() << "\r\n";
-			std::cout << GREEN << response.get_header() << "\r\n" << response.get_response() << RESET << std::endl;
+			Request request = Request(_receivedMessage);
+			_receivedMessage = "";
+			log("------ Received Request from client ------\n\n");
+			_sent[socket] = 0;
+			Response response(request, getServer());
+			response.call_method();
+			std::ostringstream sts;
+			if (request.getRequest()._method == "HEAD")
+				sts << response.get_header() << "\r\n\r\n";
+			else
+				sts << response.get_header() << "\r\n\r\n" << response.get_response();
+			_socketMessage[socket] = sts.str();
+			std::cout << _socketMessage[socket].length() << std::endl;
+		}
+		std::string chunked = _socketMessage[socket].substr(_sent[socket], SOCKET_MAX);
+		long bytesSent;
+		bytesSent = send(socket, chunked.c_str(), chunked.length(), 0);
+		if (bytesSent == -1)
+		{
+			close(socket);
+			_sent[socket] = 0;
+			_socketMessage.erase(socket);
+			return (-1);
 		}
 		else
 		{
-			sts << response.get_header() << "\r\n" << response.get_response();
-			std::cout << GREEN << response.get_header() << "\r\n" << RESET << std::endl;
+			_sent[socket] += bytesSent;
+			if (_sent[socket] >= _socketMessage[socket].size())
+			{
+				if (_socketMessage[socket].size() < 2000)
+					std::cout << GREEN << "\r\n" << _socketMessage[socket] << "\r\n" << RESET << std::endl;
+				else
+					std::cout << GREEN << "\r\n" << _socketMessage[socket].substr(0, 500) << "\r\n" << RESET << std::endl;
+				_socketMessage.erase(socket);
+				_sent.erase(socket);
+				return (0);
+			}
+			else
+				return (1);
 		}
+		// Request request = Request(_receivedMessage);
+		// // std::cout << BLUE << request << RESET;
+		// std::ostringstream ss;
+		// ss << "------ Received Request from client ------\n\n";
+		// log(ss.str());
 
-		unsigned long bytesSent;
-		bytesSent = send(socket, sts.str().c_str(), sts.str().length(), 0);
 
-		if (bytesSent == sts.str().size())
-		{
-			log("------ Socket Response sent to client ------\n\n");
-		}
-		else
-		{
-			log("Error sending response to client");
-		}
+		// Response response(request, getServer());
+		// response.call_method();
+		// std::ostringstream sts;
+		// if (request.getRequest()._method == "HEAD")
+		// {
+		// 	sts << response.get_header() << "\r\n\r\n";
+		// 	std::cout << GREEN << response.get_header() << "\r\n\r\n" << RESET << std::endl;
+		// }
+		// else
+		// {
+		// 	sts << response.get_header() << "\r\n" << response.get_response() << "\r\n";
+		// 	if (response.get_response().size() < 2000)
+		// 		std::cout << GREEN << response.get_header()  << "\r\n" << response.get_response() << "\r\n" << RESET << std::endl;
+		// 	else
+		// 		std::cout << GREEN << response.get_header()  << "\r\n" << response.get_response().substr(0, 500) << "\r\n" << RESET << std::endl;
+		// }
+
+		// unsigned long bytesSent;
+		// bytesSent = send(socket, sts.str().c_str(), sts.str().length(), 0);
+
+		// if (bytesSent == sts.str().length())
+		// {
+		// 	log("------ Socket Response sent to client ------\n\n");
+		// }
+		// else
+		// {
+		// 	log("Error sending response to client");
+		// }
 	}
 	catch (const std::exception& e)
 	{

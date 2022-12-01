@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 11:55:43 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/01 12:27:26 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/01 15:45:39 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,17 +18,20 @@
 class Autoindex
 {
 	public:
-		Autoindex(void);
-		Autoindex(char *argv);
+		Autoindex(std::string const &path);
 		~Autoindex(void);
 
+		std::string			get_html(void) const;
+		void 				read_directory(void);
+		void				creation_href(void);
+		void				insert_html(void);
+
 	private:
-		std::vector<std::string>	_list;
+		std::vector<std::string>	_list_name;
+		std::vector<std::string>	_list_href;
 		std::string					_html;
 		std::string					_path;
 
 };
-
-std::ostream &operator<<(std::ostream &o, Config const &rhs);
 
 #endif

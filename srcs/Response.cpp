@@ -5,29 +5,39 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/22 17:48:13 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/01 12:23:48 by mbascuna         ###   ########.fr       */
+/*   Created: 2022/12/01 12:35:38 by mbascuna          #+#    #+#             */
+/*   Updated: 2022/12/01 16:00:46 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/utils.hpp"
 
-Response::Response(Request const &request, Server const &server)
+Response::Response(Request const &request, Server const &server): _server(server), _request(request)
 {
 	this->_http = request.getRequest()._http;
 	this->_response = "\r\n";
 	this->_content_length = 0;
 	// if (!server->get_autoindex()){
-		if (request.getRequest()._target == "/")
-			this->_content_location = server.get_index();
-		else
-			this->_content_location = server.get_index_path(request.getRequest()._target);
+	// if (request.getRequest()._target != "/")
+	// 	this->_content_location = request.getRequest()._target + "/";
+	// else
+	// 	this->_content_location = request.getRequest()._target;
+	// this->_path = server.get_index_path(request.getRequest()._target);
+	this->_content_location = request.getRequest()._target;
 	// }
+	// if (request.getRequest()._target == "/")
+	// 	this->_content_location = request.getRequest()._target;
+	// else
+	this->_path = server.get_index_path(request.getRequest()._target);
 	this->_code_status = allow_method(request, server, request.getRequest()._target);
 	this->_content_type = "";
 	this->_header = "";
+	this->_cgi = test_cgi(server, request.getRequest()._target);
 	parse_body(request.getBody());
 }
+
+//content_location = URL de Request => besoin pour lautoindex
+//path == path entier construit avec root pour ifs => ce qui sort de get_index_path
 
 Response::~Response() {}
 
@@ -44,11 +54,58 @@ void Response::parse_body(std::string fields)
 		for (std::vector<std::string>::iterator it = tmp.begin(); it != tmp.end(); it++)
 		{
 			std::vector<std::string> map = ft_cpp_split(*it, "=");
-			this->_body.insert(make_pair(map[0], map[1]));
+			if (map.size() > 1)
+				this->_body.insert(make_pair(map[0], map[1]));
+			else
+				this->_body.insert(make_pair("1", map[0]));
 		}
 		// for (std::map<std::string, std::string>::iterator it = _body.begin(); it != _body.end(); it++)
 		// 	std::cout << YELLOW << "map[" << it->first << "] = " << it->second << std::endl;
 	}
+}
+
+bool	Response::test_cgi(Server const &server, std::string loc_name)
+{
+	if (this->_method == "POST" && this->_code_status.first == 200)
+	{
+		if (loc_name != "/")
+			loc_name = ft_cpp_split(loc_name, "/").front();
+		loc_name.insert(0, "/");
+		if (is_cgi_in_location(server, loc_name) || is_cgi_in_extension(server))
+			return true;
+	}
+	return false;
+}
+
+bool	Response::is_cgi_in_extension(Server const &server)
+{
+	std::vector<Location> locations = server.get_location();
+	std::string ext = ft_cpp_split(_content_location, ".").back();
+	ext.insert(0, ".");
+	for (std::vector<Location>::iterator it = locations.begin(); it != locations.end(); it++)
+	{
+		if (ext == it->get_name() && it->get_cgi_dir() != "")
+		{
+			this->_binary = it->get_cgi_dir();
+			return true;
+		}
+	}
+	return false;
+}
+
+bool	Response::is_cgi_in_location(Server const &server, std::string loc_name)
+{
+	std::vector<Location> locations = server.get_location();
+	//si le path est une location
+	for (std::vector<Location>::iterator it = locations.begin(); it != locations.end(); it++)
+	{
+		if (loc_name == it->get_name() && it->get_cgi_dir() != "")
+		{
+			this->_binary = it->get_cgi_dir();
+			return true;
+		}
+	}
+	return false;
 }
 
 std::pair<int, std::string> Response::allow_method(Request const &request, Server const &server, std::string loc_name)
@@ -131,16 +188,32 @@ void Response::load_error_pages()
 
 void Response::run_get_method(void)
 {
-	std::ifstream		ifs(_content_location.c_str());
+	std::cout << YELLOW << "CONTENT LOCATION " << _content_location << RESET << std::endl;
+	std::cout << YELLOW << "PATH " << _path << RESET << std::endl;
 	std::string			line;
+	bool 				autoindex = _server.get_autoindex();
+	std::vector<Location> locations = _server.get_location();
 
-//	if autoindex = on
-	//Autoindex(_request.getRequest()._target, content_location)
-	if (!ifs.is_open())
-		this->_code_status = find_pair(404);
-	while (std::getline(ifs, line, char(ifs.eof())))
-		this->_response.append(line);
-	ifs.close();
+
+	for (std::vector<Location>::iterator it = locations.begin(); it != locations.end(); it++)
+	{
+		if (this->_content_location == it->get_name())
+			autoindex = it->get_autoindex();
+	}
+	if (autoindex)
+	{
+		Autoindex autoindex(_path);
+		this->_response = autoindex.get_html();
+	}
+	else
+	{
+		std::ifstream		ifs(_path.c_str());
+		if (!ifs.is_open())
+			this->_code_status = find_pair(404);
+		while (std::getline(ifs, line, char(ifs.eof())))
+			this->_response.append(line);
+		ifs.close();
+	}
 	if (_code_status.first != 200)
 		load_error_pages();
 	this->_content_length = _response.size();
@@ -158,9 +231,11 @@ void Response::run_head_method(void)
 
 void Response::run_post_method(void)
 {
-	if (_code_status.first == 200)
+	if (_code_status.first == 200 && _cgi == true)
+		run_cgi_method();
+	else if (_code_status.first == 200)
 	{
-		std::ifstream		ifs(_content_location.c_str());
+		std::ifstream		ifs(_path.c_str());
 		std::string	line;
 
 		if (!ifs.is_open())
@@ -177,24 +252,60 @@ void Response::run_post_method(void)
 		}
 		ifs.close();
 
-		std::ofstream		ofs(_content_location.c_str());
+		std::ofstream		ofs(_path.c_str());
 		ofs << _response;
 		ofs.close();
+		this->_content_length = _response.size();
+		this->_content_type = "text/html"; // a modifier avec une fonction en fonction du ype
+		this->_date = set_date();
+		set_header();
 	}
 	else
+	{
 		this->_response = "";
+		this->_content_length = _response.size();
+		this->_content_type = "text/html"; // a modifier avec une fonction en fonction du ype
+		this->_date = set_date();
+		set_header();
+	}
+}
 
+void Response::run_cgi_method(void)
+{
+	std::string 	output;
+
+	CGI cgi(this->_request, this->_server, this->_binary);
+	output = cgi.interpreter();
+
+	std::istringstream			origStream(output);
+	std::string					line;
+	bool						header = true;
+	std::string					headerfromcgi = "";
+	this->_response = "";
+
+	while (std::getline(origStream, line))
+	{
+		if (line == "\r")
+			header = false;
+		else
+		{
+			if (header && ft_cpp_split(line, ":").size() == 2)
+				headerfromcgi += line;
+			else if (!header)
+				this->_response += line;
+		}
+	}
 	this->_content_length = _response.size();
-	this->_content_type = "text/html"; // a modifier avec une fonction en fonction du ype
 	this->_date = set_date();
 	set_header();
+	this->_header += headerfromcgi;
 }
 
 void Response::run_put_method(void)
 {
 	if (_code_status.first == 201)
 	{
-		std::ofstream		ofs(_content_location.c_str());
+		std::ofstream		ofs(_path.c_str());
 		std::string	line;
 
 		if (!ofs.is_open())
@@ -214,9 +325,10 @@ void	Response::set_header(void)
 	this->_header = this->_http + " " + this->_code_status.second;
 	this->_header += "\r\nContent-Length: " + ft_to_string(this->_content_length);
 	this->_header += "\r\nContent-Location: " + this->_content_location;
-	this->_header += "\r\nContent-Type: " + this->_content_type;
+	if (this->_cgi == false)
+		this->_header += "\r\nContent-Type: " + this->_content_type;
 	this->_header += "\r\nDate: " + this->_date;
-	this->_header += "\nServer: webserv\r\n";
+	this->_header += "\r\nServer: webserv\r\n";
 	// this->_header += RED "\nTransfer-Encoding: ??????\n\r" RESET;
 }
 
@@ -340,3 +452,4 @@ std::string		Response::init_mime_types()
 
 std::string Response::get_header(void) const { return this->_header; }
 std::string Response::get_response(void) const { return this->_response; }
+

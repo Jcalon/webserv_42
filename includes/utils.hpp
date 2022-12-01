@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 10:10:56 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/30 14:36:43 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/01 12:49:06 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@
 #include <sstream>
 #include <string>
 #include <cstring>
+#include <dirent.h>
 
 #include <string>
 #include <vector>
@@ -42,7 +43,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-
+#include "Autoindex.hpp"
 #include "Location.hpp"
 #include "Server.hpp"
 #include "Config.hpp"
@@ -59,6 +60,7 @@
 #include <sys/wait.h>
 
 #define BUFFER_SIZE 30720
+#define SOCKET_MAX	1000000
 
 #define BOLD "\033[1m"
 #define RESET "\033[0m"

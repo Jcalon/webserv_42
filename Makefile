@@ -13,7 +13,8 @@ SRCS 	=	main.cpp \
 			Socket.cpp \
 			Manager.cpp \
 			CGI.cpp \
-			utils.cpp
+			utils.cpp \
+			Autoindex.cpp
 
 OBJS 		= $(addprefix $(OBJS_PATH), ${SRCS:.cpp=.o})
 DEPS		= $(OBJS:.o=.d)

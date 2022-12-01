@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 12:22:34 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/30 14:35:38 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/01 15:55:10 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,10 @@
 
 Server::Server(void) {
 	this->_ip_address = "0.0.0.0";
-	this->_index = "index.html";
+	this->_index = "";
 	this->_listen.push_back("80");
 	this->_autoindex = false;
+	this->_cgi_dir = "";
 	init_error_pages();
 	init_allow_methods();
 }
@@ -135,29 +136,29 @@ std::string 						Server::get_index_path(std::string location) const
 {
 	std::vector<Location> 		tmp = get_location();
 	std::vector<std::string> 	split_path = ft_cpp_split(location, "/");
-	std::string 				path = "";
+	std::string 				path = get_root();
 
+	if (split_path.size() < 1)
+		return get_root() + "/";
 	for (std::vector<std::string>::iterator it = split_path.begin(); it != split_path.end(); it++)
 		it->insert(0, "/");
-
 	for (std::vector<Location>::iterator it = tmp.begin(); it != tmp.end(); it++)
 	{
 		if (it->get_name() == split_path[0])
 		{
 			if (it->get_root() != "")
 				path = it->get_root();
+			struct stat check;
+			lstat(path.c_str(), &check);
+			if (it->get_index() != "" && S_ISDIR(check.st_mode) && split_path.size() < 2)
+				path += it->get_name() + "/" + it->get_index();
 			else
-				path = get_root();
-
+				path += it->get_name();
 			for (std::vector<std::string>::iterator itsplit = split_path.begin()+1; itsplit != split_path.end(); itsplit++)
 			{
 				if (*itsplit != "/")
 					path += *itsplit;
 			}
-			struct stat check;
-			lstat(path.c_str(), &check);
-			if (it->get_index() != "" && S_ISDIR(check.st_mode))
-				path += "/" + it->get_index();
 			return path;
 		}
 	}
