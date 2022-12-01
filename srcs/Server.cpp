@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:07:29 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/01 17:47:24 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/01 18:15:16 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,8 +169,13 @@ std::string 						Server::get_index_path(std::string location) const
 					if (*itsplit != "/")
 						path += *itsplit;
 				}
+				struct stat tst;
+				lstat(path.c_str(), &tst);
+				std::cout << BLUE << path << RESET << std::endl;
+				if (S_ISDIR(tst.st_mode) && it->get_index() != "")
+					path += "/" + it->get_index();
 			}
-			else if (!S_ISDIR(check.st_mode) && it->get_index() != "")
+			else if (S_ISDIR(check.st_mode) && it->get_index() != "")
 				path += "/" + it->get_index();
 			std::cout << RED << path << RESET << std::endl;
 			return path;
