@@ -129,15 +129,8 @@ int Socket::startSocket()
 
 long Socket::acceptConnection()
 {
-	_new_socket = accept(_socket, (sockaddr *)&_socketAddress, &_socketAddress_len);
+	_new_socket = accept(_socket, NULL, NULL);
 	fcntl(_socket, F_SETFL, O_NONBLOCK);
-	if (_new_socket < 0)
-	{
-		std::ostringstream ss;
-		// ss << "Socket failed to accept incoming connection from ADDRESS: " << "0.0.0.0" << "; PORT: " << ntohs(_socketAddress.sin_port);
-		// exitWithError(ss.str());
-		return 1;
-	}
 	return _new_socket;
 }
 
@@ -147,33 +140,35 @@ long Socket::receiveMessage(long socket)
 	long ret;
 
 	ret = recv(socket, buffer, BUFFER_SIZE - 1, 0);
-	if (ret == -1)
+	if (ret == 0 || ret == -1)
 	{
+		_receivedMessage.erase(socket);
 		close(socket);
-		std::cout << "Failed to read bytes from client socket connection" << std::endl;
+		if (ret == -1)
+			std::cout << "Failed to read bytes from client socket connection" << std::endl;
+		else
+			std::cout << "Connection closed" << std::endl;
 		return -1;
 	}
-	else if (ret == 0)
-		return -1;
-	_receivedMessage += std::string(buffer);
+	_receivedMessage[socket] += std::string(buffer);
 
 	ret = 0;
-	size_t i = _receivedMessage.find("\r\n\r\n");
+	size_t i = _receivedMessage[socket].find("\r\n\r\n");
 	if (i != std::string::npos)
 	{
-		if (_receivedMessage.find("Transfer-Encoding: chunked") != std::string::npos)	// Si on a Transfer-Encoding: chunked, y a une prio. Si on recoit la fin du chunked message, on arrete de receive peinard.
+		if (_receivedMessage[socket].find("Transfer-Encoding: chunked") != std::string::npos)	// Si on a Transfer-Encoding: chunked, y a une prio. Si on recoit la fin du chunked message, on arrete de receive peinard.
 		{
-			if (receivedLastChunk(_receivedMessage))
+			if (receivedLastChunk(_receivedMessage[socket]))
 				ret = 0;
 			else
 				ret = 1;
 		}
-		else if (_receivedMessage.find("Content-Length: ") != std::string::npos)		//On check la Content-Length.
+		else if (_receivedMessage[socket].find("Content-Length: ") != std::string::npos)		//On check la Content-Length.
 		{
-			size_t len = extractContentLength(_receivedMessage);
-			if (_receivedMessage.size() >= i + 4 + len)
+			size_t len = extractContentLength(_receivedMessage[socket]);
+			if (_receivedMessage[socket].size() >= i + 4 + len)
 			{
-				_receivedMessage = _receivedMessage.substr(0, i + 4 + len); // On drop tout le superflu apres la Content-Length
+				_receivedMessage[socket] = _receivedMessage[socket].substr(0, i + 4 + len); // On drop tout le superflu apres la Content-Length
 				ret = 0;
 			}
 			else
@@ -185,21 +180,21 @@ long Socket::receiveMessage(long socket)
 	else
 		ret = 1;
 
-	if (ret == 0 && _receivedMessage.size() < 2000)
-		std::cout << std::endl << "------ Received request ------" << std::endl << "[" << std::endl << _receivedMessage << "]" << std::endl << std::endl;
-	else if (ret == 0 && _receivedMessage.size() >= 2000)
-		std::cout << std::endl << "------ Received request ------" << std::endl << "[" << std::endl << _receivedMessage.substr(0, 500) << "...]" << std::endl << std::endl;
+	if (ret == 0 && _receivedMessage[socket].size() < 2000)
+		std::cout << std::endl << "------ Received request ------" << std::endl << "[" << std::endl << _receivedMessage[socket] << "]" << std::endl << std::endl;
+	else if (ret == 0 && _receivedMessage[socket].size() >= 2000)
+		std::cout << std::endl << "------ Received request ------" << std::endl << "[" << std::endl << _receivedMessage[socket].substr(0, 500) << "...]" << std::endl << std::endl;
 	return (ret);
 }
 
 long Socket::sendResponse(long socket)
 {
-	try
-	{
+	// try
+	// {
 		if (_sent.find(socket) == _sent.end())
 		{
-			Request request = Request(_receivedMessage);
-			_receivedMessage = "";
+			Request request = Request(_receivedMessage[socket]);
+			_receivedMessage.erase(socket);
 			log("------ Received Request from client ------\n\n");
 			_sent[socket] = 0;
 			Response response(request, getServer());
@@ -210,7 +205,6 @@ long Socket::sendResponse(long socket)
 			else
 				sts << response.get_header() << "\r\n\r\n" << response.get_response();
 			_socketMessage[socket] = sts.str();
-			std::cout << _socketMessage[socket].length() << std::endl;
 		}
 		std::string chunked = _socketMessage[socket].substr(_sent[socket], SOCKET_MAX);
 		long bytesSent;
@@ -273,13 +267,12 @@ long Socket::sendResponse(long socket)
 		// {
 		// 	log("Error sending response to client");
 		// }
-	}
-	catch (const std::exception& e)
-	{
-		std::cerr << &e << std::endl;
-	}
-	_receivedMessage = "";
-	return 0;
+	// }
+	// catch (const std::exception& e)
+	// {
+	// 	std::cerr << &e << std::endl;
+	// }
+	// return 0;
 	// Response				response; a la place de ce qu'il y a dans cette fct
 
 }
@@ -292,4 +285,9 @@ int			Socket::getSocket() const
 Server 	Socket::getServer() const
 {
 	return this->_server;
+}
+
+void	Socket::resetSocket(long socket)
+{
+	_receivedMessage.erase(socket);
 }

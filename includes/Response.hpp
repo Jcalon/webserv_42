@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/22 17:48:22 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/01 13:16:37 by mbascuna         ###   ########.fr       */
+/*   Created: 2022/12/01 16:05:37 by mbascuna          #+#    #+#             */
+/*   Updated: 2022/12/01 16:05:45 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ class Response
 		bool						is_cgi_in_location(Server const &server, std::string loc_name);
 		bool						is_allowed_in_extension(Server const &server);
 		bool						is_allowed_in_location(Server const &server, std::string loc_name);
+		bool						is_max_size_in_extension(Request const &request, Server const &server);
+		bool						is_max_size_in_location(Request const &request, Server const &server, std::string loc_name);
 		std::string					init_mime_types(void);
 		void						load_error_pages(void);
 

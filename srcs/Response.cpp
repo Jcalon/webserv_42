@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/01 12:35:38 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/01 16:00:46 by mbascuna         ###   ########.fr       */
+/*   Created: 2022/12/01 16:06:39 by mbascuna          #+#    #+#             */
+/*   Updated: 2022/12/01 16:07:21 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,11 +115,43 @@ std::pair<int, std::string> Response::allow_method(Request const &request, Serve
 	loc_name.insert(0, "/");
 
 	this->_method = request.getRequest()._method;
+	if (!is_max_size_in_location(request, server, loc_name) || !is_max_size_in_extension(request, server))
+		return find_pair(413);
 	if (!is_allowed_in_location(server, loc_name) && !is_allowed_in_extension(server))
 		return find_pair(405);
 	if (this->_method == "PUT")
 		return find_pair(201);
 	return find_pair(200);
+}
+
+bool	Response::is_max_size_in_extension(Request const &request, Server const &server)
+{
+	std::vector<Location> locations = server.get_location();
+	std::string max_size = server.get_body_size();
+	std::string ext = ft_cpp_split(_content_location, ".").back();
+	ext.insert(0, ".");
+	for (std::vector<Location>::iterator it = locations.begin(); it != locations.end(); it++)
+	{
+		if (ext == it->get_name())
+			max_size = it->get_body_size();
+	}
+	if ((max_size != "" && ft_str_to_int(max_size) >= request.getBody().length()) || max_size == "")
+		return true;
+	return false;
+}
+
+bool	Response::is_max_size_in_location(Request const &request, Server const &server, std::string loc_name)
+{
+	std::vector<Location> locations = server.get_location();
+	std::string max_size = server.get_body_size();
+	for (std::vector<Location>::iterator it = locations.begin(); it != locations.end(); it++)
+	{
+		if (loc_name == it->get_name())
+			max_size = it->get_body_size();
+	}
+	if ((max_size != "" && ft_str_to_int(max_size) >= request.getBody().length()) || max_size == "")
+		return true;
+	return false;
 }
 
 bool	Response::is_allowed_in_extension(Server const &server)
@@ -233,33 +265,34 @@ void Response::run_post_method(void)
 {
 	if (_code_status.first == 200 && _cgi == true)
 		run_cgi_method();
-	else if (_code_status.first == 200)
-	{
-		std::ifstream		ifs(_path.c_str());
-		std::string	line;
 
-		if (!ifs.is_open())
-			throw Config::FileNotOpen();
-		while (std::getline(ifs, line, char(ifs.eof())))
-			this->_response = line;
+	// else if (_code_status.first == 200)
+	// {
+	// 	std::ifstream		ifs(_content_location.c_str());
+	// 	std::string	line;
 
-		for (std::map<std::string, std::string>::iterator it = _body.begin(); it != _body.end(); it++)
-		{
-			std::string balise = "<div id=\"com\">";
-			size_t pos = _response.find(balise);
-			std::string str = "<h4>" + it->first + "</h4><p>: " + it->second + "</p>\n";
-			_response.insert(pos+balise.size(), str);
-		}
-		ifs.close();
 
-		std::ofstream		ofs(_path.c_str());
-		ofs << _response;
-		ofs.close();
-		this->_content_length = _response.size();
-		this->_content_type = "text/html"; // a modifier avec une fonction en fonction du ype
-		this->_date = set_date();
-		set_header();
-	}
+	// 	if (!ifs.is_open())
+	// 		throw Config::FileNotOpen();
+	// 	while (std::getline(ifs, line, char(ifs.eof())))
+	// 		this->_response = line;
+
+	// 	for (std::map<std::string, std::string>::iterator it = _body.begin(); it != _body.end(); it++)
+	// 	{
+	// 		std::string balise = "<div id=\"com\">";
+	// 		size_t pos = _response.find(balise);
+	// 		std::string str = "<h4>" + it->first + "</h4><p>: " + it->second + "</p>\n";
+	// 		_response.insert(pos+balise.size(), str);
+	// 	}
+	// 	ifs.close();
+	// 	std::ofstream		ofs(_content_location.c_str());
+	// 	ofs << _response;
+	// 	ofs.close();
+	// 	this->_content_length = _response.size();
+	// 	this->_content_type = "text/html"; // a modifier avec une fonction en fonction du ype
+	// 	this->_date = set_date();
+	// 	set_header();
+	// }
 	else
 	{
 		this->_response = "";
@@ -277,13 +310,13 @@ void Response::run_cgi_method(void)
 	CGI cgi(this->_request, this->_server, this->_binary);
 	output = cgi.interpreter();
 
-	std::istringstream			origStream(output);
+	std::istringstream			stream(output);
 	std::string					line;
 	bool						header = true;
 	std::string					headerfromcgi = "";
 	this->_response = "";
 
-	while (std::getline(origStream, line))
+	while (std::getline(stream, line))
 	{
 		if (line == "\r")
 			header = false;

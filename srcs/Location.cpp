@@ -5,14 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/21 12:22:21 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/01 15:55:46 by mbascuna         ###   ########.fr       */
+/*   Created: 2022/12/01 16:05:58 by mbascuna          #+#    #+#             */
+/*   Updated: 2022/12/01 16:06:32 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/utils.hpp"
 
-Location::Location(Server &serv): _root(""), _index(""), _cgi_dir(serv.get_cgi_dir())
+Location::Location(Server &serv): _root(""), _index(""), _cgi_dir(serv.get_cgi_dir()), _max_client_body_size("")
 {
 	this->_autoindex = false;
 	this->_allow_method = serv.get_allow_method();

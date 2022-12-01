@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/22 10:10:56 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/01 12:49:06 by mbascuna         ###   ########.fr       */
+/*   Created: 2022/12/01 16:05:49 by mbascuna          #+#    #+#             */
+/*   Updated: 2022/12/01 16:05:54 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,9 @@
 std::vector<std::string> 	ft_cpp_split(const std::string &str, const std::string &charset);
 bool						ft_in_charset(char const c, const std::string &charset);
 std::string					ft_to_string(int i);
+std::string					ft_to_upper(std::string &str);
+std::string					replace(std::string src, std::string search, std::string replace);
+unsigned long				ft_str_to_int(std::string str);
 
 
 #endif
