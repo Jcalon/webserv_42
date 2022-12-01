@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 17:48:13 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/30 14:51:06 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/01 12:23:48 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,12 @@ Response::Response(Request const &request, Server const &server)
 	this->_http = request.getRequest()._http;
 	this->_response = "\r\n";
 	this->_content_length = 0;
-	if (request.getRequest()._target == "/")
-		this->_content_location = server.get_index();
-	else
-		this->_content_location = server.get_index_path(request.getRequest()._target);
+	// if (!server->get_autoindex()){
+		if (request.getRequest()._target == "/")
+			this->_content_location = server.get_index();
+		else
+			this->_content_location = server.get_index_path(request.getRequest()._target);
+	// }
 	this->_code_status = allow_method(request, server, request.getRequest()._target);
 	this->_content_type = "";
 	this->_header = "";
@@ -132,6 +134,8 @@ void Response::run_get_method(void)
 	std::ifstream		ifs(_content_location.c_str());
 	std::string			line;
 
+//	if autoindex = on
+	//Autoindex(_request.getRequest()._target, content_location)
 	if (!ifs.is_open())
 		this->_code_status = find_pair(404);
 	while (std::getline(ifs, line, char(ifs.eof())))
