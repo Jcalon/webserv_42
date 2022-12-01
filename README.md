@@ -2,18 +2,18 @@
 This project is about writing your own HTTP server in C++98.
 
 
-Affiner le parsing: variables par defaut,
+Affiner le parsing
 
-Locations peuvent avoir des locations nestees ==> a modifier
+LEAKS
 
+SIGNAL CTRL-C
 
-est ce qu'un server en ecrase un autre si 2 fois le meme dans le .conf ? ou prendre seulement le premier ?
+FAIRE UN BEAU SITE
 
-Gerer les error_pages
+CGI CUSTOM
 
+FAIRE MARCHER FAVICON
 
-Faire les CGI
-
-Tester
+TELNET
 
 URL avec server name???

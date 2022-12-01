@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:06:39 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/01 18:03:54 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/01 18:27:40 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -363,7 +363,7 @@ void	Response::set_header(void)
 	if (this->_cgi == false)
 		this->_header += "\r\nContent-Type: " + this->_content_type;
 	this->_header += "\r\nDate: " + this->_date;
-	this->_header += "\r\nServer: webserv\r\n";
+	this->_header += "\r\nServer: webserv";
 	// this->_header += RED "\nTransfer-Encoding: ??????\n\r" RESET;
 }
 
