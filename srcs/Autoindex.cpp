@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 11:57:18 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/01 18:19:59 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/01 18:22:39 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,11 +71,6 @@ void	Autoindex::insert_html(void)
 	}
 	_html += "</table><br/><hr>";
 }
-
-// void			Autoindex::addIndexLine(int line)
-// {
-// 	_html += "\n<tr><td><a href=\"" + _entries[line] + "\">		" + _list[line] + "</a></td><td style=\"padding-left: 250px;\">" + "</td></tr>";
-// }
 
 std::string Autoindex::get_html(void) const { return this->_html; }
 
