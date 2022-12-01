@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:07:29 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/01 16:07:32 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/01 17:36:27 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,10 +137,11 @@ std::string 						Server::get_index_path(std::string location) const
 {
 	std::vector<Location> 		tmp = get_location();
 	std::vector<std::string> 	split_path = ft_cpp_split(location, "/");
-	std::string 				path = get_root();
+	std::string 				path = "";
 
+	std::cout << "LOCATION " << location << std::endl;
 	if (split_path.size() < 1)
-		return get_root() + "/";
+		return get_root() + "/" + get_index();
 	for (std::vector<std::string>::iterator it = split_path.begin(); it != split_path.end(); it++)
 		it->insert(0, "/");
 	for (std::vector<Location>::iterator it = tmp.begin(); it != tmp.end(); it++)
@@ -149,17 +150,30 @@ std::string 						Server::get_index_path(std::string location) const
 		{
 			if (it->get_root() != "")
 				path = it->get_root();
+			else
+				path = this->get_root();
+
 			struct stat check;
-			lstat(path.c_str(), &check);
+			std::string loc = path + it->get_name();
+
+			std::cout << loc << std::endl;
+
+			lstat(loc.c_str(), &check);
 			if (it->get_index() != "" && S_ISDIR(check.st_mode) && split_path.size() < 2)
 				path += it->get_name() + "/" + it->get_index();
-			else
+			else if (S_ISDIR(check.st_mode))
 				path += it->get_name();
-			for (std::vector<std::string>::iterator itsplit = split_path.begin()+1; itsplit != split_path.end(); itsplit++)
+			if (split_path.size() >= 2)
 			{
-				if (*itsplit != "/")
-					path += *itsplit;
+				for (std::vector<std::string>::iterator itsplit = split_path.begin() + 1; itsplit != split_path.end(); itsplit++)
+				{
+					if (*itsplit != "/")
+						path += *itsplit;
+				}
 			}
+			else if (!S_ISDIR(check.st_mode) && it->get_index() != "")
+				path += "/" + it->get_index();
+			std::cout << RED << path << RESET << std::endl;
 			return path;
 		}
 	}
