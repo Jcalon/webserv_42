@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:07:29 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/01 18:15:16 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/01 18:24:24 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,7 +175,7 @@ std::string 						Server::get_index_path(std::string location) const
 				if (S_ISDIR(tst.st_mode) && it->get_index() != "")
 					path += "/" + it->get_index();
 			}
-			else if (S_ISDIR(check.st_mode) && it->get_index() != "")
+			else if (!S_ISDIR(check.st_mode) && it->get_index() != "")
 				path += "/" + it->get_index();
 			std::cout << RED << path << RESET << std::endl;
 			return path;
