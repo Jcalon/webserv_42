@@ -21,6 +21,18 @@ CGI::CGI(Request const &request, Server const &server, std::string binary)
 	_target = request.getRequest()._target;
 	_inputbody = request.getBody();
 
+
+	std::vector<std::string> tmp1 = request.getFields();
+	for (std::vector<std::string>::iterator it = tmp1.begin(); it != tmp1.end(); it++)
+	{
+		if (it->find(":") != std::string::npos)
+		{
+			std::vector<std::string> split = ft_cpp_split(*it, ": ");
+			ft_to_upper(split[0]);
+			split[0] = replace(split[0], "-", "_");
+			_env["HTTP_" + split[0]] = split[1];
+		}
+	}
 	_env["REDIRECT_STATUS"] = "200";
 	_env["GATEWAY_INTERFACE"] = "CGI/1.1";
 	_env["SCRIPT_NAME"] = server.get_cgi_dir();
@@ -40,6 +52,12 @@ CGI::CGI(Request const &request, Server const &server, std::string binary)
 	_env["SERVER_PORT"] = server.get_listen()[0];
 	_env["SERVER_PROTOCOL"] = "HTTP/1.1";
 	_env["SERVER_SOFTWARE"] = "webserv";
+
+	// std::map<std::string, std::string> tmp3 = _env;
+	// for (std::map<std::string, std::string>::iterator it = tmp3.begin(); it != tmp3.end(); it++)
+	// {
+	// 	std::cout << it->first << it->second << std::endl;
+	// }
 }
 
 

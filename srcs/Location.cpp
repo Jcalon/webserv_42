@@ -6,13 +6,13 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 12:22:21 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/30 17:21:43 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/01 14:38:27 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/utils.hpp"
 
-Location::Location(Server &serv): _root(""), _index("index.html"), _cgi_dir(serv.get_cgi_dir())
+Location::Location(Server &serv): _root(""), _index("index.html"), _cgi_dir(serv.get_cgi_dir()), _max_client_body_size("")
 {
 	this->_autoindex = false;
 	this->_allow_method = serv.get_allow_method();

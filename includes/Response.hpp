@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 17:48:22 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/01 11:49:51 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/01 14:53:37 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ class Response
 		bool						is_cgi_in_location(Server const &server, std::string loc_name);
 		bool						is_allowed_in_extension(Server const &server);
 		bool						is_allowed_in_location(Server const &server, std::string loc_name);
+		bool						is_max_size_in_extension(Request const &request, Server const &server);
+		bool						is_max_size_in_location(Request const &request, Server const &server, std::string loc_name);
 		std::string					init_mime_types(void);
 
 		class FileNotOpen : public std::exception

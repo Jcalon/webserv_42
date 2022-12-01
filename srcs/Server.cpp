@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 12:22:34 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/30 17:15:52 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/01 14:37:31 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ Server::Server(void) {
 	this->_listen.push_back("80");
 	this->_autoindex = false;
 	this->_cgi_dir = "";
+	this->_max_client_body_size = "";
 	init_error_pages();
 	init_allow_methods();
 }

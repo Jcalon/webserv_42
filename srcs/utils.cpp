@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 10:11:58 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/22 10:12:26 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/01 14:54:16 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,4 +54,35 @@ std::string	ft_to_string(int i)
 	ss << i;
 	std::string n = ss.str();
 	return n;
+}
+
+
+std::string	ft_to_upper(std::string &str)
+{
+	for (size_t i = 0; i < str.length(); i++)
+		str[i] = std::toupper(str[i]);
+	return (str);
+}
+
+std::string	replace(std::string src, std::string search, std::string replace)
+{
+	for (size_t pos = 0; ; pos += replace.length())
+	{
+		pos = src.find(search, pos);
+		if (pos == std::string::npos)
+			break ;
+		src.erase(pos, search.length());
+		src.insert(pos, replace);
+	}
+	return (src);
+}
+
+unsigned long	ft_str_to_int(std::string str)
+{
+	std::stringstream ss;
+	int num;
+	ss << str;
+	ss >> num;
+
+	return num;
 }

@@ -20,7 +20,7 @@ class Socket
         unsigned int				_socketAddress_len;
         std::map<long, std::string>	_socketMessage;
 		std::map<long, size_t>		_sent;
-		std::string					_receivedMessage;
+		std::map<long, std::string>	_receivedMessage;
 	
 	public:
         int		startSocket();
@@ -30,6 +30,7 @@ class Socket
 		int		getSocket() const;
 		Server 	getServer() const;
 		void	clean(void);
+		void	resetSocket(long socket);
 };
 
 #endif
