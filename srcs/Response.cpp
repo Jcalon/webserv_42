@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:06:39 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/01 17:46:57 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/01 18:03:54 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -240,7 +240,9 @@ void Response::run_get_method(void)
 	else
 	{
 		std::ifstream		ifs(_path.c_str());
-		if (!ifs.is_open())
+		struct stat check_bis;
+		lstat(_path.c_str(), &check_bis);
+		if (!ifs.is_open() || S_ISDIR(check_bis.st_mode))
 			this->_code_status = find_pair(404);
 		while (std::getline(ifs, line, char(ifs.eof())))
 			this->_response.append(line);

@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 11:57:18 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/01 15:46:02 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/01 17:53:28 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,12 @@ void	Autoindex::read_directory()
 void	Autoindex::creation_href(void)
 {
 	_list_href = _list_name;
+	// std::vector<std::string> path_noroot = ft_cpp_split()
 	for (std::vector<std::string>::iterator it = _list_href.begin(); it != _list_href.end(); it++)
+	{
+
 		*it = (_path[_path.size() - 1] == '/') ? _path + *it : _path + "/" + *it;
+	}
 
 }
 
