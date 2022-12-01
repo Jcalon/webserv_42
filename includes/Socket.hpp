@@ -12,14 +12,15 @@ class Socket
 		void startListen();
 
 	private:
-		Server 				_server;
-        int					_socket;
-        int					_new_socket;
-        long				_incomingMessage;
-        struct sockaddr_in	_socketAddress;
-        unsigned int		_socketAddress_len;
-        std::string			_SocketMessage;
-		std::string			_receivedMessage;
+		Server 						_server;
+        int							_socket;
+        int							_new_socket;
+        long						_incomingMessage;
+        struct sockaddr_in			_socketAddress;
+        unsigned int				_socketAddress_len;
+        std::map<long, std::string>	_socketMessage;
+		std::map<long, size_t>		_sent;
+		std::string					_receivedMessage;
 	
 	public:
         int		startSocket();

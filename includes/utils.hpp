@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 10:10:56 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/30 14:36:43 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/01 12:31:53 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@
 #include <sys/wait.h>
 
 #define BUFFER_SIZE 30720
+#define SOCKET_MAX	1000000
 
 #define BOLD "\033[1m"
 #define RESET "\033[0m"

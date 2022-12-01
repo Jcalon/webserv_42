@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 17:48:13 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/30 20:44:56 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/01 12:22:20 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,11 +189,7 @@ void Response::run_head_method(void)
 void Response::run_post_method(void)
 {
 	if (_code_status.first == 200 && _cgi == true)
-	{
-		CGI cgi(this->_request, this->_server, this->_binary);
-		this->_response = cgi.interpreter();
-		this->_response.insert(this->_response.find("\r\n\r\n"), "\r\n");
-	}
+		run_cgi_method();
 	else if (_code_status.first == 200)
 	{
 		std::ifstream		ifs(_content_location.c_str());
@@ -216,14 +212,50 @@ void Response::run_post_method(void)
 		std::ofstream		ofs(_content_location.c_str());
 		ofs << _response;
 		ofs.close();
+		this->_content_length = _response.size();
+		this->_content_type = "text/html"; // a modifier avec une fonction en fonction du ype
+		this->_date = set_date();
+		set_header();
 	}
 	else
+	{
 		this->_response = "";
+		this->_content_length = _response.size();
+		this->_content_type = "text/html"; // a modifier avec une fonction en fonction du ype
+		this->_date = set_date();
+		set_header();	
+	}
+}
 
+void Response::run_cgi_method(void)
+{
+	std::string 	output;
+
+	CGI cgi(this->_request, this->_server, this->_binary);
+	output = cgi.interpreter();
+
+	std::istringstream			origStream(output);
+	std::string					line;
+	bool						header = true;
+	std::string					headerfromcgi = "";
+	this->_response = "";
+
+	while (std::getline(origStream, line))
+	{
+		if (line == "\r")
+			header = false;
+		else
+		{
+			if (header && ft_cpp_split(line, ":").size() == 2)
+				headerfromcgi += line;
+			else if (!header)
+				this->_response += line;
+		}
+	}
 	this->_content_length = _response.size();
-	this->_content_type = "text/html"; // a modifier avec une fonction en fonction du ype
 	this->_date = set_date();
 	set_header();
+	this->_header += headerfromcgi;
 }
 
 void Response::run_put_method(void)
@@ -253,10 +285,7 @@ void	Response::set_header(void)
 	if (this->_cgi == false)
 		this->_header += "\r\nContent-Type: " + this->_content_type;
 	this->_header += "\r\nDate: " + this->_date;
-	if (this->_cgi == false)
-		this->_header += "\r\nServer: webserv\r\n";
-	else
-		this->_header += "\r\nServer: webserv";
+	this->_header += "\r\nServer: webserv\r\n";
 	// this->_header += RED "\nTransfer-Encoding: ??????\n\r" RESET;
 }
 

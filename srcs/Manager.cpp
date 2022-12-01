@@ -87,7 +87,7 @@ void			Manager::run(void)
 					
 					if (ret == 0)									// Envoi ok
 						_write_fds.erase(it);
-					else if (ret == 1)
+					else if (ret == -1)
 					{
 						FD_CLR(*it, &_fd_set);
 						FD_CLR(*it, &reading_set);

@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 17:48:22 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/30 17:40:13 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/01 11:49:51 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ class Response
 		void 						run_post_method(void);
 		void 						run_head_method(void);
 		void 						run_put_method(void);
+		void 						run_cgi_method(void);
 
 		std::string 				get_header(void) const;
 		std::string 				get_response(void) const;
