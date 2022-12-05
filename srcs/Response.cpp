@@ -17,17 +17,7 @@ Response::Response(Request const &request, Server const &server): _server(server
 	this->_http = request.getRequest()._http;
 	this->_response = "\r\n";
 	this->_content_length = 0;
-	// if (!server->get_autoindex()){
-	// if (request.getRequest()._target != "/")
-	// 	this->_content_location = request.getRequest()._target + "/";
-	// else
-	// 	this->_content_location = request.getRequest()._target;
-	// this->_path = server.get_index_path(request.getRequest()._target);
 	this->_content_location = request.getRequest()._target;
-	// }
-	// if (request.getRequest()._target == "/")
-	// 	this->_content_location = request.getRequest()._target;
-	// else
 	this->_path = server.get_index_path(request.getRequest()._target);
 	this->_code_status = allow_method(request, server, request.getRequest()._target);
 	this->_content_type = "";
@@ -35,9 +25,6 @@ Response::Response(Request const &request, Server const &server): _server(server
 	this->_cgi = test_cgi(server, request.getRequest()._target);
 	parse_body(request.getBody());
 }
-
-//content_location = URL de Request => besoin pour lautoindex
-//path == path entier construit avec root pour ifs => ce qui sort de get_index_path
 
 Response::~Response() {}
 
@@ -59,8 +46,6 @@ void Response::parse_body(std::string fields)
 			else
 				this->_body.insert(make_pair("1", map[0]));
 		}
-		// for (std::map<std::string, std::string>::iterator it = _body.begin(); it != _body.end(); it++)
-		// 	std::cout << YELLOW << "map[" << it->first << "] = " << it->second << std::endl;
 	}
 }
 
@@ -203,13 +188,14 @@ void Response::call_method()
 		run_head_method();
 	else if (this->_method == "PUT")
 		run_put_method();
-	// else if (method == "DELETE")
-	// 	run_delete_method();
+	else if (this->_method == "DELETE")
+		run_delete_method();
 }
 
 void Response::load_error_pages()
 {
 	std::string			line;
+	//doit ouvrir la page quil trouve dans le .conf donc avec un find pair 
 	std::string 		page = "www/error_pages/" + ft_to_string(_code_status.first) + ".html";
 	std::ifstream 		ifs(page.c_str());
 
@@ -225,14 +211,19 @@ void Response::run_get_method(void)
 	std::string			line;
 	bool 				autoindex = _server.get_autoindex();
 	std::vector<Location> locations = _server.get_location();
+	int index = 0;
 
 
 	for (std::vector<Location>::iterator it = locations.begin(); it != locations.end(); it++)
 	{
 		if (this->_content_location == it->get_name())
+		{
 			autoindex = it->get_autoindex();
+			if (it->get_index() != "")
+				index = 1;
+		}
 	}
-	if (autoindex)
+	if (autoindex && !index)
 	{
 		Autoindex autoindex(_path);
 		this->_response = autoindex.get_html();
@@ -261,6 +252,19 @@ void Response::run_get_method(void)
 void Response::run_head_method(void)
 {
 	run_get_method();
+}
+
+void Response::run_delete_method(void)
+{
+	if (remove(_path.c_str()) == 0)
+		this->_code_status = find_pair(204);
+	if (_code_status.first != 200)
+		load_error_pages();
+	this->_content_length = _response.size();
+	this->_content_type = init_mime_types(); // a modifier avec une fonction en fonction du ype
+	this->_date = set_date();
+
+	set_header();
 }
 
 void Response::run_post_method(void)

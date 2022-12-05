@@ -153,7 +153,7 @@ std::string 						Server::get_index_path(std::string location) const
 				path = this->get_root();
 
 			struct stat check;
-			std::string loc = path + it->get_name();
+			std::string loc = path + it->get_name() + "/";
 
 			std::cout << loc << std::endl;
 
@@ -179,7 +179,7 @@ std::string 						Server::get_index_path(std::string location) const
 			return path;
 		}
 	}
-	return location;
+	return path;
 }
 
 

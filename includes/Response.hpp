@@ -28,6 +28,7 @@ class Response
 		void 						run_head_method(void);
 		void 						run_put_method(void);
 		void 						run_cgi_method(void);
+		void						run_delete_method(void);
 
 		std::string 				get_header(void) const;
 		std::string 				get_response(void) const;

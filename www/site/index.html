@@ -1,25 +1,80 @@
 <!DOCTYPE html>
+
 <head>
 	<title>Webserv</title>
 	<meta charset="UTF-8">
-	<link rel="stylesheet" type="text/css" href="./style.css">
+	<script src="https://kit.fontawesome.com/191e243f28.js"></script>
+	<link rel="stylesheet" type="text/css" href="site/style.css">
 </head>
+
 <body>
-	<h1>🌊 Hello la Team 🌊</h1>
-	<p>lLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+	<h1>👾 Hello la Team 👾</h1>
+	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+		magna aliqua.
 		Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </p>
-	<div>
-		<form action="/" method="POST">
-			<p><input type="text" name="title" placeholder="title"/></p>
-			<p><textarea name="content" placeholder="description"></textarea></p>
-			<p><input type="submit" value="TEST"/></p>
-		</form>
-		<div id="com"><h4>title</h4><p>: vfcx</p>
-<h4>content</h4><p>: fdcvx+</p>
+	<div class="cards">
+		<div class="card-category" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(https://images.unsplash.com/photo-1503256575996-7cbe509190b7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1331&q=80)" />
+			GET
+		</div>
+		<div class="card-category" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(https://images.unsplash.com/photo-1521575107034-e0fa0b594529?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1168&q=80)" />
+			POST
+		</div>
+		<div class="card-category" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(https://images.unsplash.com/photo-1618939404235-8747e5c37089?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80)" />
+			DELETE
+		</div>
+		<div class="card-category" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(https://images.unsplash.com/photo-1634027423259-b44d7802e101?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80)" />
+			PUT
+		</div>
+	</div>
+	<div class="cards">
+		<div class="get">
+			<h3>Go to :</h3>
+			<a href="site/coucou.html"> ☞ Hello</br></a>
+			<a href="site/bye.html">☞ Bye</br></a>
+		</div>
+		<div class="formclass">
+			<h3>Leave a comment :</h3>
+			<form action="action.php" method="POST">
+				<input type="text" name="title" placeholder="title" /></br>
+				<textarea name="content" placeholder="description"></textarea></br>
+				<input type="submit" value="POST" />
+			</form>
+		</div>
+		<div class="delete">
+			<form action="action.php" method="POST">
+				<input type="hidden" name="_method" value="DELETE">
+					<div class="comment">
+						by "name" : blablblablabla
+						<a href="index.html"><i class="far fa-trash-alt"></i></a>
+					</div>
+					<div class="comment">
+						by "name" : krkrkrkrkrkrkrk
+						<i class="far fa-trash-alt"></i>
+					</div>
+			</form>
+		</div>
+		<div class="put">
+			<h3>Choose a file to import :</h3>
+				<form action="test.php" method="POST" enctype="multipart/form-data">
+					<input type="file" name="_method" value="PUT"/>
+					<input type="submit" value="PUT"/>
+				</form>
+		</div>
 
-
+	</div>
+	<div class="footer">
+		<div class="footer-links">
+			<a href="#"><i class="fab fa-github"></i></a>
+			<a href="#"><i class="fab fa-instagram"></i></a>
+			<a href="#"><i class="fab fa-facebook"></i></a>
+			<a href="#"><i class="fab fa-twitter"></i></a>
+			<a href="#"><i class="fab fa-linkedin"></i></a>
+		</div>
+		<div class="footer-copyright">
+			<i class="fas fa-heart"></i> Webserv
 		</div>
 	</div>
 </body>
-</html>
 
+
+</html>

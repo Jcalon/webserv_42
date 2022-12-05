@@ -16,7 +16,6 @@ Location::Location(Server &serv): _root(""), _index(""), _max_client_body_size("
 {
 	this->_autoindex = false;
 	this->_allow_method = serv.get_allow_method();
-	// init_allow_methods();
 }
 
 Location::~Location(void) {}
@@ -56,15 +55,6 @@ std::vector<std::string>::iterator Location::parse_location(std::vector<std::str
 	return start;
 }
 
-// void Location::init_allow_methods(void)
-// {
-// 	this->_allow_method.push_back("GET");
-// 	this->_allow_method.push_back("POST");
-// 	this->_allow_method.push_back("DELETE");
-// 	this->_allow_method.push_back("HEAD");
-// 	this->_allow_method.push_back("PUT");
-// }
-
 std::string Location::get_name(void) const { return this->_name; }
 std::string Location::get_root(void) const { return this->_root; }
 std::string Location::get_upload(void) const { return this->_upload; }
@@ -95,7 +85,6 @@ std::ostream	&operator<<(std::ostream &o, Location const &location) {
 		o << "     index = [" << location.get_index() << "]" << std::endl;
 	if (location.get_cgi_ext().size())
 		o << "     cgi ext = [" << location.get_cgi_ext().size() << "]" << std::endl;
-	// if (location.get_autoindex())
 	o << "     autoindex = [" << location.get_autoindex() << "]" << std::endl;
 	return (o);
 };
