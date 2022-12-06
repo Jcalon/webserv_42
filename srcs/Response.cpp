@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/06 14:04:49 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/06 15:04:42 by mbascuna         ###   ########.fr       */
+/*   Created: 2022/12/06 15:09:08 by mbascuna          #+#    #+#             */
+/*   Updated: 2022/12/06 15:09:12 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -270,12 +270,13 @@ void Response::run_delete_method(void)
 {
 	if (remove(_path.c_str()) == 0)
 		this->_code_status = find_pair(204);
-	if (_code_status.first != 200)
+	else
+		this->_code_status = find_pair(404);
+	if (_code_status.first != 204)
 		load_error_pages();
 	this->_content_length = _response.size();
 	this->_content_type = init_mime_types(); // a modifier avec une fonction en fonction du ype
 	this->_date = set_date();
-
 	set_header();
 }
 
@@ -283,34 +284,6 @@ void Response::run_post_method(void)
 {
 	if (_code_status.first == 200 && _cgi == true)
 		run_cgi_method();
-
-	// else if (_code_status.first == 200)
-	// {
-	// 	std::ifstream		ifs(_content_location.c_str());
-	// 	std::string	line;
-
-
-	// 	if (!ifs.is_open())
-	// 		throw Config::FileNotOpen();
-	// 	while (std::getline(ifs, line, char(ifs.eof())))
-	// 		this->_response = line;
-
-	// 	for (std::map<std::string, std::string>::iterator it = _body.begin(); it != _body.end(); it++)
-	// 	{
-	// 		std::string balise = "<div id=\"com\">";
-	// 		size_t pos = _response.find(balise);
-	// 		std::string str = "<h4>" + it->first + "</h4><p>: " + it->second + "</p>\n";
-	// 		_response.insert(pos+balise.size(), str);
-	// 	}
-	// 	ifs.close();
-	// 	std::ofstream		ofs(_content_location.c_str());
-	// 	ofs << _response;
-	// 	ofs.close();
-	// 	this->_content_length = _response.size();
-	// 	this->_content_type = "text/html"; // a modifier avec une fonction en fonction du ype
-	// 	this->_date = set_date();
-	// 	set_header();
-	// }
 	else
 	{
 		this->_response = "";

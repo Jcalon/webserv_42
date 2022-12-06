@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 17:55:06 by jcalon            #+#    #+#             */
-/*   Updated: 2022/11/30 19:23:08 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/06 14:46:46 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ Request::Request(const std::string & request): _request(request), _fields(), _in
 			{
 				this->_infos._target = path.substr(0, path.find('?'));
 				this->_infos._query = path.substr(path.find('?'), path.find(' '));
+				this->_fields[0].erase(0, this->_infos._query.length());
 			}
 			else
 			{
