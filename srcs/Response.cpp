@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:06:39 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/01 18:27:40 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/06 11:04:33 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,8 +195,18 @@ void Response::call_method()
 void Response::load_error_pages()
 {
 	std::string			line;
-	//doit ouvrir la page quil trouve dans le .conf donc avec un find pair 
-	std::string 		page = "www/error_pages/" + ft_to_string(_code_status.first) + ".html";
+	std::string 		page;
+	std::map<int, std::string> error_pages = _server.get_error_pages();
+	if (error_pages.size() > 0)
+	{
+		page = error_pages.find(_code_status.first)->second;
+		std::string tmp = ft_cpp_split(page, "/").front();
+		if (tmp != _server.get_root())
+			page.insert(0, _server.get_root() + "/");
+	}
+	else
+		page = "www/error_pages/" + ft_to_string(_code_status.first) + ".html";
+
 	std::ifstream 		ifs(page.c_str());
 
 	ifs.is_open();

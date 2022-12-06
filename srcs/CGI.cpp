@@ -21,7 +21,6 @@ CGI::CGI(Request const &request, Server const &server, std::string binary)
 	_target = request.getRequest()._target;
 	_inputbody = request.getBody();
 
-
 	std::vector<std::string> tmp1 = request.getFields();
 	for (std::vector<std::string>::iterator it = tmp1.begin(); it != tmp1.end(); it++)
 	{

@@ -34,14 +34,14 @@
 		</div>
 		<div class="formclass">
 			<h3>Leave a comment :</h3>
-			<form action="action.php" method="POST">
+			<form action="site/action.php" method="POST">
 				<input type="text" name="title" placeholder="title" /></br>
 				<textarea name="content" placeholder="description"></textarea></br>
 				<input type="submit" value="POST" />
 			</form>
 		</div>
 		<div class="delete">
-			<form action="action.php" method="POST">
+			<form action="site/action.php" method="POST">
 				<input type="hidden" name="_method" value="DELETE">
 					<div class="comment">
 						by "name" : blablblablabla
@@ -55,7 +55,7 @@
 		</div>
 		<div class="put">
 			<h3>Choose a file to import :</h3>
-				<form action="test.php" method="POST" enctype="multipart/form-data">
+				<form action="site/test.php" method="POST" enctype="multipart/form-data">
 					<input type="file" name="_method" value="PUT"/>
 					<input type="submit" value="PUT"/>
 				</form>
