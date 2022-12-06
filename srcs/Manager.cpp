@@ -84,7 +84,7 @@ void			Manager::run(void)
 				if (FD_ISSET(*it, &writing_set))
 				{
 					long	ret = _read_fds[*it]->sendResponse(*it);	// On cree la reponse
-					
+
 					if (ret == 0)									// Envoi ok
 						_write_fds.erase(it);
 					else if (ret == -1)
@@ -103,12 +103,12 @@ void			Manager::run(void)
 			for (std::map<long,Socket *>::iterator it = _read_fds.begin(); ret && it != _read_fds.end(); it++)
 			{
 				long	socket = it->first;
-				
+
 				if (FD_ISSET(socket, &reading_set))
 				{
 					std::map<long,time_t>::iterator incompleteIt = _incompleteRequests.find(socket);
 					long	ret = it->second->receiveMessage(socket);
-				
+
 					if (ret == 0)
 					{
 						_write_fds.push_back(socket);
@@ -148,7 +148,7 @@ void			Manager::run(void)
 						if (socket > _max_fd)
 							_max_fd = socket;
 					}
-					
+
 					ret = 0;
 					break ;
 				}

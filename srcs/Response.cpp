@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:06:39 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/06 11:04:33 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/06 12:16:01 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,7 +233,8 @@ void Response::run_get_method(void)
 				index = 1;
 		}
 	}
-	if (autoindex && !index)
+	std::string ext = ft_cpp_split(_request.getRequest()._target, ".").back();
+	if (autoindex && !index && ext != "ico")
 	{
 		Autoindex autoindex(_path);
 		this->_response = autoindex.get_html();
@@ -256,7 +257,6 @@ void Response::run_get_method(void)
 	this->_date = set_date();
 
 	set_header();
-	//gerer le autoindex ?
 }
 
 void Response::run_head_method(void)
