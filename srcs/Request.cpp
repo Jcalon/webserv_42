@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 17:55:06 by jcalon            #+#    #+#             */
-/*   Updated: 2022/12/06 15:44:46 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/06 18:04:58 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void throwError(const std::exception& ex)
 
 static bool isValidHTTPVersion(std::string http_version)
 {
-	if (http_version == "HTTP/1.1")
+	if (http_version.find("HTTP/1.1") != std::string::npos)
 		return (true);
 	return (false);
 }
@@ -50,7 +50,7 @@ Request::Request(const std::string & request): _request(request), _fields(), _in
 		end = request.find("\n", start);
 	}
 	this->_fields.push_back(request.substr(start, end - start));
-	if (this->_fields.size() < 2)
+	if (this->_fields.size() <= 3)
 		_error = 400;
 	pos = this->_fields[0].find(" ");
 	if (pos != std::string::npos)
@@ -89,6 +89,8 @@ Request::Request(const std::string & request): _request(request), _fields(), _in
 		this->_infos._http = this->_fields[0].substr(0, this->_fields[0].find('\r'));
 		if(isValidHTTPVersion(this->_infos._http) == false)
 			_error = 505;
+		else if (this->_infos._http.length() > 8)
+			_error = 400;
 	}
 	else
 		_error = 400;

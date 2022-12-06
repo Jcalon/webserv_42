@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:07:29 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/06 15:43:03 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/06 18:25:19 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,6 +141,7 @@ std::string 						Server::get_index_path(std::string location) const
 
 	if (split_path.size() < 1)
 	{
+		std::cout << "TEST" << std::endl;
 		for (std::vector<Location>::iterator it = tmp.begin(); it != tmp.end(); it++)
 		{
 			if (it->get_name() == location)
@@ -149,7 +150,8 @@ std::string 						Server::get_index_path(std::string location) const
 					path += it->get_root();
 				if (it->get_index() != "")
 					path += "/" + it->get_index();
-				return path;
+				if (path != "")
+					return path;
 			}
 		}
 		return get_root() + "/" + get_index();

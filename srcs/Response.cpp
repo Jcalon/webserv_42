@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 16:03:35 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/06 16:03:48 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/06 18:21:24 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ Response::Response(Request const &request, int error): _request(request)
 		this->_response.append(line);
 	ifs.close();
 	this->_content_length = _response.size();
-	this->_content_type = init_mime_types(); // a modifier avec une fonction en fonction du ype
+	this->_content_type = "text/html"; // a modifier avec une fonction en fonction du ype
 	this->_date = set_date();
 	set_header();
 }
@@ -215,7 +215,6 @@ bool	Response::is_allowed_in_location(Server const &server, std::string loc_name
 
 void Response::call_method()
 {
-	if ()
 	if (_code_status.first != 200)
 	{
 		load_error_pages();
@@ -262,45 +261,50 @@ void Response::load_error_pages()
 
 void Response::run_get_method(void)
 {
-	std::string			line;
-	bool 				autoindex = _server.get_autoindex();
-	std::vector<Location> locations = _server.get_location();
-	int index = 0;
-
-
-	for (std::vector<Location>::iterator it = locations.begin(); it != locations.end(); it++)
-	{
-		if (this->_content_location == it->get_name())
-		{
-			autoindex = it->get_autoindex();
-			if (it->get_index() != "")
-				index = 1;
-		}
-	}
-	std::string ext = ft_cpp_split(_request.getRequest()._target, ".").back();
-	if (autoindex && !index && ext != "ico")
-	{
-		Autoindex autoindex(_path);
-		this->_response = autoindex.get_html();
-	}
+	if (_cgi == true)
+		run_cgi_method();
 	else
 	{
-		std::ifstream		ifs(_path.c_str());
-		struct stat check_bis;
-		lstat(_path.c_str(), &check_bis);
-		if (!ifs.is_open() || S_ISDIR(check_bis.st_mode))
-			this->_code_status = find_pair(404);
-		while (std::getline(ifs, line, char(ifs.eof())))
-			this->_response.append(line);
-		ifs.close();
-	}
-	if (_code_status.first != 200)
-		load_error_pages();
-	this->_content_length = _response.size();
-	this->_content_type = init_mime_types(); // a modifier avec une fonction en fonction du ype
-	this->_date = set_date();
+		std::string			line;
+		bool 				autoindex = _server.get_autoindex();
+		std::vector<Location> locations = _server.get_location();
+		int index = 0;
 
-	set_header();
+
+		for (std::vector<Location>::iterator it = locations.begin(); it != locations.end(); it++)
+		{
+			if (this->_content_location == it->get_name())
+			{
+				autoindex = it->get_autoindex();
+				if (it->get_index() != "")
+					index = 1;
+			}
+		}
+		std::string ext = ft_cpp_split(_request.getRequest()._target, ".").back();
+		if (autoindex && !index && ext != "ico")
+		{
+			Autoindex autoindex(_path);
+			this->_response = autoindex.get_html();
+		}
+		else
+		{
+			std::ifstream		ifs(_path.c_str());
+			struct stat check_bis;
+			lstat(_path.c_str(), &check_bis);
+			if (!ifs.is_open() || S_ISDIR(check_bis.st_mode))
+				this->_code_status = find_pair(404);
+			while (std::getline(ifs, line, char(ifs.eof())))
+				this->_response.append(line);
+			ifs.close();
+		}
+		if (_code_status.first != 200)
+			load_error_pages();
+		this->_content_length = _response.size();
+		this->_content_type = init_mime_types(); // a modifier avec une fonction en fonction du ype
+		this->_date = set_date();
+
+		set_header();
+	}
 }
 
 void Response::run_head_method(void)
