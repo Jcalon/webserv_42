@@ -11,20 +11,20 @@ echo date('h:i:s');
 ?>
 
 
-        <p>title is: <?=$_POST['title'];?></p>
-        <p>content is: <?=$_POST['content'];?></p>
+        <p>title is: <?=$_GET["title"];?></p>
+        <p>content is: <?=$_GET["content"];?></p>
 <?php
 $array = array(
     "foo" => "bar",
     "bar" => "foo",
 );
-$key = $_POST['title'];
-$value = $_POST['content'];
+$key = $_GET['title'];
+$value = $_GET['content'];
 $array[$key] = $value;
 ?>
 
 
-<p><?=$_POST['title'] . " " . $_POST['content']?></p>
+<p><?=$_GET["title"] . " " . $_GET["content"]?></p>
 
 <?php
 $NbrCol = 2;

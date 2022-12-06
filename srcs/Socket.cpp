@@ -108,14 +108,6 @@ int Socket::startSocket()
 	}
 	_socketAddress.sin_family = AF_INET;
 	_socketAddress.sin_port = htons(atoi(_server.get_listen()[0].c_str())); // recup le premier port
-	// std::cout << RED << "server name : " << _server.get_name()[0] << RESET << std::endl;
-	// if (_server.get_name()[0] != "")
-	// {
-	// 	std::cout << GREEN << "oui " << RESET << std::endl;
-	// 	std::string name = _server.get_name()[0];
-	// 	_socketAddress.sin_addr.s_addr = inet_addr((name).c_str());
-	// }
-	// else
 	_socketAddress.sin_addr.s_addr = inet_addr((_server.get_ip().c_str()));
 	_socketAddress_len = sizeof(_socketAddress);
 	rc = bind(_socket, (struct sockaddr *)&_socketAddress, sizeof(_socketAddress));

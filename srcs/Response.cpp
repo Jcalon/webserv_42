@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/01 16:06:39 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/06 12:16:01 by mbascuna         ###   ########.fr       */
+/*   Created: 2022/12/06 14:04:49 by mbascuna          #+#    #+#             */
+/*   Updated: 2022/12/06 14:05:04 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -323,7 +323,7 @@ void Response::run_cgi_method(void)
 {
 	std::string 	output;
 
-	CGI cgi(this->_request, this->_server, this->_binary);
+	CGI cgi(this->_request, this->_server, this->_binary, this->_path);
 	output = cgi.interpreter();
 
 	std::istringstream			stream(output);
@@ -354,6 +354,7 @@ void Response::run_put_method(void)
 {
 	if (_code_status.first == 201)
 	{
+		std::cout << _path << std::endl;
 		std::ofstream		ofs(_path.c_str());
 		std::string	line;
 
@@ -378,7 +379,6 @@ void	Response::set_header(void)
 		this->_header += "\r\nContent-Type: " + this->_content_type;
 	this->_header += "\r\nDate: " + this->_date;
 	this->_header += "\r\nServer: webserv";
-	// this->_header += RED "\nTransfer-Encoding: ??????\n\r" RESET;
 }
 
 std::string	Response::set_date(void)

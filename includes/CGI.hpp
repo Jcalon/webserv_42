@@ -7,7 +7,7 @@ class CGI
 {
 	public:
 
-		CGI(Request const &request, Server const &server, std::string binary);
+		CGI(Request const &request, Server const &server, std::string binary, std::string target);
 		~CGI();
 		std::string	interpreter(void);
 
