@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 14:04:49 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/06 14:05:04 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/06 15:04:42 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ Response::Response(Request const &request, Server const &server): _server(server
 	this->_content_length = 0;
 	this->_content_location = request.getRequest()._target;
 	this->_path = server.get_index_path(request.getRequest()._target);
+	if (*_path.begin() == '/')
+		_path.insert(0,".");
 	this->_code_status = allow_method(request, server, request.getRequest()._target);
 	this->_content_type = "";
 	this->_header = "";

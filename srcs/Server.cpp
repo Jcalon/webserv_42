@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:07:29 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/06 11:27:18 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/06 14:59:20 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,8 +139,22 @@ std::string 						Server::get_index_path(std::string location) const
 	std::vector<std::string> 	split_path = ft_cpp_split(location, "/");
 	std::string 				path = "";
 
+		std::cout << YELLOW << " Location  " << location << RESET << std::endl;
 	if (split_path.size() < 1)
+	{
+		for (std::vector<Location>::iterator it = tmp.begin(); it != tmp.end(); it++)
+		{
+			if (it->get_name() == location)
+			{
+				if (it->get_root() != "")
+					path += it->get_root();
+				if (it->get_index() != "")
+					path += "/" + it->get_index();
+				return path;
+			}
+		}
 		return get_root() + "/" + get_index();
+	}
 	for (std::vector<std::string>::iterator it = split_path.begin(); it != split_path.end(); it++)
 		it->insert(0, "/");
 	for (std::vector<Location>::iterator it = tmp.begin(); it != tmp.end(); it++)
