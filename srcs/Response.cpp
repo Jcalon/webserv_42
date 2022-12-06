@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 16:03:35 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/06 18:21:24 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/06 22:28:21 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ Response::~Response() {}
 
 void Response::parse_body(std::string fields)
 {
-	if (this->_method == "PUT")
+	if (this->_method == "PUT" || (this->_method == "POST" && this->_cgi == false))
 	{
 		this->_body.insert(make_pair("1", fields));
 		return ;
@@ -330,11 +330,31 @@ void Response::run_post_method(void)
 {
 	if (_code_status.first == 200 && _cgi == true)
 		run_cgi_method();
+	else if (_request.getFilename() != "")
+	{
+		_code_status = find_pair(201);
+		_path += "/" + _request.getFilename();
+		if (is_readable(_path.c_str()))
+			_code_status = find_pair(204);
+
+		std::ofstream		ofs(_path.c_str());
+		std::string	line;
+
+		if (!ofs.is_open())
+			_code_status = find_pair(403);
+		ofs << this->_body["1"];
+		ofs.close();
+
+		this->_response = "";
+		this->_content_length = _response.size();
+		this->_content_type = "text/html"; // a modifier avec une fonction en fonction du ype
+		this->_date = set_date();
+		set_header();
+	}
 	else
 	{
 		this->_response = "";
 		this->_content_length = _response.size();
-		this->_content_type = "text/html"; // a modifier avec une fonction en fonction du ype
 		this->_date = set_date();
 		set_header();
 	}

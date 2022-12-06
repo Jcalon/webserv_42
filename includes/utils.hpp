@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:05:49 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/06 15:24:23 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/06 21:03:06 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@
 #define WHITESPACES " \t;"
 
 std::vector<std::string> 	ft_cpp_split(const std::string &str, const std::string &charset);
+std::vector<std::string> 	ft_cpp_split_str(const std::string &str, const std::string &charset);
 bool						ft_in_charset(char const c, const std::string &charset);
 std::string					ft_to_string(int i);
 std::string					ft_to_upper(std::string &str);

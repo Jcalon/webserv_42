@@ -178,7 +178,7 @@ long Socket::receiveMessage(long socket)
 	else
 		ret = 1;
 
-	if (ret == 0 && _receivedMessage[socket].size() < 2000)
+	if (ret == 0 && _receivedMessage[socket].size() < 5000)
 		std::cout << std::endl << "------ Received request ------" << std::endl << "[" << std::endl << _receivedMessage[socket] << "]" << std::endl << std::endl;
 	else if (ret == 0 && _receivedMessage[socket].size() >= 2000)
 		std::cout << std::endl << "------ Received request ------" << std::endl << "[" << std::endl << _receivedMessage[socket].substr(0, 500) << "...]" << std::endl << std::endl;
