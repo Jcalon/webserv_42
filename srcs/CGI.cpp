@@ -4,7 +4,7 @@
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-CGI::CGI(Request const &request, Server const &server, std::string binary)
+CGI::CGI(Request const &request, Server const &server, std::string binary, std::string target)
 {
 	std::string contenttype = "text/html";
 	std::vector<std::string> tmp = request.getFields();
@@ -18,7 +18,7 @@ CGI::CGI(Request const &request, Server const &server, std::string binary)
 	}
 
 	_binary = binary;
-	_target = request.getRequest()._target;
+	_target = target;
 	_inputbody = request.getBody();
 
 	std::vector<std::string> tmp1 = request.getFields();
@@ -40,8 +40,10 @@ CGI::CGI(Request const &request, Server const &server, std::string binary)
 	_env["CONTENT_TYPE"] = contenttype;
 	_env["REQUEST_URI"] = request.getRequest()._target; //URL
 	_env["PATH_INFO"] = request.getRequest()._target; //URL
-	_env["PATH_TRANSLATED"] = request.getRequest()._target; // NBUILD TARGET LOCAL PATH
+	_env["PATH_TRANSLATED"] = _target; // NBUILD TARGET LOCAL PATH
 	_env["QUERY_STRING"] = request.getRequest()._query;
+	if (_env["QUERY_STRING"] == "" && _inputbody.find("=") != std::string::npos)
+		_env["QUERY_STRING"] = _inputbody;
 	_env["REMOTE_ADDR"] = server.get_ip();
 	_env["AUTH_TYPE"] = "";
 	_env["REMOTE_IDENT"] = "";
@@ -51,12 +53,6 @@ CGI::CGI(Request const &request, Server const &server, std::string binary)
 	_env["SERVER_PORT"] = server.get_listen()[0];
 	_env["SERVER_PROTOCOL"] = "HTTP/1.1";
 	_env["SERVER_SOFTWARE"] = "webserv";
-
-	// std::map<std::string, std::string> tmp3 = _env;
-	// for (std::map<std::string, std::string>::iterator it = tmp3.begin(); it != tmp3.end(); it++)
-	// {
-	// 	std::cout << it->first << it->second << std::endl;
-	// }
 }
 
 
@@ -96,6 +92,8 @@ std::string		CGI::interpreter(void)
 	int						std_fd[2];
 	char					tmp[BUFFER_SIZE + 1];
 	int						ret = 1;
+
+	std::cout  << "ENV " << _env["QUERY_STRING"] << std::endl;
 
 	std_fd[0] = dup(STDIN_FILENO);
 	std_fd[1] = dup(STDOUT_FILENO);

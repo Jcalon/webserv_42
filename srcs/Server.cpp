@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:07:29 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/01 18:31:31 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/06 11:27:18 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,8 +154,6 @@ std::string 						Server::get_index_path(std::string location) const
 
 			struct stat check;
 			std::string loc = path + it->get_name() + "/";
-
-			std::cout << loc << std::endl;
 
 			lstat(loc.c_str(), &check);
 			if (it->get_index() != "" && S_ISDIR(check.st_mode) && split_path.size() < 2)
