@@ -1,27 +1,37 @@
+
+<html>
+<head>
+  <meta charset="utf-8">
+</head>
+<body>
+
 <?php
-   if(isset($_FILES['image'])){
-      $errors= array();
-      $file_name = $_FILES['image']['name'];
-      $file_size = $_FILES['image']['size'];
-      $file_tmp = $_FILES['image']['tmp_name'];
-      $file_type = $_FILES['image']['type'];
-      $file_ext=strtolower(end(explode('.',$_FILES['image']['name'])));
+// Vérifier si le formulaire a été soumis
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+    // Vérifie si le fichier a été uploadé sans erreur.
+        $filename = $_FILES["photo"]["name"];
+        $filesize = $_FILES["photo"]["size"];
+        // Vérifie l'extension du fichier
 
-      $extensions= array("jpeg","jpg","png");
 
-      if(in_array($file_ext,$extensions)=== false){
-         $errors[]="extension not allowed, please choose a JPEG or PNG file.";
-      }
+        // Vérifie la taille du fichier - 5Mo maximum
+        $maxsize = 5 * 1024 * 1024;
+        if($filesize > $maxsize) die("Error: La taille du fichier est supérieure à la limite autorisée.");
 
-      if($file_size > 2097152) {
-         $errors[]='File size must be excately 2 MB';
-      }
+        // Vérifie le type MIME du fichier
 
-      if(empty($errors)==true) {
-         move_uploaded_file($file_tmp,"images/".$file_name);
-         echo "Success";
-      }else{
-         print_r($errors);
-      }
-   }
+            // Vérifie si le fichier existe avant de le télécharger.
+         // if(file_exists("www/site/" . $_FILES["photo"]["name"])){
+         //       echo $_FILES["photo"]["name"] . " existe déjà.";
+         // }
+
+            if (move_uploaded_file($_FILES["photo"]["tmp_name"], "www/site/".$_FILES["photo"]["name"]))
+            {
+               echo "Votre fichier a été téléchargé avec succès.";
+            } else {
+               echo "NON";
+            }
+         }
 ?>
+</body>
+</html>

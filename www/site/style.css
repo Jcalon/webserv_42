@@ -56,7 +56,7 @@ p {
 
 .cards {
 	display: grid;
-	grid-template-columns: 1fr 1fr 1fr 1fr;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 	grid-gap: 32px;
 	margin-left: 15px;
 	margin-right: 15px;

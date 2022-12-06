@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 16:03:35 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/06 16:03:48 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/06 19:52:53 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,8 +215,8 @@ bool	Response::is_allowed_in_location(Server const &server, std::string loc_name
 
 void Response::call_method()
 {
-	if ()
-	if (_code_status.first != 200)
+	// if ()
+	if (_code_status.first != 200 && _code_status.first != 201)
 	{
 		load_error_pages();
 		this->_content_length = _response.size();
@@ -224,7 +224,7 @@ void Response::call_method()
 		this->_date = set_date();
 		set_header();
 	}
-	else if (this->_method == "GET")
+	if (this->_method == "GET")
 		run_get_method();
 	else if (this->_method == "POST")
 		run_post_method();
@@ -288,7 +288,9 @@ void Response::run_get_method(void)
 		std::ifstream		ifs(_path.c_str());
 		struct stat check_bis;
 		lstat(_path.c_str(), &check_bis);
-		if (!ifs.is_open() || S_ISDIR(check_bis.st_mode))
+		if (access(_path.c_str(), F_OK) == 0)
+			this->_code_status = find_pair(403);
+		else if (!ifs.is_open() || S_ISDIR(check_bis.st_mode))
 			this->_code_status = find_pair(404);
 		while (std::getline(ifs, line, char(ifs.eof())))
 			this->_response.append(line);

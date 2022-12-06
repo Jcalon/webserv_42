@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:05:49 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/06 15:24:23 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/06 19:50:51 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@
 #include <vector>
 #include <iostream>
 #include <stdlib.h>
+#include <unistd.h>
 #include <sys/time.h>
 #include <cstring>
 #include <sys/types.h>
