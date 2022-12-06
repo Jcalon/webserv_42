@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 15:09:08 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/06 15:09:12 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/06 16:00:09 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,9 @@ std::pair<int, std::string> Response::allow_method(Request const &request, Serve
 	if (!is_max_size_in_location(request, server, loc_name) || !is_max_size_in_extension(request, server))
 		return find_pair(413);
 	if (!is_allowed_in_location(server, loc_name) && !is_allowed_in_extension(server))
+	{
 		return find_pair(405);
+	}
 	if (this->_method == "PUT")
 		return find_pair(201);
 	return find_pair(200);
@@ -145,15 +147,21 @@ bool	Response::is_allowed_in_extension(Server const &server)
 {
 	std::vector<Location> locations = server.get_location();
 	std::vector<std::string> allow_method = server.get_allow_method();
+	std::string ext = ft_cpp_split(_content_location, ".").back();
+	int count = 0;
 	if (_content_location.find(".") == std::string::npos)
 		return false;
-	std::string ext = ft_cpp_split(_content_location, ".").back();
 	ext.insert(0, ".");
 	for (std::vector<Location>::iterator it = locations.begin(); it != locations.end(); it++)
 	{
 		if (ext == it->get_name())
+		{
 			allow_method = it->get_allow_method();
+			count = 1;
+		}
 	}
+	if (!count)
+		return false;
 	for (std::vector<std::string>::iterator it = allow_method.begin(); it != allow_method.end(); it++)
 	{
 		if (*it == this->_method)
@@ -325,16 +333,22 @@ void Response::run_cgi_method(void)
 	this->_header += headerfromcgi;
 }
 
+
 void Response::run_put_method(void)
 {
+	struct stat check_dir;
+	lstat(_path.c_str(), &check_dir);
+	if (is_readable(_path.c_str()))
+		_code_status = find_pair(204);
+	if (S_ISDIR(check_dir.st_mode))
+		_code_status = find_pair(409);
 	if (_code_status.first == 201)
 	{
-		std::cout << _path << std::endl;
 		std::ofstream		ofs(_path.c_str());
 		std::string	line;
 
 		if (!ofs.is_open())
-			throw Config::FileNotOpen();
+			_code_status = find_pair(403);
 		ofs << this->_body["1"];
 		ofs.close();
 	}
@@ -386,9 +400,11 @@ std::pair<int, std::string> Response::find_pair(int code)
 	map_error.insert(std::make_pair(303, "303 See Other"));
 	map_error.insert(std::make_pair(307, "307 Temporary Redirect"));
 	map_error.insert(std::make_pair(400, "400 Bad Request"));
+	map_error.insert(std::make_pair(403, "403 Forbidden"));
 	map_error.insert(std::make_pair(404, "404 Not Found"));
 	map_error.insert(std::make_pair(405, "405 Method Not Allowed"));
 	map_error.insert(std::make_pair(408, "408 Request Timeout"));
+	map_error.insert(std::make_pair(409, "409 Conflict"));
 	map_error.insert(std::make_pair(411, "411 Length Required"));
 	map_error.insert(std::make_pair(413, "413 Request Entity Too Large"));
 	map_error.insert(std::make_pair(414, "414 Request-URI Too Long"));

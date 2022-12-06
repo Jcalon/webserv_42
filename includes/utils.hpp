@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:05:49 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/01 16:05:54 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/06 15:24:23 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,11 @@
 #include <string>
 #include <cstring>
 #include <dirent.h>
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <filesystem>
 
 #include <string>
 #include <vector>
@@ -87,6 +92,6 @@ std::string					ft_to_string(int i);
 std::string					ft_to_upper(std::string &str);
 std::string					replace(std::string src, std::string search, std::string replace);
 unsigned long				ft_str_to_int(std::string str);
-
+bool 						is_readable(const std::string &file);
 
 #endif

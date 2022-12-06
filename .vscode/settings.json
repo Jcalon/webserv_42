@@ -54,7 +54,10 @@
 		"ctime": "cpp",
 		"fstream": "cpp",
 		"iomanip": "cpp",
-		"span": "cpp"
+		"span": "cpp",
+		"chrono": "cpp",
+		"codecvt": "cpp",
+		"ratio": "cpp"
 	},
 	"C_Cpp.errorSquiggles": "Disabled"
 }
