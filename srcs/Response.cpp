@@ -3,14 +3,39 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/06 15:09:08 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/06 15:09:12 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/06 16:00:39 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/utils.hpp"
+
+Response::Response(Request const &request, int error): _request(request)
+{
+	this->_http = "HTTP/1.1";
+	this->_response = "\r\n";
+	this->_content_length = 0;
+	this->_content_location = "";
+	this->_code_status = find_pair(error);
+	this->_cgi = false;
+	
+	std::string 		page;
+	std::string			line;
+
+	page = "www/error_pages/" + ft_to_string(_code_status.first) + ".html";
+	std::ifstream 		ifs(page.c_str());
+	ifs.is_open();
+	_response.clear();
+	while (std::getline(ifs, line, char(ifs.eof())))
+		this->_response.append(line);
+	ifs.close();
+	this->_content_length = _response.size();
+	this->_content_type = init_mime_types(); // a modifier avec une fonction en fonction du ype
+	this->_date = set_date();	
+	set_header();
+}
 
 Response::Response(Request const &request, Server const &server): _server(server), _request(request)
 {
@@ -182,7 +207,16 @@ bool	Response::is_allowed_in_location(Server const &server, std::string loc_name
 
 void Response::call_method()
 {
-	if (this->_method == "GET")
+	if ()
+	if (_code_status.first != 200)
+	{
+		load_error_pages();
+		this->_content_length = _response.size();
+		this->_content_type = init_mime_types(); // a modifier avec une fonction en fonction du ype
+		this->_date = set_date();	
+		set_header();
+	}
+	else if (this->_method == "GET")
 		run_get_method();
 	else if (this->_method == "POST")
 		run_post_method();
@@ -349,7 +383,8 @@ void	Response::set_header(void)
 {
 	this->_header = this->_http + " " + this->_code_status.second;
 	this->_header += "\r\nContent-Length: " + ft_to_string(this->_content_length);
-	this->_header += "\r\nContent-Location: " + this->_content_location;
+	if (this->_content_location != "")
+		this->_header += "\r\nContent-Location: " + this->_content_location;
 	if (this->_cgi == false)
 		this->_header += "\r\nContent-Type: " + this->_content_type;
 	this->_header += "\r\nDate: " + this->_date;
