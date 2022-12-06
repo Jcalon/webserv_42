@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:05:37 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/01 16:05:45 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/06 15:56:29 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 class Response
 {
 	public:
+		Response(Request const &request, int error);
 		Response(Request const &request, Server const &server);
 		~Response();
 

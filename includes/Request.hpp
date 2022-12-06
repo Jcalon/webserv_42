@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 15:52:28 by jcalon            #+#    #+#             */
-/*   Updated: 2022/11/30 18:16:58 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/06 15:45:32 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ class Request
 		std::vector<std::string>	_fields;
 		struct request_info			_infos;
 		std::string					_body;
+		int							_error;
 		void						parseBody();
 		void						parseChunkedBody();
 
@@ -41,6 +42,7 @@ class Request
 		std::vector<std::string> 	getFields() const;
 		struct request_info			getRequest() const;
 		std::string					getBody() const;
+		int							getError() const;
 
 };
 

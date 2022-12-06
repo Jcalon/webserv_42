@@ -146,8 +146,6 @@ long Socket::receiveMessage(long socket)
 		close(socket);
 		if (ret == -1)
 			std::cout << "Failed to read bytes from client socket connection" << std::endl;
-		else
-			std::cout << "Connection closed" << std::endl;
 		return -1;
 	}
 	_receivedMessage[socket] += std::string(buffer);
@@ -189,14 +187,24 @@ long Socket::receiveMessage(long socket)
 
 long Socket::sendResponse(long socket)
 {
-	// try
-	// {
-		if (_sent.find(socket) == _sent.end())
+	if (_sent.find(socket) == _sent.end())
+	{
+		Request request = Request(_receivedMessage[socket]);
+		_receivedMessage.erase(socket);
+		log("------ Received Request from client ------\n\n");
+		_sent[socket] = 0;
+		if (request.getError() != 0)
 		{
-			Request request = Request(_receivedMessage[socket]);
-			_receivedMessage.erase(socket);
-			log("------ Received Request from client ------\n\n");
-			_sent[socket] = 0;
+			Response response(request, request.getError());
+			std::ostringstream sts;
+			if (request.getRequest()._method == "HEAD")
+				sts << response.get_header() << "\r\n\r\n";
+			else
+				sts << response.get_header() << "\r\n\r\n" << response.get_response();
+			_socketMessage[socket] = sts.str();
+		}
+		else
+		{
 			Response response(request, getServer());
 			response.call_method();
 			std::ostringstream sts;
@@ -206,75 +214,33 @@ long Socket::sendResponse(long socket)
 				sts << response.get_header() << "\r\n\r\n" << response.get_response();
 			_socketMessage[socket] = sts.str();
 		}
-		std::string chunked = _socketMessage[socket].substr(_sent[socket], SOCKET_MAX);
-		long bytesSent;
-		bytesSent = send(socket, chunked.c_str(), chunked.length(), 0);
-		if (bytesSent == -1)
+	}
+	std::string chunked = _socketMessage[socket].substr(_sent[socket], SOCKET_MAX);
+	long bytesSent;
+	bytesSent = send(socket, chunked.c_str(), chunked.length(), 0);
+	if (bytesSent == -1)
+	{
+		close(socket);
+		_sent[socket] = 0;
+		_socketMessage.erase(socket);
+		return (-1);
+	}
+	else
+	{
+		_sent[socket] += bytesSent;
+		if (_sent[socket] >= _socketMessage[socket].size())
 		{
-			close(socket);
-			_sent[socket] = 0;
+			if (_socketMessage[socket].size() < 2000)
+				std::cout << GREEN << "\r\n" << _socketMessage[socket] << "\r\n" << RESET << std::endl;
+			else
+				std::cout << GREEN << "\r\n" << _socketMessage[socket].substr(0, 500) << "\r\n" << RESET << std::endl;
 			_socketMessage.erase(socket);
-			return (-1);
+			_sent.erase(socket);
+			return (0);
 		}
 		else
-		{
-			_sent[socket] += bytesSent;
-			if (_sent[socket] >= _socketMessage[socket].size())
-			{
-				if (_socketMessage[socket].size() < 2000)
-					std::cout << GREEN << "\r\n" << _socketMessage[socket] << "\r\n" << RESET << std::endl;
-				else
-					std::cout << GREEN << "\r\n" << _socketMessage[socket].substr(0, 500) << "\r\n" << RESET << std::endl;
-				_socketMessage.erase(socket);
-				_sent.erase(socket);
-				return (0);
-			}
-			else
-				return (1);
-		}
-		// Request request = Request(_receivedMessage);
-		// // std::cout << BLUE << request << RESET;
-		// std::ostringstream ss;
-		// ss << "------ Received Request from client ------\n\n";
-		// log(ss.str());
-
-
-		// Response response(request, getServer());
-		// response.call_method();
-		// std::ostringstream sts;
-		// if (request.getRequest()._method == "HEAD")
-		// {
-		// 	sts << response.get_header() << "\r\n\r\n";
-		// 	std::cout << GREEN << response.get_header() << "\r\n\r\n" << RESET << std::endl;
-		// }
-		// else
-		// {
-		// 	sts << response.get_header() << "\r\n" << response.get_response() << "\r\n";
-		// 	if (response.get_response().size() < 2000)
-		// 		std::cout << GREEN << response.get_header()  << "\r\n" << response.get_response() << "\r\n" << RESET << std::endl;
-		// 	else
-		// 		std::cout << GREEN << response.get_header()  << "\r\n" << response.get_response().substr(0, 500) << "\r\n" << RESET << std::endl;
-		// }
-
-		// unsigned long bytesSent;
-		// bytesSent = send(socket, sts.str().c_str(), sts.str().length(), 0);
-
-		// if (bytesSent == sts.str().length())
-		// {
-		// 	log("------ Socket Response sent to client ------\n\n");
-		// }
-		// else
-		// {
-		// 	log("Error sending response to client");
-		// }
-	// }
-	// catch (const std::exception& e)
-	// {
-	// 	std::cerr << &e << std::endl;
-	// }
-	// return 0;
-	// Response				response; a la place de ce qu'il y a dans cette fct
-
+			return (1);
+	}
 }
 
 int			Socket::getSocket() const
