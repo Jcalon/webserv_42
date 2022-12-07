@@ -68,7 +68,7 @@ void			Manager::run(void)
 		{
 			timeout.tv_sec = 1;
 			timeout.tv_usec = 0;
-			memcpy(&reading_set, &_fd_set, sizeof(_fd_set));
+			ft_memcpy(&reading_set, &_fd_set, sizeof(_fd_set));
 			FD_ZERO(&writing_set);
 			for (std::vector<int>::iterator it = _write_fds.begin(); it != _write_fds.end(); it++)
 				FD_SET(*it, &writing_set);

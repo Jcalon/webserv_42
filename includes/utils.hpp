@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 13:37:40 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 16:52:24 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/07 22:36:00 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 #include <csignal>
 #include <cstdlib>
 #include <cstring>
+#include <ctime>
 #include <exception>
 #include <iostream>
 #include <iomanip>
@@ -82,5 +83,8 @@ std::string					replace(std::string src, std::string search, std::string replace
 unsigned long				ft_str_to_int(std::string str);
 bool 						is_readable(const std::string &file);
 void						ctrl_handler(int sig_num);
+void						*ft_memcpy(void *dest, const void *src, size_t n);
+void						*ft_memset(void *b, int c, size_t len);
+void						ft_strcpy(const char *src, char *dest);
 
 #endif

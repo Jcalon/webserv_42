@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 09:52:16 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 20:51:43 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/07 23:04:32 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -301,10 +301,9 @@ void Response::run_get_method(void)
 		else
 		{
 			std::ifstream		ifs(_path.c_str());
-
-			struct stat check_bis;
-			lstat(_path.c_str(), &check_bis);
-			if ((!ifs.is_open() || S_ISDIR(check_bis.st_mode)))
+			DIR				*dir;
+			dir = opendir(_path.c_str());
+			if ((!ifs.is_open() || dir != NULL))
 				this->_code_status = find_pair(404);
 			if (access(_path.c_str(), F_OK) == 0 && access(_path.c_str(), R_OK) < 0)
 				this->_code_status = find_pair(403);
@@ -382,38 +381,48 @@ void Response::run_cgi_method(void)
 	CGI cgi(this->_request, this->_server, this->_binary, this->_path);
 	output = cgi.interpreter();
 
-	std::istringstream			stream(output);
-	std::string					line;
-	bool						header = true;
-	std::string					headerfromcgi = "";
-	this->_response = "";
-
-	while (std::getline(stream, line))
+	if (output != "500")
 	{
-		if (line == "\r")
-			header = false;
-		else
+		std::istringstream			stream(output);
+		std::string					line;
+		bool						header = true;
+		std::string					headerfromcgi = "";
+		this->_response = "";
+
+		while (std::getline(stream, line))
 		{
-			if (header && ft_cpp_split(line, ":").size() == 2)
-				headerfromcgi += line;
-			else if (!header)
-				this->_response += line;
+			if (line == "\r")
+				header = false;
+			else
+			{
+				if (header && ft_cpp_split(line, ":").size() == 2)
+					headerfromcgi += line;
+				else if (!header)
+					this->_response += line;
+			}
 		}
+		this->_content_length = _response.size();
+		this->_date = set_date();
+		set_header();
+		this->_header += headerfromcgi;
 	}
-	this->_content_length = _response.size();
-	this->_date = set_date();
-	set_header();
-	this->_header += headerfromcgi;
+	else
+	{
+		this->_code_status = find_pair(200);
+		load_error_pages();
+		this->_content_length = _response.size();
+		this->_content_type = init_mime_types(); // a modifier avec une fonction en fonction du ype
+		this->_date = set_date();
+		set_header();
+	}
 }
 
 
 void Response::run_put_method(void)
 {
-	struct stat check_dir;
-	lstat(_path.c_str(), &check_dir);
-	// if (is_readable(_path.c_str()))
-	// 	_code_status = find_pair(204);
-	if (S_ISDIR(check_dir.st_mode))
+	DIR				*dir;
+	dir = opendir(_path.c_str());
+	if (dir != NULL)
 		_code_status = find_pair(409);
 	if (_code_status.first == 201)
 	{
@@ -500,28 +509,41 @@ std::string Response::get_index_path(std::string location) const
 			{
 				path = it->get_root();
 			}
-			struct stat check;
+			std::cout << "PATH= " << path << std::endl;
 			std::string loc;
 
 			if (path.rfind("/") == path.length() - 1)
-				loc = path + it->get_name();
-			else
+			{
 				loc = path + it->get_name().substr(1);
-			lstat(loc.c_str(), &check);
-			if (it->get_index() != "" && S_ISDIR(check.st_mode) && split_path.size() < 2)
+				std::cout << "SAeeeeeLUT" << std::endl;
+			}
+			else
 			{
+				std::cout << "SALUT" << std::endl;
+				loc = path + it->get_name();
+			}
+			std::cout << "LOC" << loc << std::endl;
+			DIR				*dir;
+			dir = opendir(loc.c_str());
+			if (it->get_index() != "" && dir != NULL && split_path.size() < 2)
+			{
+				std::cout << "ACCESS OK" << std::endl;
 				if (path.rfind("/") == path.length() - 1)
-					path += it->get_name() + it->get_index();
-				else
 					path += it->get_name().substr(1) + it->get_index();
-			}
-			else if (S_ISDIR(check.st_mode))
-			{
-				if (path.rfind("/") == path.length() - 1)
-					path += it->get_name();
 				else
-					path += it->get_name().substr(1);
+					path += it->get_name() + it->get_index();
+				std::cout << "PATH3= " << path << std::endl;
 			}
+			else if (dir != NULL)
+			{
+				std::cout << "ACCESS OK" << std::endl;
+				if (path.rfind("/") == path.length() - 1)
+					path += it->get_name().substr(1);
+				else
+					path += it->get_name();
+				std::cout << "PATH2= " << path << std::endl;
+			}
+			std::cout << "PATH1= " << path << std::endl;
 			if (split_path.size() >= 2)
 			{
 				int i = 1;
@@ -539,16 +561,16 @@ std::string Response::get_index_path(std::string location) const
 							path += *itsplit;
 					}
 				}
-				struct stat tst;
-				lstat(path.c_str(), &tst);
-				if (S_ISDIR(tst.st_mode) && it->get_index() != "")
+				DIR				*tst;
+				tst = opendir(path.c_str());
+				if (tst != NULL && it->get_index() != "")
 				{
 					if (path.rfind("/") != path.length() - 1)
 						path += "/";
 					path += it->get_index();
 				}
 			}
-			else if (!S_ISDIR(check.st_mode) && it->get_index() != "")
+			else if (dir == NULL && it->get_index() != "")
 			{
 				if (path.rfind("/") != path.length() - 1)
 				{

@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 17:55:06 by jcalon            #+#    #+#             */
-/*   Updated: 2022/12/07 15:23:17 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/07 22:02:24 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ void	Request::parseChunkedBody()
 {
 	std::string	chunks = _request.substr(_request.find("\r\n\r\n") + 4, _request.size() - 1);
 	std::string	subchunk = chunks.substr(0, 100);
-	int			chunksize = strtol(subchunk.c_str(), NULL, 16);
+	int			chunksize = std::strtol(subchunk.c_str(), NULL, 16);
 	size_t		i = 0;
 	while (chunksize)
 	{
@@ -120,7 +120,7 @@ void	Request::parseChunkedBody()
 		_body += chunks.substr(i, chunksize);
 		i += chunksize + 2;
 		subchunk = chunks.substr(i, 100);
-		chunksize = strtol(subchunk.c_str(), NULL, 16);
+		chunksize = std::strtol(subchunk.c_str(), NULL, 16);
 	}
 }
 

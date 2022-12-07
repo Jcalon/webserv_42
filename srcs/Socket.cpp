@@ -31,8 +31,8 @@ size_t						extractContentLength(std::string const & request)
 	size_t i = request.find("Content-Length: ");
 	i += 16;
 
-	size_t temp(i);
-	size_t count(0);
+	size_t temp = i;
+	size_t count = 0;
 	while (std::isdigit(request[temp]))
 	{
 		count++;
@@ -100,7 +100,7 @@ int Socket::startSocket()
 		return 1;
 	}
 	_socketAddress.sin_family = AF_INET;
-	_socketAddress.sin_port = htons(atoi(_server.get_listen()[0].c_str())); // recup le premier port
+	_socketAddress.sin_port = htons(std::atoi(_server.get_listen()[0].c_str())); // recup le premier port
 	_socketAddress.sin_addr.s_addr = inet_addr((_server.get_ip().c_str()));
 	_socketAddress_len = sizeof(_socketAddress);
 	rc = bind(_socket, (struct sockaddr *)&_socketAddress, sizeof(_socketAddress));
