@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 09:52:16 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 19:51:43 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/07 20:51:43 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ Response::Response(Request const &request, Server const &server): _server(server
 	this->_response = "\r\n";
 	this->_content_length = 0;
 	this->_content_location = request.getRequest()._target;
-	this->_path = server.get_index_path(request.getRequest()._target);
+	this->_path = get_index_path(request.getRequest()._target);
 	std::cout << _path << std::endl;
 	this->_code_status = allow_method(request, server, request.getRequest()._target);
 	this->_content_type = "";
@@ -454,6 +454,112 @@ std::string	Response::set_date(void)
 	tm = gmtime(&tv.tv_sec);
 	strftime(buffer, 100, "%a, %d %b %Y %H:%M:%S GMT", tm);
 	return buffer;
+}
+
+std::string Response::get_index_path(std::string location) const
+{
+	std::vector<Location> 		locations = _server.get_location();
+	std::vector<std::string> 	split_path = ft_cpp_split(location, "/");
+	std::string 				path = _server.get_root();
+
+	if (path.find("./") == std::string::npos)
+		path.insert(0, "./");
+	if (split_path.size() < 1)
+	{
+		for (std::vector<Location>::iterator it = locations.begin(); it != locations.end(); it++)
+		{
+			if (it->get_name() == location)
+			{
+				if (it->get_root() != "")
+				{
+					path.clear();
+					if (it->get_root().find("./") == std::string::npos)
+						path = "./" + it->get_root();
+					else
+						path = it->get_root();
+				}
+				if (it->get_index() != "")
+					path += "/" + it->get_index();
+				if (path != "")
+					return path;
+			}
+		}
+		if (_server.get_root().rfind("/") != _server.get_root().length() - 1)
+			return _server.get_root() + "/" + _server.get_index();
+		return _server.get_root() + _server.get_index();
+	}
+	for (std::vector<std::string>::iterator it = split_path.begin(); it != split_path.end(); it++)
+		it->insert(0, "/");
+	if (split_path[0].find(".") == std::string::npos && split_path[0].rfind("/") != split_path[0].length() - 1)
+		split_path[0] += "/";
+	for (std::vector<Location>::iterator it = locations.begin(); it != locations.end(); it++)
+	{
+		if (it->get_name() == split_path[0])
+		{
+			if (it->get_root() != "")
+			{
+				path = it->get_root();
+			}
+			struct stat check;
+			std::string loc;
+
+			if (path.rfind("/") == path.length() - 1)
+				loc = path + it->get_name();
+			else
+				loc = path + it->get_name().substr(1);
+			lstat(loc.c_str(), &check);
+			if (it->get_index() != "" && S_ISDIR(check.st_mode) && split_path.size() < 2)
+			{
+				if (path.rfind("/") == path.length() - 1)
+					path += it->get_name() + it->get_index();
+				else
+					path += it->get_name().substr(1) + it->get_index();
+			}
+			else if (S_ISDIR(check.st_mode))
+			{
+				if (path.rfind("/") == path.length() - 1)
+					path += it->get_name();
+				else
+					path += it->get_name().substr(1);
+			}
+			if (split_path.size() >= 2)
+			{
+				int i = 1;
+				for (std::vector<std::string>::iterator itsplit = split_path.begin() + i; itsplit != split_path.end(); itsplit++)
+				{
+					if (itsplit->rfind("/") != itsplit->length() - 1 && itsplit != --split_path.end() && itsplit->find(".") == std::string::npos)
+					{
+						path += *itsplit + "/";
+					}
+					else
+					{
+						if (path.rfind("/") == path.length() - 1)
+							path += itsplit->substr(1);
+						else
+							path += *itsplit;
+					}
+				}
+				struct stat tst;
+				lstat(path.c_str(), &tst);
+				if (S_ISDIR(tst.st_mode) && it->get_index() != "")
+				{
+					if (path.rfind("/") != path.length() - 1)
+						path += "/";
+					path += it->get_index();
+				}
+			}
+			else if (!S_ISDIR(check.st_mode) && it->get_index() != "")
+			{
+				if (path.rfind("/") != path.length() - 1)
+				{
+					path += "/";
+				}
+				path += it->get_index();
+			}
+			return path;
+		}
+	}
+	return path + split_path[0];
 }
 
 const char *Response::FileNotOpen::what() const throw()
