@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:07:29 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 10:06:50 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/07 11:30:23 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,14 @@ Server::Server(void) {
 	init_allow_methods();
 }
 
-Server::~Server(void) {}
+Server::~Server(void)
+{
+	_listen.clear();
+	_name.clear();
+	_error_pages.clear();
+	_cgi_ext.clear();
+	_allow_method.clear();
+}
 
 void Server::init_error_pages(void)
 {
