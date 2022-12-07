@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:07:29 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/06 18:25:19 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/07 10:06:50 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,6 @@ std::string 						Server::get_index_path(std::string location) const
 
 	if (split_path.size() < 1)
 	{
-		std::cout << "TEST" << std::endl;
 		for (std::vector<Location>::iterator it = tmp.begin(); it != tmp.end(); it++)
 		{
 			if (it->get_name() == location)

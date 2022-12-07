@@ -1,15 +1,8 @@
 #include "../includes/utils.hpp"
 
-void log(const std::string &message)
-{
-	std::cout << message << std::endl;
-}
-
-void exitWithError(const std::string &errorMessage)
-{
-	log("ERROR: " + errorMessage);
-	exit(1);
-}
+/*
+** ------------------------------- UTILS --------------------------------
+*/
 
 int								checkEnd(const std::string& str, const std::string& end)
 {
@@ -88,13 +81,13 @@ int Socket::startSocket()
 	_socket = socket(AF_INET, SOCK_STREAM, 0);
 	if (_socket < 0)
 	{
-		exitWithError("Couldn't create server : socket() call failed");
+		std::cout << RED << "ERROR: " << RESET << "Couldn't create server : socket() call failed" << std::endl;
 		return 1;
 	}
 	rc = setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, (const void *)&on, sizeof(on));
 	if (rc < 0)
 	{
-		exitWithError("Couldn't create server : setsockopt() call failed");
+		std::cout << RED << "ERROR: " << RESET << "Couldn't create server : setsockopt() call failed" << std::endl;
 		close(_socket);
 		return 1;
 	}
@@ -102,7 +95,7 @@ int Socket::startSocket()
 	rc = fcntl(_socket, F_SETFL, flags | O_NONBLOCK);
 	if (rc < 0)
 	{
-		exitWithError("Couldn't create server : fcntl() call failed");
+		std::cout << RED << "ERROR: " << RESET << "Couldn't create server : fcntl() call failed" << std::endl;
 		close(_socket);
 		return 1;
 	}
@@ -113,14 +106,14 @@ int Socket::startSocket()
 	rc = bind(_socket, (struct sockaddr *)&_socketAddress, sizeof(_socketAddress));
 	if (rc < 0)
 	{
-		exitWithError("Couldn't create server [] : bind() call failed");
+		std::cout << RED << "ERROR: " << RESET << "Couldn't create server [] : bind() call failed" << std::endl;
 		close(_socket);
 		return 1;
 	}
 	rc = listen(_socket, 1000);
 	if (rc < 0)
 	{
-		exitWithError("Couldn't create server : listen() call failed");
+		std::cout << RED << "ERROR: " << RESET << "Couldn't create server : listen() call failed" << std::endl;
 		close(_socket);
 		return 1;
 	}
@@ -178,10 +171,10 @@ long Socket::receiveMessage(long socket)
 	else
 		ret = 1;
 
-	if (ret == 0 && _receivedMessage[socket].size() < 5000)
-		std::cout << std::endl << "------ Received request ------" << std::endl << "[" << std::endl << _receivedMessage[socket] << "]" << std::endl << std::endl;
+	if (ret == 0 && _receivedMessage[socket].size() < 2000)
+		std::cout << std::endl << "Received request on: " << _server.get_ip() << ":" << _server.get_listen()[0] << std::endl << std::endl << BLUE << "[" << _receivedMessage[socket] << "]" << RESET << std::endl << std::endl;
 	else if (ret == 0 && _receivedMessage[socket].size() >= 2000)
-		std::cout << std::endl << "------ Received request ------" << std::endl << "[" << std::endl << _receivedMessage[socket].substr(0, 500) << "...]" << std::endl << std::endl;
+		std::cout << std::endl << "Received request on: " << _server.get_ip() << ":" << _server.get_listen()[0] << std::endl << std::endl << BLUE << "[" << _receivedMessage[socket].substr(0, 500) << "...]" << RESET << std::endl << std::endl;
 	return (ret);
 }
 
@@ -191,7 +184,6 @@ long Socket::sendResponse(long socket)
 	{
 		Request request = Request(_receivedMessage[socket]);
 		_receivedMessage.erase(socket);
-		log("------ Received Request from client ------\n\n");
 		_sent[socket] = 0;
 		if (request.getError() != 0)
 		{
@@ -231,9 +223,9 @@ long Socket::sendResponse(long socket)
 		if (_sent[socket] >= _socketMessage[socket].size())
 		{
 			if (_socketMessage[socket].size() < 2000)
-				std::cout << GREEN << "\r\n" << _socketMessage[socket] << "\r\n" << RESET << std::endl;
+				std::cout << std::endl << "Send response on: " << _server.get_ip() << ":" << _server.get_listen()[0] << std::endl << GREEN << std::endl << "[" << _socketMessage[socket] << "]" << std::endl << RESET << std::endl;
 			else
-				std::cout << GREEN << "\r\n" << _socketMessage[socket].substr(0, 500) << "\r\n" << RESET << std::endl;
+				std::cout << std::endl << "Send response on: " << _server.get_ip() << ":" << _server.get_listen()[0] << std::endl << GREEN << std::endl<< "[" << _socketMessage[socket].substr(0, 500) << "]" << std::endl << RESET << std::endl;
 			_socketMessage.erase(socket);
 			_sent.erase(socket);
 			return (0);

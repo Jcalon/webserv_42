@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:05:49 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/06 21:03:06 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/07 11:10:25 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@
 #include "Request.hpp"
 #include "Response.hpp"
 #include "CGI.hpp"
-
+#include <csignal>
 #include "Socket.hpp"
 #include "Manager.hpp"
 
@@ -94,5 +94,6 @@ std::string					ft_to_upper(std::string &str);
 std::string					replace(std::string src, std::string search, std::string replace);
 unsigned long				ft_str_to_int(std::string str);
 bool 						is_readable(const std::string &file);
+void	ctrl_handler(int sig_num);
 
 #endif

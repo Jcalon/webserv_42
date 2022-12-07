@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 10:11:58 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/06 22:14:27 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/07 11:10:29 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,4 +104,13 @@ bool is_readable(const std::string &file) //indique si un fichier est lisible (e
 {
   std::ifstream fichier(file.c_str());
   return !fichier.fail();
+}
+
+void	ctrl_handler(int sig_num)
+{
+	if (sig_num == SIGINT)
+	{
+		std::cout << std::endl << "Server(s) closed !" << std::endl;
+		exit(0);
+	}
 }

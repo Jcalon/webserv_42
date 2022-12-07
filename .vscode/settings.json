@@ -57,7 +57,8 @@
 		"span": "cpp",
 		"chrono": "cpp",
 		"codecvt": "cpp",
-		"ratio": "cpp"
+		"ratio": "cpp",
+		"csignal": "cpp"
 	},
 	"C_Cpp.errorSquiggles": "Disabled"
 }
