@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 15:16:09 by jcalon            #+#    #+#             */
-/*   Updated: 2022/12/07 15:16:21 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/07 15:22:54 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,7 @@ Config::Config(char *argv)
 	parse_config(file);
 }
 
-Config::~Config(void)
-{
-	_server.clear();
-}
+Config::~Config(void) {}
 
 
 void	Config::parse_config(std::vector<std::string> file)

@@ -3,67 +3,51 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 13:37:40 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 13:37:43 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/07 16:05:32 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef UTILS_HPP
 # define UTILS_HPP
 
-#include <iostream>
-#include <iomanip>
-#include <fstream>
-#include <vector>
-#include <map>
-#include <iterator>
-#include <cstdlib>
-#include <exception>
-#include <string>
+#include <arpa/inet.h>
+#include <dirent.h>
 #include <fcntl.h>
-#include <iostream>
-#include <string>
 #include <stdio.h>
 #include <sys/socket.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-#include <sstream>
-#include <string>
-#include <cstring>
-#include <dirent.h>
-
-#include <iostream>
-#include <vector>
-#include <string>
-#include <filesystem>
-
-#include <string>
-#include <vector>
-#include <iostream>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/time.h>
-#include <cstring>
-#include <sys/types.h>
 #include <sys/stat.h>
-
-#include "Autoindex.hpp"
-#include "Location.hpp"
-#include "Server.hpp"
-#include "Config.hpp"
-#include "Request.hpp"
-#include "Response.hpp"
-#include "CGI.hpp"
-#include <csignal>
-#include "Socket.hpp"
-#include "Manager.hpp"
-
-#include <unistd.h>
-#include <sys/types.h>
+#include <sys/time.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <unistd.h>
+
+#include <csignal>
+#include <cstdlib>
+#include <cstring>
+#include <exception>
+#include <iostream>
+#include <iomanip>
+#include <filesystem>
+#include <fstream>
+#include <iterator>
+#include <map>
+#include <string>
+#include <vector>
+#include <sstream>
+#include <string>
+
+#include "Autoindex.hpp"
+#include "Request.hpp"
+#include "Location.hpp"
+#include "Server.hpp"
+#include "Socket.hpp"
+#include "Config.hpp"
+#include "CGI.hpp"
+#include "Response.hpp"
+#include "Manager.hpp"
 
 #define BUFFER_SIZE 30720
 #define SOCKET_MAX	1000000
@@ -87,6 +71,8 @@
 #define STAR "\033[93m > \033[0m"
 #define WHITESPACES " \t;"
 
+extern int	running;
+
 std::vector<std::string> 	ft_cpp_split(const std::string &str, const std::string &charset);
 std::vector<std::string> 	ft_cpp_split_str(const std::string &str, const std::string &charset);
 bool						ft_in_charset(char const c, const std::string &charset);
@@ -95,6 +81,6 @@ std::string					ft_to_upper(std::string &str);
 std::string					replace(std::string src, std::string search, std::string replace);
 unsigned long				ft_str_to_int(std::string str);
 bool 						is_readable(const std::string &file);
-void	ctrl_handler(int sig_num);
+void						ctrl_handler(int sig_num);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 09:52:16 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 14:53:51 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/07 16:11:35 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,11 +76,12 @@ void Response::parse_body(std::string fields)
 
 bool	Response::test_cgi(Server const &server, std::string loc_name)
 {
-	if (this->_method == "POST" && this->_code_status.first == 200)
+	if ((this->_method == "POST" || this->_method == "GET") && this->_code_status.first == 200)
 	{
 		if (loc_name != "/")
 			loc_name = ft_cpp_split(loc_name, "/").front();
 		loc_name.insert(0, "/");
+		loc_name += "/";
 		if (is_cgi_in_location(server, loc_name) || is_cgi_in_extension(server))
 			return true;
 	}

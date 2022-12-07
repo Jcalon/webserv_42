@@ -54,9 +54,8 @@ CGI::CGI(Request const &request, Server const &server, std::string binary, std::
 	_env["SERVER_SOFTWARE"] = "webserv";
 // 	std::map<std::string, std::string> tmp2 = _env;
 // 	for (std::map<std::string, std::string>::iterator it = tmp2.begin(); it != tmp2.end(); it++)
-// 		std::cout << it->first << ": " << it->second << std::endl << std::endl;
+// 		std::site/test.php << it->first << ": " << it->second << std::endl << std::endl;
 }
-
 
 /*
 ** -------------------------------- DESTRUCTOR --------------------------------
@@ -107,7 +106,7 @@ std::string		CGI::interpreter(void)
 	lseek(input_fd, 0, SEEK_SET);
 	pid = fork();
 	if (pid == -1)
-		return "ERROR 500";
+		return "500";
 	else if (pid == 0)
 	{
 		char **av = new char * [3];
@@ -121,7 +120,7 @@ std::string		CGI::interpreter(void)
 		strcpy(av[1], _target.c_str());
 		av[2] = NULL;
 		execve(_binary.c_str(), av, mapEnvToTab());
-		write(2, "ERROR 500", 9);
+		write(1, "500", 9);
 	}
 	else
 	{

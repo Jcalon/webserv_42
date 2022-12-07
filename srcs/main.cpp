@@ -3,17 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 13:37:47 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 14:29:52 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/07 15:19:38 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/utils.hpp"
 
+int running;
+
 int main(int ac, char **av)
 {
+	running = 1;
 	if (ac != 2)
 		return (0);
 	try

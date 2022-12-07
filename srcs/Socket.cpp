@@ -58,9 +58,6 @@ Socket::Socket(Server serv) : _server(serv), _socket(-1), _new_socket(-1)
 Socket::~Socket() // remplacer les closes
 {
 	clean();
-	_socketMessage.clear();
-	_sent.clear();
-	_receivedMessage.clear();
 }
 
 void	Socket::clean(void)
