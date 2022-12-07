@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/01 16:05:49 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/06 19:50:51 by mbascuna         ###   ########.fr       */
+/*   Created: 2022/12/07 09:53:13 by mbascuna          #+#    #+#             */
+/*   Updated: 2022/12/07 09:53:18 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@
 #define WHITESPACES " \t;"
 
 std::vector<std::string> 	ft_cpp_split(const std::string &str, const std::string &charset);
+std::vector<std::string> 	ft_cpp_split_str(const std::string &str, const std::string &charset);
 bool						ft_in_charset(char const c, const std::string &charset);
 std::string					ft_to_string(int i);
 std::string					ft_to_upper(std::string &str);

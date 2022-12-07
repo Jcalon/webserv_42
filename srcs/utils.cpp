@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 10:11:58 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/06 15:24:46 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/06 22:14:27 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,19 @@ std::vector<std::string> ft_cpp_split(const std::string &str, const std::string 
 			res.push_back(tmp);
 		}
 	}
+	return res;
+}
+
+std::vector<std::string> ft_cpp_split_str(const std::string &str, const std::string &charset)
+{
+	std::vector<std::string> res;
+	if (str.find(charset) != std::string::npos)
+	{
+		res.push_back(str.substr(0, str.find(charset)));
+		res.push_back(str.substr(str.find(charset) + charset.length(), str.length() - str.find(charset) - charset.length() - 1));
+	}
+	else
+		res.push_back(str);
 	return res;
 }
 

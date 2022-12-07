@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/06 16:03:35 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/06 19:52:53 by mbascuna         ###   ########.fr       */
+/*   Created: 2022/12/07 09:52:16 by mbascuna          #+#    #+#             */
+/*   Updated: 2022/12/07 09:52:35 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ Response::Response(Request const &request, int error): _request(request)
 		this->_response.append(line);
 	ifs.close();
 	this->_content_length = _response.size();
-	this->_content_type = init_mime_types(); // a modifier avec une fonction en fonction du ype
+	this->_content_type = "text/html"; // a modifier avec une fonction en fonction du ype
 	this->_date = set_date();
 	set_header();
 }
@@ -57,7 +57,7 @@ Response::~Response() {}
 
 void Response::parse_body(std::string fields)
 {
-	if (this->_method == "PUT")
+	if (this->_method == "PUT" || (this->_method == "POST" && this->_cgi == false))
 	{
 		this->_body.insert(make_pair("1", fields));
 		return ;
@@ -215,7 +215,6 @@ bool	Response::is_allowed_in_location(Server const &server, std::string loc_name
 
 void Response::call_method()
 {
-	// if ()
 	if (_code_status.first != 200 && _code_status.first != 201)
 	{
 		load_error_pages();
@@ -262,47 +261,51 @@ void Response::load_error_pages()
 
 void Response::run_get_method(void)
 {
-	std::string			line;
-	bool 				autoindex = _server.get_autoindex();
-	std::vector<Location> locations = _server.get_location();
-	int index = 0;
+		std::string			line;
+		bool 				autoindex = _server.get_autoindex();
+		std::vector<Location> locations = _server.get_location();
+		int index = 0;
 
-
-	for (std::vector<Location>::iterator it = locations.begin(); it != locations.end(); it++)
-	{
-		if (this->_content_location == it->get_name())
-		{
-			autoindex = it->get_autoindex();
-			if (it->get_index() != "")
-				index = 1;
-		}
-	}
-	std::string ext = ft_cpp_split(_request.getRequest()._target, ".").back();
-	if (autoindex && !index && ext != "ico")
-	{
-		Autoindex autoindex(_path);
-		this->_response = autoindex.get_html();
-	}
+	if (_cgi == true)
+		run_cgi_method();
 	else
 	{
-		std::ifstream		ifs(_path.c_str());
-		struct stat check_bis;
-		lstat(_path.c_str(), &check_bis);
-		if (access(_path.c_str(), F_OK) == 0)
-			this->_code_status = find_pair(403);
-		else if (!ifs.is_open() || S_ISDIR(check_bis.st_mode))
-			this->_code_status = find_pair(404);
-		while (std::getline(ifs, line, char(ifs.eof())))
-			this->_response.append(line);
-		ifs.close();
-	}
-	if (_code_status.first != 200)
-		load_error_pages();
-	this->_content_length = _response.size();
-	this->_content_type = init_mime_types(); // a modifier avec une fonction en fonction du ype
-	this->_date = set_date();
+		for (std::vector<Location>::iterator it = locations.begin(); it != locations.end(); it++)
+		{
+			if (this->_content_location == it->get_name())
+			{
+				autoindex = it->get_autoindex();
+				if (it->get_index() != "")
+					index = 1;
+			}
+		}
+		std::string ext = ft_cpp_split(_request.getRequest()._target, ".").back();
+		if (autoindex && !index && ext != "ico")
+		{
+			Autoindex autoindex(_path);
+			this->_response = autoindex.get_html();
+		}
+		else
+		{
+			std::ifstream		ifs(_path.c_str());
+			struct stat check_bis;
+			lstat(_path.c_str(), &check_bis);
+			if (access(_path.c_str(), F_OK) == 0)
+				this->_code_status = find_pair(403);
+			else if (!ifs.is_open() || S_ISDIR(check_bis.st_mode))
+				this->_code_status = find_pair(404);
+			while (std::getline(ifs, line, char(ifs.eof())))
+				this->_response.append(line);
+			ifs.close();
+		}
+		if (_code_status.first != 200)
+			load_error_pages();
+		this->_content_length = _response.size();
+		this->_content_type = init_mime_types(); // a modifier avec une fonction en fonction du ype
+		this->_date = set_date();
 
-	set_header();
+		set_header();
+	}
 }
 
 void Response::run_head_method(void)
@@ -328,11 +331,31 @@ void Response::run_post_method(void)
 {
 	if (_code_status.first == 200 && _cgi == true)
 		run_cgi_method();
+	else if (_request.getFilename() != "")
+	{
+		_code_status = find_pair(201);
+		_path += "/" + _request.getFilename();
+		if (is_readable(_path.c_str()))
+			_code_status = find_pair(204);
+
+		std::ofstream		ofs(_path.c_str());
+		std::string	line;
+
+		if (!ofs.is_open())
+			_code_status = find_pair(403);
+		ofs << this->_body["1"];
+		ofs.close();
+
+		this->_response = "";
+		this->_content_length = _response.size();
+		this->_content_type = "text/html"; // a modifier avec une fonction en fonction du ype
+		this->_date = set_date();
+		set_header();
+	}
 	else
 	{
 		this->_response = "";
 		this->_content_length = _response.size();
-		this->_content_type = "text/html"; // a modifier avec une fonction en fonction du ype
 		this->_date = set_date();
 		set_header();
 	}

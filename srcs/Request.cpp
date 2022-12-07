@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 17:55:06 by jcalon            #+#    #+#             */
-/*   Updated: 2022/12/06 15:44:46 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/06 22:27:27 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,12 +31,12 @@ void throwError(const std::exception& ex)
 
 static bool isValidHTTPVersion(std::string http_version)
 {
-	if (http_version == "HTTP/1.1")
+	if (http_version.find("HTTP/1.1") != std::string::npos)
 		return (true);
 	return (false);
 }
 
-Request::Request(const std::string & request): _request(request), _fields(), _infos(), _body("")
+Request::Request(const std::string & request): _request(request), _fields(), _infos(), _filename("") , _body("")
 {
 	size_t start = 0;
 	size_t end = request.find("\n");
@@ -50,7 +50,7 @@ Request::Request(const std::string & request): _request(request), _fields(), _in
 		end = request.find("\n", start);
 	}
 	this->_fields.push_back(request.substr(start, end - start));
-	if (this->_fields.size() < 2)
+	if (this->_fields.size() <= 3)
 		_error = 400;
 	pos = this->_fields[0].find(" ");
 	if (pos != std::string::npos)
@@ -89,11 +89,19 @@ Request::Request(const std::string & request): _request(request), _fields(), _in
 		this->_infos._http = this->_fields[0].substr(0, this->_fields[0].find('\r'));
 		if(isValidHTTPVersion(this->_infos._http) == false)
 			_error = 505;
+		else if (this->_infos._http.length() > 8)
+			_error = 400;
+		this->_fields.erase(this->_fields.begin());
 	}
 	else
 		_error = 400;
 	if (_request.find("Transfer-Encoding: chunked") != std::string::npos)
 		parseChunkedBody();
+	else if (_request.find("boundary=") != std::string::npos)
+	{
+		this->_boundary = _request.substr(_request.find("boundary=") + 9, _request.find("\r\n" , _request.find("boundary=")) - _request.find("boundary=") - 9);
+		parseBoundaryBody();
+	}
 	else
 		parseBody();
 }
@@ -133,6 +141,38 @@ void	Request::parseChunkedBody()
 	}
 }
 
+void	Request::parseBoundaryBody()
+{
+	std::vector<std::string> tmp = this->_fields;
+	this->_fields.clear();
+	int count = 0;
+	for (std::vector<std::string>::iterator it = tmp.begin(); it != tmp.end(); it++)
+	{
+		if (it->find("filename=") != std::string::npos)
+			this->_filename = it->substr(it->find("filename=") + 10, it->find("\"", it->find("filename=") + 10) - it->find("filename=") - 10);
+		if (*it == "\r" && count == 0)
+		{
+			count++;
+			it++;
+		}
+		else if (*it == "\r")
+		{
+			it++;
+			for (; it != tmp.end(); it++)
+			{
+				if (it->find(_boundary) == std::string::npos)
+				{
+					this->_body += *it;
+					this->_body += "\n";
+				}
+			}
+			break;
+		}
+		else
+			this->_fields.push_back(*it);
+	}
+}
+
 std::string	Request::getRawRequest() const
 {
 	return this->_request;
@@ -146,6 +186,11 @@ int	Request::getError() const
 std::vector<std::string>	Request::getFields() const
 {
 	return this->_fields;
+}
+
+std::string	Request::getFilename() const
+{
+	return this->_filename;
 }
 
 Request::request_info	Request::getRequest() const

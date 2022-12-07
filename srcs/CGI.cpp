@@ -16,7 +16,6 @@ CGI::CGI(Request const &request, Server const &server, std::string binary, std::
 			break ;
 		}
 	}
-
 	_binary = binary;
 	_target = target;
 	_inputbody = request.getBody();
@@ -26,7 +25,7 @@ CGI::CGI(Request const &request, Server const &server, std::string binary, std::
 	{
 		if (it->find(":") != std::string::npos)
 		{
-			std::vector<std::string> split = ft_cpp_split(*it, ": ");
+			std::vector<std::string> split = ft_cpp_split_str(*it, ": ");
 			ft_to_upper(split[0]);
 			split[0] = replace(split[0], "-", "_");
 			_env["HTTP_" + split[0]] = split[1];
@@ -34,7 +33,7 @@ CGI::CGI(Request const &request, Server const &server, std::string binary, std::
 	}
 	_env["REDIRECT_STATUS"] = "200";
 	_env["GATEWAY_INTERFACE"] = "CGI/1.1";
-	_env["SCRIPT_NAME"] = server.get_cgi_dir();
+	_env["SCRIPT_NAME"] = _binary;
 	_env["REQUEST_METHOD"] = request.getRequest()._method;
 	_env["CONTENT_LENGTH"] = ft_to_string(request.getBody().length());
 	_env["CONTENT_TYPE"] = contenttype;
@@ -53,6 +52,9 @@ CGI::CGI(Request const &request, Server const &server, std::string binary, std::
 	_env["SERVER_PORT"] = server.get_listen()[0];
 	_env["SERVER_PROTOCOL"] = "HTTP/1.1";
 	_env["SERVER_SOFTWARE"] = "webserv";
+// 	std::map<std::string, std::string> tmp2 = _env;
+// 	for (std::map<std::string, std::string>::iterator it = tmp2.begin(); it != tmp2.end(); it++)
+// 		std::cout << it->first << ": " << it->second << std::endl << std::endl;
 }
 
 
@@ -92,8 +94,6 @@ std::string		CGI::interpreter(void)
 	int						std_fd[2];
 	char					tmp[BUFFER_SIZE + 1];
 	int						ret = 1;
-
-	std::cout  << "ENV " << _env["QUERY_STRING"] << std::endl;
 
 	std_fd[0] = dup(STDIN_FILENO);
 	std_fd[1] = dup(STDOUT_FILENO);
