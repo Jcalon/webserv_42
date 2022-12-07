@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/07 13:38:30 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 15:29:47 by mbascuna         ###   ########.fr       */
+/*   Created: 2022/12/07 15:33:29 by mbascuna          #+#    #+#             */
+/*   Updated: 2022/12/07 15:33:31 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,14 @@ Server::Server(void) {
 	init_allow_methods();
 }
 
-Server::~Server(void) {}
+Server::~Server(void)
+{
+	_listen.clear();
+	_name.clear();
+	_error_pages.clear();
+	_cgi_ext.clear();
+	_allow_method.clear();
+}
 
 void Server::init_error_pages(void)
 {

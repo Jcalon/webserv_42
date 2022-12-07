@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/21 12:20:36 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 15:29:28 by mbascuna         ###   ########.fr       */
+/*   Created: 2022/12/07 15:33:20 by mbascuna          #+#    #+#             */
+/*   Updated: 2022/12/07 15:33:24 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,10 @@ Config::Config(char *argv)
 	parse_config(file);
 }
 
-Config::~Config(void) {}
+Config::~Config(void)
+{
+	_server.clear();
+}
 
 
 void	Config::parse_config(std::vector<std::string> file)
