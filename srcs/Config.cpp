@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/21 12:20:36 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 14:28:31 by mbascuna         ###   ########.fr       */
+/*   Created: 2022/12/07 15:16:09 by jcalon            #+#    #+#             */
+/*   Updated: 2022/12/07 15:16:21 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,10 @@ Config::Config(char *argv)
 	parse_config(file);
 }
 
-Config::~Config(void) {}
+Config::~Config(void)
+{
+	_server.clear();
+}
 
 
 void	Config::parse_config(std::vector<std::string> file)
