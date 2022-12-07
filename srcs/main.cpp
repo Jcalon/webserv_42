@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/21 12:57:27 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 13:09:44 by mbascuna         ###   ########.fr       */
+/*   Created: 2022/12/07 13:37:47 by mbascuna          #+#    #+#             */
+/*   Updated: 2022/12/07 13:38:01 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,16 +28,15 @@ int main(int ac, char **av)
 		}
 		if (serv.setup() == -1)
 		{
-			std::cout << "Couldn't setup manager" << std::endl;
-			exit(1);
+			std::cout << RED << "ERROR: " << RESET << "Couldn't setup servers..." << std::endl;
+			return (EXIT_FAILURE);
 		}
+		std::signal(SIGINT, ctrl_handler);
 		serv.run();
 	}
 	catch(const std::exception& e)
 	{
 		std::cerr << e.what() << '\n';
 	}
-
-
 	return (0);
 }

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/07 09:53:13 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 09:53:18 by mbascuna         ###   ########.fr       */
+/*   Created: 2022/12/07 13:37:40 by mbascuna          #+#    #+#             */
+/*   Updated: 2022/12/07 13:37:43 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@
 #include "Request.hpp"
 #include "Response.hpp"
 #include "CGI.hpp"
-
+#include <csignal>
 #include "Socket.hpp"
 #include "Manager.hpp"
 
@@ -95,5 +95,6 @@ std::string					ft_to_upper(std::string &str);
 std::string					replace(std::string src, std::string search, std::string replace);
 unsigned long				ft_str_to_int(std::string str);
 bool 						is_readable(const std::string &file);
+void	ctrl_handler(int sig_num);
 
 #endif

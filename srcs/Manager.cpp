@@ -13,7 +13,7 @@ Manager::Manager(): _sockets()
 
 Manager::~Manager()
 {
-
+	clean();
 }
 
 void							Manager::addSocket(Socket toAdd)
@@ -31,6 +31,8 @@ int				Manager::setup(void)
 	FD_ZERO(&_fd_set);
 	_fd_size = _sockets.size();
 	_max_fd = -1;
+	int count = 0;
+
 	for (std::vector<Socket>::iterator lstn = _sockets.begin(); lstn != _sockets.end(); lstn++)
 	{
 		long	fd;
@@ -41,19 +43,16 @@ int				Manager::setup(void)
 			_listen_fds.insert(std::make_pair(fd, &(*lstn)));
 			if (fd > _max_fd)
 				_max_fd = fd;
-			//LOG("Finished setting up Socket ...
-			std::cout << "			This Socket has the following virtual host :" << std::endl;
+			if (!count)
+				std::cout << YELLOW << "WebServ by mbascuna and jcalon launched !" << RESET << std::endl;
 			Server serv = (*lstn).getServer();
-			std::cout << "				> " << serv.get_ip() << ". Listening on: " << serv.get_listen()[0] << std::endl;
+			std::cout << YELLOW  << "Listening on: " << serv.get_ip() << ":" << serv.get_listen()[0] << RESET << std::endl;
+			count = 1;
 		}
 	}
 	if (_max_fd == -1)
-	{
-		//ERROR("Couldn't set up connexion manager");
 		return (-1);
-	}
-	else
-		return (0);
+	return (0);
 }
 
 void			Manager::run(void)
@@ -64,6 +63,7 @@ void			Manager::run(void)
 		fd_set			writing_set;
 		struct timeval	timeout;
 		int				ret = 0;
+
 		while (ret == 0)
 		{
 			timeout.tv_sec = 1;
@@ -156,7 +156,7 @@ void			Manager::run(void)
 		}
 		else
 		{
-			//ERROR("Connexion manager encounte an error : select() call failed");
+			std::cout << RED << "ERROR:" << RESET << "Connexion manager encountered an error : select() call failed" << std::endl;
 			for (std::vector<Socket>::iterator it = _sockets.begin(); it != _sockets.end(); it++)
 				(*it).clean();
 			_read_fds.clear();
@@ -185,7 +185,7 @@ void			Manager::handleIncompleteRequests(fd_set reading_set)
 	}
 }
 
-void			Manager::clean(void)
+void	Manager::clean(void)
 {
 	for (std::map<long,Socket *>::iterator it = _read_fds.begin(); it != _read_fds.end(); it++)
 		close(it->first);
