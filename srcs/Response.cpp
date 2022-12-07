@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 09:52:16 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 16:53:51 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/07 19:51:43 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ Response::Response(Request const &request, Server const &server): _server(server
 	this->_content_length = 0;
 	this->_content_location = request.getRequest()._target;
 	this->_path = server.get_index_path(request.getRequest()._target);
+	std::cout << _path << std::endl;
 	this->_code_status = allow_method(request, server, request.getRequest()._target);
 	this->_content_type = "";
 	this->_header = "";
@@ -81,10 +82,12 @@ bool	Response::test_cgi(Server const &server, std::string loc_name)
 		std::string ext = "";
 		if (loc_name != "/")
 		{
-			loc_name = ft_cpp_split(loc_name, "/").front();
+			std::vector<std::string> split = ft_cpp_split(loc_name, "/");
+			loc_name = split.front();
 			loc_name.insert(0, "/");
 			loc_name += "/";
-			ext = ft_cpp_split(loc_name, "/").back();
+			ext = ft_cpp_split(split.back(), ".").back();
+			ext.insert(0, ".");
 		}
 		if (is_cgi_in_location(server, loc_name, ext) || is_cgi_in_extension(server))
 			return true;
@@ -408,8 +411,8 @@ void Response::run_put_method(void)
 {
 	struct stat check_dir;
 	lstat(_path.c_str(), &check_dir);
-	if (is_readable(_path.c_str()))
-		_code_status = find_pair(204);
+	// if (is_readable(_path.c_str()))
+	// 	_code_status = find_pair(204);
 	if (S_ISDIR(check_dir.st_mode))
 		_code_status = find_pair(409);
 	if (_code_status.first == 201)

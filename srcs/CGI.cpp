@@ -93,7 +93,7 @@ std::string		CGI::interpreter(void)
 	int						std_fd[2];
 	char					tmp[BUFFER_SIZE + 1];
 	int						ret = 1;
-
+	std::cout << "CGI" << std::endl;
 	std_fd[0] = dup(STDIN_FILENO);
 	std_fd[1] = dup(STDOUT_FILENO);
 
