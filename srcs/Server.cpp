@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 15:33:29 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 15:33:31 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/07 16:08:56 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,6 +166,9 @@ std::string 						Server::get_index_path(std::string location) const
 	std::vector<std::string> 	split_path = ft_cpp_split(location, "/");
 	std::string 				path = get_root();
 
+	if (path.find("./") == std::string::npos)
+		path.insert(0, "./");
+	std::cout << RED << BOLD << path << RESET << std::endl;
 	if (split_path.size() < 1)
 	{
 		for (std::vector<Location>::iterator it = tmp.begin(); it != tmp.end(); it++)
@@ -175,10 +178,13 @@ std::string 						Server::get_index_path(std::string location) const
 				if (it->get_root() != "")
 				{
 					path.clear();
-					path = "./" + it->get_root();
+					if (it->get_root().find("./") == std::string::npos)
+						path = "./" + it->get_root();
+					else
+						path = it->get_root();
 				}
 				if (it->get_index() != "")
-					path += it->get_index();
+					path += "/" + it->get_index();
 				if (path != "")
 					return path;
 			}
