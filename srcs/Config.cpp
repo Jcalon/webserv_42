@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 12:20:36 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 14:28:31 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/07 15:29:28 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,10 @@ Config::~Config(void) {}
 void	Config::parse_config(std::vector<std::string> file)
 {
 	std::vector<std::string> line;
+	int nb_line = 0;
 	for (std::vector<std::string>::iterator it = file.begin(); it != file.end(); it++)
 	{
+		nb_line++;
 		line = ft_cpp_split(*it, WHITESPACES);
 		if (line[0] == "workers")
 			this->_workers = line[1];
@@ -74,9 +76,16 @@ void	Config::parse_config(std::vector<std::string> file)
 				break;
 			}
 		}
+		else if (line[0] != "" && line[0] != "}")
+		{
+			this->_is_error = true;
+			break;
+		}
 		else
 			break;
 	}
+	if (nb_line <= 1)
+		this->_is_error = true;
 }
 
 std::string			Config::get_workers(void) const { return this->_workers; }

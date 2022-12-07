@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 13:38:30 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 14:28:20 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/07 15:29:47 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,11 +50,13 @@ void Server::init_allow_methods(void)
 //surement appeler des fonctions pour chaque item . fonctions qui checkeront les cas d'erreur et syntax pour cahcun
 std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>::iterator start, std::vector<std::string> file)
 {
+	int nb_line = 0;
 	start++;
 	for (;start != file.end(); start++)
 	{
 		std::vector<std::string> line;
 		line = ft_cpp_split(*start, WHITESPACES);
+		nb_line++;
 		if (line[0] == "listen")
 		{
 			this->_listen.pop_back();
@@ -131,6 +133,8 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 			break ;
 
 	}
+	if (nb_line <= 1)
+		this->_is_error = true;
 	return start;
 }
 
