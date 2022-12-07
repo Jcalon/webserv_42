@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 10:11:58 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 11:10:29 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/07 15:23:52 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ void	ctrl_handler(int sig_num)
 {
 	if (sig_num == SIGINT)
 	{
+		running = 0;
 		std::cout << std::endl << "Server(s) closed !" << std::endl;
-		exit(0);
 	}
 }

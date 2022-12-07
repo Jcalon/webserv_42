@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Config.cpp                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/07 15:33:20 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 15:33:24 by mbascuna         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 #include "../includes/utils.hpp"
 
@@ -34,10 +24,7 @@ Config::Config(char *argv)
 	parse_config(file);
 }
 
-Config::~Config(void)
-{
-	_server.clear();
-}
+Config::~Config(void) {}
 
 
 void	Config::parse_config(std::vector<std::string> file)
@@ -87,8 +74,7 @@ void	Config::parse_config(std::vector<std::string> file)
 		else
 			break;
 	}
-	if (nb_line <= 1)
-		this->_is_error = true;
+
 }
 
 std::string			Config::get_workers(void) const { return this->_workers; }

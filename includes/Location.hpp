@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Location.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 11:37:28 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/30 17:21:24 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/07 16:22:18 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ class Location
 		std::vector<std::string> 			get_allow_method(void) const;
 		std::string 						get_body_size(void) const;
 		std::string 						get_index(void) const;
-		std::map<std::string, std::string>	get_cgi_ext(void) const;
+		std::string							get_cgi_ext(void) const;
 		std::string							get_cgi_dir(void) const;
 		bool 								get_autoindex(void) const;
 
@@ -44,7 +44,7 @@ class Location
 		bool								_autoindex;
 		std::string							_max_client_body_size;
 		std::string							_upload;
-		std::map<std::string, std::string>	_cgi_ext;
+		std::string							_cgi_ext;
 		std::string							_cgi_dir;
 };
 

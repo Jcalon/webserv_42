@@ -57,7 +57,7 @@ int				Manager::setup(void)
 
 void			Manager::run(void)
 {
-	while (1)
+	while (running)
 	{
 		fd_set			reading_set;
 		fd_set			writing_set;
@@ -156,7 +156,7 @@ void			Manager::run(void)
 		}
 		else
 		{
-			std::cout << RED << "ERROR:" << RESET << "Connexion manager encountered an error : select() call failed" << std::endl;
+			// std::cout << RED << "ERROR:" << RESET << "Connexion manager encountered an error : select() call failed" << std::endl;
 			for (std::vector<Socket>::iterator it = _sockets.begin(); it != _sockets.end(); it++)
 				(*it).clean();
 			_read_fds.clear();

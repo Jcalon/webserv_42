@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:05:37 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 13:32:08 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/07 16:19:33 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ class Response
 		std::pair<int, std::string> find_pair(int code);
 		bool						test_cgi(Server const &server, std::string loc_name);
 		bool						is_cgi_in_extension(Server const &server);
-		bool						is_cgi_in_location(Server const &server, std::string loc_name);
+		bool						is_cgi_in_location(Server const &server, std::string loc_name, std::string ext);
 		bool						is_allowed_in_extension(Server const &server);
 		bool						is_allowed_in_location(Server const &server, std::string loc_name);
 		bool						is_max_size_in_extension(Request const &request, Server const &server);

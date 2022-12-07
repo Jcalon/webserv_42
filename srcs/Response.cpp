@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 09:52:16 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 14:53:51 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/07 16:53:51 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,12 +76,17 @@ void Response::parse_body(std::string fields)
 
 bool	Response::test_cgi(Server const &server, std::string loc_name)
 {
-	if (this->_method == "POST" && this->_code_status.first == 200)
+	if ((this->_method == "POST" || this->_method == "GET") && this->_code_status.first == 200)
 	{
+		std::string ext = "";
 		if (loc_name != "/")
+		{
 			loc_name = ft_cpp_split(loc_name, "/").front();
-		loc_name.insert(0, "/");
-		if (is_cgi_in_location(server, loc_name) || is_cgi_in_extension(server))
+			loc_name.insert(0, "/");
+			loc_name += "/";
+			ext = ft_cpp_split(loc_name, "/").back();
+		}
+		if (is_cgi_in_location(server, loc_name, ext) || is_cgi_in_extension(server))
 			return true;
 	}
 	return false;
@@ -103,7 +108,7 @@ bool	Response::is_cgi_in_extension(Server const &server)
 	return false;
 }
 
-bool	Response::is_cgi_in_location(Server const &server, std::string loc_name)
+bool	Response::is_cgi_in_location(Server const &server, std::string loc_name, std::string ext)
 {
 	std::vector<Location> locations = server.get_location();
 	//si le path est une location
@@ -111,6 +116,8 @@ bool	Response::is_cgi_in_location(Server const &server, std::string loc_name)
 	{
 		if (loc_name == it->get_name() && it->get_cgi_dir() != "")
 		{
+			if (ext != it->get_cgi_ext())
+				return false;
 			this->_binary = it->get_cgi_dir();
 			return true;
 		}
@@ -285,7 +292,7 @@ void Response::run_get_method(void)
 		std::string ext = ft_cpp_split(_request.getRequest()._target, ".").back();
 		if (autoindex && !index && ext != "ico")
 		{
-			Autoindex autoindex(_path);
+			Autoindex autoindex(_server, _path);
 			this->_response = autoindex.get_html();
 		}
 		else

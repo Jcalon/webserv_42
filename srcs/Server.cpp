@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Server.cpp                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/07 15:33:29 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 16:08:56 by mbascuna         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 #include "../includes/utils.hpp"
 
@@ -25,14 +15,7 @@ Server::Server(void) {
 	init_allow_methods();
 }
 
-Server::~Server(void)
-{
-	_listen.clear();
-	_name.clear();
-	_error_pages.clear();
-	_cgi_ext.clear();
-	_allow_method.clear();
-}
+Server::~Server(void) {}
 
 void Server::init_error_pages(void)
 {
@@ -103,8 +86,8 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 			else
 				this->_error_pages.insert(std::make_pair(std::atoi(line[1].c_str()), line[2]));
 		}
-		else if (line[0] == "cgi_ext" && line.size() > 2)
-			this->_cgi_ext.insert(std::make_pair(line[1], line[2]));
+		else if (line[0] == "cgi_ext")
+			this->_cgi_ext = line[1];
 		else if (line[0] == "cgi_dir")
 			this->_cgi_dir = line[1];
 		else if (line[0] == "index")
@@ -127,9 +110,8 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 				this->_is_error = true;
 				break ;
 			}
-			if (verif.find("}") < 0 )
+			if (verif.find("}") == std::string::npos )
 			{
-				std::cout << "ERROR : location doit se fermer avec }" << std::endl;
 				this->_is_error = true;
 				break ;
 			}
@@ -153,7 +135,7 @@ std::string 						Server::get_root(void) const { return this->_root; }
 std::map<int, std::string> 			Server::get_error_pages(void) const { return this->_error_pages; }
 std::string 						Server::get_body_size(void) const { return this->_max_client_body_size;}
 std::string 						Server::get_cgi_dir(void) const { return this->_cgi_dir;}
-std::map<std::string, std::string> 	Server::get_cgi_ext(void) const { return this->_cgi_ext; }
+std::string						 	Server::get_cgi_ext(void) const { return this->_cgi_ext; }
 bool 								Server::get_autoindex(void) const { return this->_autoindex; }
 std::vector<Location> 				Server::get_location(void) const { return this->_location; }
 std::vector<std::string> 			Server::get_allow_method(void) const { return this->_allow_method; }
@@ -209,13 +191,13 @@ std::string 						Server::get_index_path(std::string location) const
 			}
 
 			struct stat check;
-			std::string loc = path + it->get_name();
-
+			std::string loc;
+			loc = path + it->get_name().substr(1);
 			lstat(loc.c_str(), &check);
 			if (it->get_index() != "" && S_ISDIR(check.st_mode) && split_path.size() < 2)
 				path += it->get_name() + it->get_index();
 			else if (S_ISDIR(check.st_mode))
-				path += it->get_name();
+				path += it->get_name().substr(1);
 			if (split_path.size() >= 2)
 			{
 				int i = 1;
@@ -236,6 +218,7 @@ std::string 						Server::get_index_path(std::string location) const
 			return path;
 		}
 	}
+	std::cout << "SALUT" << std::endl;
 	return path + loc;
 }
 
@@ -284,7 +267,7 @@ std::ostream	&operator<<(std::ostream &o, Server const &Server) {
 	if (Server.get_cgi_dir().size() )
 		o << "    cgi dir = [" << Server.get_cgi_dir() << "]" << std::endl;
 	if (Server.get_cgi_ext().size())
-		o << "    cgi ext = [" << Server.get_cgi_ext().at(0) << "]" << std::endl;
+		o << "    cgi ext = [" << Server.get_cgi_ext() << "]" << std::endl;
 	if (Server.get_autoindex())
 		o << "	autoindex" << Server.get_autoindex() << std::endl;
 	if (Server.get_index().size())

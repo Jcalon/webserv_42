@@ -6,28 +6,11 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 17:55:06 by jcalon            #+#    #+#             */
-/*   Updated: 2022/12/06 22:27:27 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/07 15:23:17 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/utils.hpp"
-
-class throwMessage : public std::exception {
-	private:
-		std::string _msg;
-
-	public:
-		throwMessage (const std::string& msg) throw() : _msg(msg) {}
-		throwMessage (const throwMessage&) throw() {}
-		throwMessage& operator= (const throwMessage&) throw();
-		virtual ~throwMessage() throw() {}
-		virtual const char* what() const throw() { return (_msg.c_str()); }
-};
-
-void throwError(const std::exception& ex)
-{
-	std::cerr << "\033[1m\033[31mERROR \033[0m: " << ex.what() << '\n';
-}
 
 static bool isValidHTTPVersion(std::string http_version)
 {

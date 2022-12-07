@@ -6,7 +6,10 @@
 
 <body style="text-align: center;">
 <?php
-    echo date('h:i:s') . "<br>";
+// Set the new timezone
+date_default_timezone_set('Europe/Paris');
+$date = date('d-m-y h:i:s');
+echo $date;
 ?>
 
 </body>

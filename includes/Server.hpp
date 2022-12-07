@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 11:36:00 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 14:27:57 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/07 16:21:59 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ class Server
 		std::string 						get_index_path(std::string location) const;
 		std::string 						get_cgi_dir(void) const;
 		bool 								get_autoindex(void) const;
-		std::map<std::string, std::string> 	get_cgi_ext(void) const;
+		std::string						 	get_cgi_ext(void) const;
 		std::vector<Location> 				get_location(void) const;
 		std::vector<std::string> 			get_allow_method(void) const;
 		bool								get_error(void) const;
@@ -49,7 +49,7 @@ class Server
 		std::map<int, std::string>			_error_pages; 			// Change les pages d'erreur des codes pour le fichier path
 		std::string							_max_client_body_size; 	// Taille maximale du body d'une requête
 		std::string							_cgi_dir; 				//chemin du dossier contenant les executables CGI
-		std::map<std::string, std::string>	_cgi_ext;				// CGI binary that will be executed for the given extension.
+		std::string							_cgi_ext;				// CGI binary that will be executed for the given extension.
 		bool								_autoindex; 			// Si une requête est faite sur un dossier, l'autoindex liste les fichiers présents dans le dossier
 		std::string 						_index;					//defines files that will be used as an index.
 		std::vector<std::string>			_allow_method;

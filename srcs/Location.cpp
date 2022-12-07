@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:05:58 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 12:36:08 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/07 16:24:11 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ std::vector<std::string>::iterator Location::parse_location(std::vector<std::str
 		else if (line[0] == "index")
 			this->_index = line[1];
 		else if (line[0] == "cgi_ext")
-			this->_cgi_ext.insert(std::make_pair(line[1], line[2]));
+			this->_cgi_ext = line[1];
 		else if (line[0] == "cgi_dir")
 			this->_cgi_dir = line[1];
 		else if (line[0] == "autoindex")
@@ -64,7 +64,7 @@ std::vector<std::string> Location::get_allow_method(void) const { return this->_
 std::string Location::get_body_size(void) const { return this->_max_client_body_size;}
 std::string Location::get_index(void) const { return this->_index;}
 std::string Location::get_cgi_dir(void) const { return this->_cgi_dir;}
-std::map<std::string, std::string> Location::get_cgi_ext(void) const { return this->_cgi_ext; }
+std::string	Location::get_cgi_ext(void) const { return this->_cgi_ext; }
 bool Location::get_autoindex(void) const { return this->_autoindex; }
 
 std::ostream	&operator<<(std::ostream &o, Location const &location) {
