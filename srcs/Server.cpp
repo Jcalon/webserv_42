@@ -37,6 +37,31 @@ void Server::init_allow_methods(void)
 	this->_allow_method.push_back("PUT");
 }
 
+bool Server::check_listen(std::vector<std::string> line)
+{
+	this->_listen.pop_back();
+	if (line.size() > 2)
+		return true;
+	for (size_t i = 1; i < line.size(); i++)
+	{
+		if (line[i].find(":") != std::string::npos)
+		{
+			std::vector<std::string> tmp = ft_cpp_split(line[i], ":");
+			if (!ft_is_alnum(tmp[0]) || !ft_is_alnum(tmp[1]))
+				return true;
+			this->_ip_address = tmp[0];
+			this->_listen.push_back(tmp[1]);
+		}
+		else
+		{
+			if (!ft_is_alnum(line[i]))
+				return true;
+			this->_listen.push_back(line[i]);
+		}
+	}
+	return false;
+}
+
 //surement appeler des fonctions pour chaque item . fonctions qui checkeront les cas d'erreur et syntax pour cahcun
 std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>::iterator start, std::vector<std::string> file)
 {
@@ -49,18 +74,9 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 		nb_line++;
 		if (line[0] == "listen")
 		{
-			this->_listen.pop_back();
-			for (size_t i = 1; i < line.size(); i++)
-			{
-				if (line[i].find(":") != std::string::npos)
-				{
-					std::vector<std::string> tmp = ft_cpp_split(line[i], ":");
-					this->_ip_address = tmp[0];
-					this->_listen.push_back(tmp[1]);
-				}
-				else
-					this->_listen.push_back(line[i]);
-			}
+			this->_is_error = check_listen(line);
+			if (this->_is_error == true)
+				break;
 		}
 		else if (line[0] == "server_name")
 			this->_name.push_back(line[1]);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/22 10:11:58 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 15:23:52 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/07 20:42:32 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,19 @@ std::string	ft_to_string(int i)
 	ss << i;
 	std::string n = ss.str();
 	return n;
+}
+
+bool ft_is_alnum(std::string str)
+{
+	std::string check = "0123456789.";
+	int i = 0;
+	while (str[i])
+	{
+		if (check.find(str[i]) == std::string::npos)
+			return false;
+		i++;
+	}
+	return true;
 }
 
 

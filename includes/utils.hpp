@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 13:37:40 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 16:52:24 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/07 20:12:12 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,5 +82,6 @@ std::string					replace(std::string src, std::string search, std::string replace
 unsigned long				ft_str_to_int(std::string str);
 bool 						is_readable(const std::string &file);
 void						ctrl_handler(int sig_num);
+bool 						ft_is_alnum(std::string str);
 
 #endif
