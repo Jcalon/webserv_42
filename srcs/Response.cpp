@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 09:52:16 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 09:52:35 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/07 13:32:57 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,6 @@ Response::Response(Request const &request, Server const &server): _server(server
 	this->_content_length = 0;
 	this->_content_location = request.getRequest()._target;
 	this->_path = server.get_index_path(request.getRequest()._target);
-	if (*_path.begin() == '/')
-		_path.insert(0,".");
 	this->_code_status = allow_method(request, server, request.getRequest()._target);
 	this->_content_type = "";
 	this->_header = "";
@@ -125,6 +123,8 @@ std::pair<int, std::string> Response::allow_method(Request const &request, Serve
 	if (loc_name != "/")
 		loc_name = ft_cpp_split(loc_name, "/").front();
 	loc_name.insert(0, "/");
+	if (loc_name.find(".") == std::string::npos && *loc_name.end() != '/')
+		loc_name.append("/");
 
 	this->_method = request.getRequest()._method;
 	if (!is_max_size_in_location(request, server, loc_name) || !is_max_size_in_extension(request, server))
@@ -223,7 +223,7 @@ void Response::call_method()
 		this->_date = set_date();
 		set_header();
 	}
-	if (this->_method == "GET")
+	else if (this->_method == "GET")
 		run_get_method();
 	else if (this->_method == "POST")
 		run_post_method();
@@ -261,18 +261,21 @@ void Response::load_error_pages()
 
 void Response::run_get_method(void)
 {
-		std::string			line;
-		bool 				autoindex = _server.get_autoindex();
-		std::vector<Location> locations = _server.get_location();
-		int index = 0;
+	std::string			line;
+	bool 				autoindex = _server.get_autoindex();
+	std::vector<Location> locations = _server.get_location();
+	int index = 0;
 
 	if (_cgi == true)
 		run_cgi_method();
 	else
 	{
+		std::string parse_loc = _content_location;
+		if (parse_loc[parse_loc.size() - 1] != '/')
+			parse_loc.append("/");
 		for (std::vector<Location>::iterator it = locations.begin(); it != locations.end(); it++)
 		{
-			if (this->_content_location == it->get_name())
+			if (parse_loc == it->get_name())
 			{
 				autoindex = it->get_autoindex();
 				if (it->get_index() != "")
@@ -288,12 +291,13 @@ void Response::run_get_method(void)
 		else
 		{
 			std::ifstream		ifs(_path.c_str());
+
 			struct stat check_bis;
 			lstat(_path.c_str(), &check_bis);
-			if (access(_path.c_str(), F_OK) == 0)
-				this->_code_status = find_pair(403);
-			else if (!ifs.is_open() || S_ISDIR(check_bis.st_mode))
+			if ((!ifs || S_ISDIR(check_bis.st_mode)) && access(_path.c_str(), F_OK) == 0)
 				this->_code_status = find_pair(404);
+			else if (access(_path.c_str(), F_OK) < 0)
+				this->_code_status = find_pair(403);
 			while (std::getline(ifs, line, char(ifs.eof())))
 				this->_response.append(line);
 			ifs.close();

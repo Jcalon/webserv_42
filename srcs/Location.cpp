@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:05:58 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/01 16:10:49 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/07 12:36:08 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ std::vector<std::string>::iterator Location::parse_location(std::vector<std::str
 	std::vector<std::string> line;
 	line = ft_cpp_split(*start, WHITESPACES);
 	this->_name = line[1];
+	if (this->_name.find(".") == std::string::npos && *this->_name.end() != '/' && this->_name.size() > 1)
+		this->_name.append("/");
 	start++;
 	for (;start != file.end() - 1; ++start)
 	{
@@ -71,11 +73,11 @@ std::ostream	&operator<<(std::ostream &o, Location const &location) {
 		o << "     root = [" << location.get_root() << "]" << std::endl;
 	if (location.get_upload().size())
 		o << "     upload = [" << location.get_upload() << "]" << std::endl;
-	if (location.get_allow_method().size() > 1)
+	if (location.get_allow_method().size() >= 1)
 	{
 		o << "     allow method = [";
 		std::vector<std::string> method = location.get_allow_method();
-		for (size_t i = 1; i < method.size(); i++)
+		for (size_t i = 0; i < method.size(); i++)
 			o << method[i] << " | ";
 		o << "]" << std::endl;
 	}

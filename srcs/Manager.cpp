@@ -156,7 +156,7 @@ void			Manager::run(void)
 		}
 		else
 		{
-			//ERROR("Connexion manager encountered an error : select() call failed");
+			//ERROR("Connexion manager encounte an error : select() call failed");
 			for (std::vector<Socket>::iterator it = _sockets.begin(); it != _sockets.end(); it++)
 				(*it).clean();
 			_read_fds.clear();

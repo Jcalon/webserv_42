@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:05:37 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/06 15:56:29 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/07 13:32:08 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ class Response
 		bool						is_max_size_in_location(Request const &request, Server const &server, std::string loc_name);
 		std::string					init_mime_types(void);
 		void						load_error_pages(void);
+		// void 						construct_header(void);
 
 		class FileNotOpen : public std::exception
 		{

@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 09:53:43 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 09:54:23 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/07 13:09:10 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,11 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 		else if (line[0] == "max_client_body_size")
 			this->_max_client_body_size = line[1];
 		else if (line[0] == "root")
+		{
 			this->_root = line[1];
+			if (this->_root.find(".") == std::string::npos && *this->_root.end() != '/' && this->_root.size() > 1)
+				this->_root.append("/");
+		}
 		else if (line[0] == "error_page" && line.size() > 2)
 		{
 			std::map<int, std::string>::iterator it = this->_error_pages.find(std::atoi(line[1].c_str()));
@@ -138,7 +142,7 @@ std::string 						Server::get_index_path(std::string location) const
 {
 	std::vector<Location> 		tmp = get_location();
 	std::vector<std::string> 	split_path = ft_cpp_split(location, "/");
-	std::string 				path = "";
+	std::string 				path = get_root();
 
 	if (split_path.size() < 1)
 	{
@@ -147,37 +151,49 @@ std::string 						Server::get_index_path(std::string location) const
 			if (it->get_name() == location)
 			{
 				if (it->get_root() != "")
-					path += it->get_root();
+				{
+					path.clear();
+					path = "./" + it->get_root();
+				}
 				if (it->get_index() != "")
-					path += "/" + it->get_index();
+					path += it->get_index();
 				if (path != "")
 					return path;
 			}
 		}
-		return get_root() + "/" + get_index();
+		return get_root() + get_index();
 	}
+	std::string loc = split_path[0];
 	for (std::vector<std::string>::iterator it = split_path.begin(); it != split_path.end(); it++)
+	{
 		it->insert(0, "/");
+		if (it->find(".") == std::string::npos && *it->end() != '/')
+			it->append("/");
+	}
 	for (std::vector<Location>::iterator it = tmp.begin(); it != tmp.end(); it++)
 	{
 		if (it->get_name() == split_path[0])
 		{
 			if (it->get_root() != "")
+			{
+				path.clear();
 				path = it->get_root();
-			else
-				path = this->get_root();
+			}
 
 			struct stat check;
-			std::string loc = path + it->get_name() + "/";
+			std::string loc = path + it->get_name();
 
 			lstat(loc.c_str(), &check);
 			if (it->get_index() != "" && S_ISDIR(check.st_mode) && split_path.size() < 2)
-				path += it->get_name() + "/" + it->get_index();
+				path += it->get_name() + it->get_index();
 			else if (S_ISDIR(check.st_mode))
 				path += it->get_name();
 			if (split_path.size() >= 2)
 			{
-				for (std::vector<std::string>::iterator itsplit = split_path.begin() + 1; itsplit != split_path.end(); itsplit++)
+				int i = 1;
+				if (split_path[0] == split_path[1])
+					i = 2;
+				for (std::vector<std::string>::iterator itsplit = split_path.begin() + i; itsplit != split_path.end(); itsplit++)
 				{
 					if (*itsplit != "/")
 						path += *itsplit;
@@ -185,14 +201,14 @@ std::string 						Server::get_index_path(std::string location) const
 				struct stat tst;
 				lstat(path.c_str(), &tst);
 				if (S_ISDIR(tst.st_mode) && it->get_index() != "")
-					path += "/" + it->get_index();
+					path += it->get_index();
 			}
 			else if (!S_ISDIR(check.st_mode) && it->get_index() != "")
-				path += "/" + it->get_index();
+				path += it->get_index();
 			return path;
 		}
 	}
-	return path;
+	return path + loc;
 }
 
 
@@ -220,7 +236,7 @@ std::ostream	&operator<<(std::ostream &o, Server const &Server) {
 	{
 		o << "     allow method = [";
 		std::vector<std::string> method = Server.get_allow_method();
-		for (size_t i = 1; i < method.size(); i++)
+		for (size_t i = 0; i < method.size(); i++)
 			o << method[i] << " | ";
 		o << "]" << std::endl;
 	}
