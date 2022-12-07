@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 13:37:47 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 13:38:01 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/07 14:29:52 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,11 @@ int main(int ac, char **av)
 	{
 		Config Config(av[ac - 1]);
 		// std::cout << Config << std::endl;
+		if (Config.get_error() == true)
+		{
+			std::cout << RED << "error parsing" << RESET << std::endl;
+			return 0;
+		}
 		std::vector<Server> servs= Config.get_server();
 		Manager serv;
 		for (std::vector<Server>::iterator it = servs.begin(); it != servs.end(); it++)

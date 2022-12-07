@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 11:36:00 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/30 14:36:56 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/07 14:27:57 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ class Server
 		std::map<std::string, std::string> 	get_cgi_ext(void) const;
 		std::vector<Location> 				get_location(void) const;
 		std::vector<std::string> 			get_allow_method(void) const;
+		bool								get_error(void) const;
 
 	private:
 		std::string							_ip_address;
@@ -55,6 +56,7 @@ class Server
 		// bool								_auth_basic; 			// Change le nom de la popup d'authentification pour les ressources protégées par un mot de passe
 		// std::string						_auth_basic_user_file; 	// Définit le fichier contenant les logins et mot de passes pour accéder à la ressourc
 		std::vector<Location>				_location; 				// Indique la création d'une location name, qui pourra être utilisée dans un url
+		bool								_is_error;
 };
 
 std::ostream	&operator<<(std::ostream &o, Server const &Server);

@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 13:38:30 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 13:38:34 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/07 14:28:20 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ Server::Server(void) {
 	this->_cgi_dir = "";
 	this->_max_client_body_size = "";
 	this->_root = "./";
+	this->_is_error = false;
 	init_error_pages();
 	init_allow_methods();
 }
@@ -105,14 +106,22 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 			if (line[line.size() - 1] != "{")
 			{
 				std::cout << "ERROR : location doit ouvrir avec {\n";
+				this->_is_error = true;
 				break;
 			}
 			start = location.parse_location(start, file);
 			this->_location.push_back(location);
 			std::string verif = *start;
+			if (*start == file[file.size() - 1])
+			{
+				std::cout << "ERROR : server doit se fermer avec }" << std::endl;
+				this->_is_error = true;
+				break ;
+			}
 			if (verif.find("}") < 0 )
 			{
 				std::cout << "ERROR : location doit se fermer avec }" << std::endl;
+				this->_is_error = true;
 				break ;
 			}
 		}
@@ -120,6 +129,7 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 			(line[1] == "on" )? this->_autoindex = true : this->_autoindex = false;
 		else
 			break ;
+
 	}
 	return start;
 }
@@ -136,6 +146,7 @@ std::map<std::string, std::string> 	Server::get_cgi_ext(void) const { return thi
 bool 								Server::get_autoindex(void) const { return this->_autoindex; }
 std::vector<Location> 				Server::get_location(void) const { return this->_location; }
 std::vector<std::string> 			Server::get_allow_method(void) const { return this->_allow_method; }
+bool								Server::get_error(void) const { return this->_is_error; }
 
 
 std::string 						Server::get_index_path(std::string location) const

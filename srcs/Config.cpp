@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 12:20:36 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 13:08:24 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/07 14:28:31 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ Config::Config(void) {}
 
 Config::Config(char *argv)
 {
+	_is_error = false;
 	std::ifstream   ifs(argv);
 	std::vector<std::string> file;
 	if (ifs.is_open())
@@ -55,12 +56,11 @@ void	Config::parse_config(std::vector<std::string> file)
 				return ;
 			}
 			it = server.parse_server(it, file);
+			this->_is_error = server.get_error();
 			std::vector<std::string> listen = server.get_listen();
 			std::vector<Server>::iterator it_check = check_server(listen);
 			if (it_check == _server.end())
-			{
 				this->_server.push_back(server);
-			}
 			else if ((it_check != _server.end()) && listen[listen.size() - 1] == "default")
 			{
 				this->_server.erase(it_check);
@@ -70,6 +70,7 @@ void	Config::parse_config(std::vector<std::string> file)
 			if (verif.find("}") < 0)
 			{
 				std::cout << "ERROR : server  doit se fermer avec }" << std::endl;
+				this->_is_error = true;
 				break;
 			}
 		}
@@ -81,6 +82,7 @@ void	Config::parse_config(std::vector<std::string> file)
 std::string			Config::get_workers(void) const { return this->_workers; }
 std::vector<Server>	Config::get_server(void) const { return this->_server; }
 std::string			Config::get_max_connections(void) const { return this->_max_connections; }
+bool				Config::get_error(void) const { return this->_is_error; }
 
 std::vector<Server>::iterator Config::check_server(std::vector<std::string> listen)
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 11:34:05 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/11/23 12:52:57 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/07 14:28:42 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ class Config
 		std::string 		get_workers(void) const;
 		std::vector<Server>	get_server(void) const;
 		std::string 		get_max_connections(void) const;
+		bool				get_error(void) const;
 
 		class FileNotOpen : public std::exception
 		{
@@ -38,6 +39,7 @@ class Config
 		std::vector<Server>	_server;
 		std::string 	_workers;
 		std::string		_max_connections;
+		bool			_is_error;
 
 };
 
