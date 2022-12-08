@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 09:52:16 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/08 11:04:12 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/08 11:36:49 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,8 +253,6 @@ void Response::load_error_pages()
 	{
 		page = error_pages.find(_code_status.first)->second;
 		std::string tmp = ft_cpp_split(page, "/").front();
-		std::cout << "TMP=" << tmp << "|"<< std::endl;
-		std::cout << "ROOT=" << _server.get_root() << "|"<< std::endl;
 		if (tmp != _server.get_root().substr(0, _server.get_root().length() - 1))
 			page.insert(0, _server.get_root() + "/");
 	}

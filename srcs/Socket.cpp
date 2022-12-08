@@ -138,7 +138,7 @@ long Socket::receiveMessage(long socket)
 		_receivedMessage.erase(socket);
 		close(socket);
 		if (ret == -1)
-			std::cout << "Failed to read bytes from client socket connection" << std::endl;
+			std::cout << RED << "ERROR: " << RESET << "Failed to read bytes from client socket connection" << std::endl;
 		return -1;
 	}
 	_receivedMessage[socket] += std::string(buffer);

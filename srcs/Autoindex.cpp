@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Autoindex.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 11:57:18 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 17:06:17 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/08 11:34:19 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,13 +46,7 @@ void	Autoindex::creation_href(void)
 	_list_href = _list_name;
 	std::string new_path = "";
 	std::vector<std::string> path_noroot = ft_cpp_split(_path, "/");
-	// for (std::vector<std::string>::iterator it = path_noroot.begin() + 1; it != path_noroot.end(); it++)
-	// {
-	// 	new_path += *it + "/";
-	// }
 	new_path += path_noroot.back();
-
-	std::cout << YELLOW << BOLD << new_path << RESET << std::endl;
 	for (std::vector<std::string>::iterator it = _list_href.begin(); it != _list_href.end(); it++)
 	{
 		if (_serv.get_root().find(new_path) == std::string::npos)
