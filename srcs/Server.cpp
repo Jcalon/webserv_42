@@ -39,6 +39,78 @@ void Server::init_allow_methods(void)
 	this->_allow_method.push_back("PUT");
 }
 
+bool Server::check_listen(std::vector<std::string> line)
+{
+	this->_listen.pop_back();
+	if (line.size() > 3)
+		return true;
+	for (size_t i = 1; i < line.size(); i++)
+	{
+		if (line[i].find(":") != std::string::npos)
+		{
+			std::vector<std::string> tmp = ft_cpp_split(line[i], ":");
+			if (!ft_is_alnum(tmp[0]) || (!ft_is_alnum(tmp[1]) && tmp[1] != "default"))
+				return true;
+			this->_ip_address = tmp[0];
+			this->_listen.push_back(tmp[1]);
+		}
+		else
+		{
+			if (!ft_is_alnum(line[i]) && line[i] != "default")
+				return true;
+			this->_listen.push_back(line[i]);
+		}
+	}
+	return false;
+}
+
+bool Server::check_method(std::vector<std::string> line)
+{
+	std::vector<std::string> check;
+	check.push_back("GET");
+	check.push_back("POST");
+	check.push_back("PUT");
+	check.push_back("HEAD");
+	check.push_back("DELETE");
+	this->_allow_method.clear();
+	for (size_t i = 1; i < line.size(); i++)
+	{
+		for (std::vector<std::string>::iterator it = check.begin(); it != check.end(); it++)
+		{
+			if (*it == line[i])
+				this->_allow_method.push_back(line[i]);
+		}
+	}
+	if (this->_allow_method.size() != line.size() - 1)
+		return true;
+	return false;
+
+}
+
+bool Server::check_error(std::vector<std::string> line)
+{
+	if (line.size() > 3)
+		return true;
+	if (!ft_is_num(line[1]))
+		return true;
+	std::map<int, std::string>::iterator it = this->_error_pages.find(std::atoi(line[1].c_str()));
+	if (it != _error_pages.end())
+		it->second = line[2];
+	else
+		this->_error_pages.insert(std::make_pair(std::atoi(line[1].c_str()), line[2]));
+	return false;
+}
+
+bool Server::check_auto(std::vector<std::string> line)
+{
+	if (line[1] != "on" && line[1] != "off")
+		return true;
+	if (line.size() > 2)
+		return true;
+	(line[1] == "on") ? this->_autoindex = true : this->_autoindex = false;
+	return false;
+}
+
 //surement appeler des fonctions pour chaque item . fonctions qui checkeront les cas d'erreur et syntax pour cahcun
 std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>::iterator start, std::vector<std::string> file)
 {
@@ -51,26 +123,17 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 		nb_line++;
 		if (line[0] == "listen")
 		{
-			this->_listen.pop_back();
-			for (size_t i = 1; i < line.size(); i++)
-			{
-				if (line[i].find(":") != std::string::npos)
-				{
-					std::vector<std::string> tmp = ft_cpp_split(line[i], ":");
-					this->_ip_address = tmp[0];
-					this->_listen.push_back(tmp[1]);
-				}
-				else
-					this->_listen.push_back(line[i]);
-			}
+			this->_is_error = check_listen(line);
+			if (this->_is_error == true)
+				break;
 		}
 		else if (line[0] == "server_name")
 			this->_name.push_back(line[1]);
 		else if (line[0] == "allow_method")
 		{
-			this->_allow_method.clear();
-			for (size_t i = 1; i < line.size(); i++)
-				this->_allow_method.push_back(line[i]);
+			this->_is_error = check_method(line);
+			if (this->_is_error == true)
+				break;
 		}
 		else if (line[0] == "max_client_body_size")
 			this->_max_client_body_size = line[1];
@@ -82,11 +145,9 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 		}
 		else if (line[0] == "error_page" && line.size() > 2)
 		{
-			std::map<int, std::string>::iterator it = this->_error_pages.find(std::atoi(line[1].c_str()));
-			if (it != _error_pages.end())
-				it->second = line[2];
-			else
-				this->_error_pages.insert(std::make_pair(std::atoi(line[1].c_str()), line[2]));
+			this->_is_error = check_error(line);
+			if (this->_is_error == true)
+				break;
 		}
 		else if (line[0] == "cgi_ext")
 			this->_cgi_ext = line[1];
@@ -104,6 +165,10 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 				break;
 			}
 			start = location.parse_location(start, file);
+			std::cout << " ICI " << *start << std::endl;
+			this->_is_error = location.get_error();
+			if (this->_is_error == true)
+				break;
 			this->_location.push_back(location);
 			std::string verif = *start;
 			if (*start == file[file.size() - 1])
@@ -119,7 +184,11 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 			}
 		}
 		else if (line[0] == "autoindex")
-			(line[1] == "on" )? this->_autoindex = true : this->_autoindex = false;
+		{
+			this->_is_error = check_auto(line);
+			if (this->_is_error == true)
+				break;
+		}
 		else
 			break ;
 
