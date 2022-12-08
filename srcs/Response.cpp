@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/07 09:52:16 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/08 11:41:59 by mbascuna         ###   ########.fr       */
+/*   Created: 2022/12/08 11:43:23 by mbascuna          #+#    #+#             */
+/*   Updated: 2022/12/08 12:48:47 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,8 +253,6 @@ void Response::load_error_pages()
 	{
 		page = error_pages.find(_code_status.first)->second;
 		std::string tmp = ft_cpp_split(page, "/").front();
-		std::cout << "TMP=" << tmp << "|"<< std::endl;
-		std::cout << "ROOT=" << _server.get_root() << "|"<< std::endl;
 		if (tmp != _server.get_root().substr(0, _server.get_root().length() - 1))
 			page.insert(0, _server.get_root() + "/");
 	}
@@ -542,8 +540,8 @@ std::string Response::get_index_path(std::string location) const
 			{
 				int i = 1;
 				// std::cout <<RED<< split_path[0] << " " << split_path[1] << RESET <<std::endl;
-				if (split_path[0] == split_path[1] + "/")
-					i = 2;
+				// if (split_path[0] == split_path[1] + "/")
+				// 	i = 2;
 				for (std::vector<std::string>::iterator itsplit = split_path.begin() + i; itsplit != split_path.end(); itsplit++)
 				{
 				std::cout <<YELLOW<< "path "<< path << " " << *itsplit  << RESET <<std::endl;

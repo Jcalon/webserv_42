@@ -14,8 +14,8 @@ int main(int ac, char **av)
 		// std::cout << Config << std::endl;
 		if (Config.get_error() == true)
 		{
-			std::cout << RED << "error parsing" << RESET << std::endl;
-			return 0;
+			std::cout << RED << "ERROR: " << RESET << "Server can't be configurated, go check your .conf file..." << std::endl;
+			return 1;
 		}
 		std::vector<Server> servs= Config.get_server();
 		Manager serv;

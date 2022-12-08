@@ -1,2 +1,6 @@
-Bonjour
+blablbla
+
+Content-Disposition: form-data; name="send"
+
+send
 
