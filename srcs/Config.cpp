@@ -44,7 +44,7 @@ void	Config::parse_config(std::vector<std::string> file)
 			Server server;
 			if (line[1] != "{")
 			{
-				std::cout << " ERROR \n";
+				std::cout << RED << "ERROR: " << RESET << "{}..." << std::endl;
 				return ;
 			}
 			it = server.parse_server(it, file);
@@ -61,7 +61,7 @@ void	Config::parse_config(std::vector<std::string> file)
 			std::string verif = *it;
 			if (verif.find("}") < 0)
 			{
-				std::cout << "ERROR : server  doit se fermer avec }" << std::endl;
+				std::cout << RED << "ERROR: " << RESET << "Server should close with }..." << std::endl;
 				this->_is_error = true;
 				break;
 			}

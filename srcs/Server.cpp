@@ -160,12 +160,11 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 			Location location(*this);
 			if (line[line.size() - 1] != "{")
 			{
-				std::cout << "ERROR : location doit ouvrir avec {\n";
+				std::cout << RED << "ERROR: " << RESET << "Location should open with {..." << std::endl;
 				this->_is_error = true;
 				break;
 			}
 			start = location.parse_location(start, file);
-			std::cout << " ICI " << *start << std::endl;
 			this->_is_error = location.get_error();
 			if (this->_is_error == true)
 				break;
@@ -173,7 +172,7 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 			std::string verif = *start;
 			if (*start == file[file.size() - 1])
 			{
-				std::cout << "ERROR : server doit se fermer avec }" << std::endl;
+				std::cout << RED << "ERROR: " << RESET << "Server should close with }..." << std::endl;
 				this->_is_error = true;
 				break ;
 			}
