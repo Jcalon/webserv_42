@@ -114,8 +114,6 @@ std::ostream &operator<<(std::ostream &o, Config const &rhs)
 {
 	std::cout << std::endl;
 	std::cout << RED << BOLD << TAB << "*********** Config ***********" << RESET << std::endl;
-	o << "workers : " << rhs.get_workers() << std::endl;
-	o << "max_connections : " << rhs.get_max_connections() << std::endl;
 	std::vector<Server> srv = rhs.get_server();
 	for (size_t i = 0; i < srv.size(); i++)
 		o << srv[i];
