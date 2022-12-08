@@ -11,7 +11,7 @@ int main(int ac, char **av)
 	try
 	{
 		Config Config(av[ac - 1]);
-		std::cout << Config << std::endl;
+		// std::cout << Config << std::endl;
 		if (Config.get_error() == true)
 		{
 			std::cout << RED << "ERROR: " << RESET << "Server can't be configurated, go check your .conf file..." << std::endl;
