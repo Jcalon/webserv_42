@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/07 13:37:40 by mbascuna          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2022/12/07 20:12:12 by mbascuna         ###   ########.fr       */
-=======
-/*   Updated: 2022/12/07 22:36:00 by jcalon           ###   ########.fr       */
->>>>>>> main
+/*   Created: 2022/12/08 10:11:06 by mbascuna          #+#    #+#             */
+/*   Updated: 2022/12/08 10:45:01 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +84,7 @@ unsigned long				ft_str_to_int(std::string str);
 bool 						is_readable(const std::string &file);
 void						ctrl_handler(int sig_num);
 bool 						ft_is_alnum(std::string str);
+bool 						ft_is_num(std::string str);
 void						*ft_memcpy(void *dest, const void *src, size_t n);
 void						*ft_memset(void *b, int c, size_t len);
 void						ft_strcpy(const char *src, char *dest);

@@ -58,10 +58,9 @@
 		</div>
 		<div class="put">
 			<h3>Choose a file to import :</h3>
-			<form action="uploads" method="POST" enctype="multipart/form-data">
-				<input type="file" id="myFile" name="filename">
-				<button type="submit">Submit</button>
-
+			<form action="upload.php" method="POST" enctype="multipart/form-data">
+				Send this file: <input name="userfile" type="file" />
+				<button type="submit" name="send" value="send">CHRONOPOST</button>
 			</form>
 		</div>
 		<div class="cgi">

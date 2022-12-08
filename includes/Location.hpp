@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/21 11:37:28 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 16:22:18 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/08 11:07:18 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,12 @@ class Location
 		std::string							get_cgi_ext(void) const;
 		std::string							get_cgi_dir(void) const;
 		bool 								get_autoindex(void) const;
+		bool								get_error(void) const;
+
+		bool 								check_listen(std::vector<std::string> line);
+		bool 								check_method(std::vector<std::string> line);
+		bool 								check_size(std::vector<std::string> line);
+		bool								check_auto(std::vector<std::string> line);
 
 	private:
 		std::string							_name;
@@ -46,6 +52,7 @@ class Location
 		std::string							_upload;
 		std::string							_cgi_ext;
 		std::string							_cgi_dir;
+		bool								_is_error;
 };
 
 std::ostream	&operator<<(std::ostream &o, Location const &server);

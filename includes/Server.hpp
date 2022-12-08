@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/08 10:01:10 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/08 10:01:13 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/08 11:07:21 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,11 @@ class Server
 		std::vector<Location> 				get_location(void) const;
 		std::vector<std::string> 			get_allow_method(void) const;
 		bool								get_error(void) const;
+
 		bool 								check_listen(std::vector<std::string> line);
+		bool 								check_method(std::vector<std::string> line);
+		bool 								check_error(std::vector<std::string> line);
+		bool								check_auto(std::vector<std::string> line);
 
 	private:
 		std::string							_ip_address;
