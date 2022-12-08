@@ -6,7 +6,7 @@
 /*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 09:52:16 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 23:04:32 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/08 11:04:12 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ Response::Response(Request const &request, Server const &server): _server(server
 	this->_content_length = 0;
 	this->_content_location = request.getRequest()._target;
 	this->_path = get_index_path(request.getRequest()._target);
-	std::cout << _path << std::endl;
 	this->_code_status = allow_method(request, server, request.getRequest()._target);
 	this->_content_type = "";
 	this->_header = "";
@@ -254,7 +253,9 @@ void Response::load_error_pages()
 	{
 		page = error_pages.find(_code_status.first)->second;
 		std::string tmp = ft_cpp_split(page, "/").front();
-		if (tmp != _server.get_root())
+		std::cout << "TMP=" << tmp << "|"<< std::endl;
+		std::cout << "ROOT=" << _server.get_root() << "|"<< std::endl;
+		if (tmp != _server.get_root().substr(0, _server.get_root().length() - 1))
 			page.insert(0, _server.get_root() + "/");
 	}
 	else
@@ -360,6 +361,8 @@ void Response::run_post_method(void)
 		ofs.close();
 
 		this->_response = "";
+		if (_code_status.first != 200)
+			load_error_pages();
 		this->_content_length = _response.size();
 		this->_content_type = "text/html"; // a modifier avec une fonction en fonction du ype
 		this->_date = set_date();
@@ -509,41 +512,32 @@ std::string Response::get_index_path(std::string location) const
 			{
 				path = it->get_root();
 			}
-			std::cout << "PATH= " << path << std::endl;
 			std::string loc;
 
 			if (path.rfind("/") == path.length() - 1)
 			{
 				loc = path + it->get_name().substr(1);
-				std::cout << "SAeeeeeLUT" << std::endl;
 			}
 			else
 			{
-				std::cout << "SALUT" << std::endl;
 				loc = path + it->get_name();
 			}
-			std::cout << "LOC" << loc << std::endl;
 			DIR				*dir;
 			dir = opendir(loc.c_str());
 			if (it->get_index() != "" && dir != NULL && split_path.size() < 2)
 			{
-				std::cout << "ACCESS OK" << std::endl;
 				if (path.rfind("/") == path.length() - 1)
 					path += it->get_name().substr(1) + it->get_index();
 				else
 					path += it->get_name() + it->get_index();
-				std::cout << "PATH3= " << path << std::endl;
 			}
 			else if (dir != NULL)
 			{
-				std::cout << "ACCESS OK" << std::endl;
 				if (path.rfind("/") == path.length() - 1)
 					path += it->get_name().substr(1);
 				else
 					path += it->get_name();
-				std::cout << "PATH2= " << path << std::endl;
 			}
-			std::cout << "PATH1= " << path << std::endl;
 			if (split_path.size() >= 2)
 			{
 				int i = 1;

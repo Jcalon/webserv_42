@@ -26,6 +26,8 @@ void Server::init_error_pages(void)
 	this->_error_pages.insert(std::make_pair(413, "www/error_pages/413.html"));
 	this->_error_pages.insert(std::make_pair(500, "www/error_pages/500.html"));
 	this->_error_pages.insert(std::make_pair(502, "www/error_pages/502.html"));
+	this->_error_pages.insert(std::make_pair(201, "www/error_pages/201.html"));
+	this->_error_pages.insert(std::make_pair(204, "www/error_pages/204.html"));
 }
 
 void Server::init_allow_methods(void)
