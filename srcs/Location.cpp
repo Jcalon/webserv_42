@@ -6,7 +6,7 @@
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/01 16:05:58 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/08 11:14:27 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/08 13:49:31 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,14 @@ std::vector<std::string>::iterator Location::parse_location(std::vector<std::str
 	{
 		line = ft_cpp_split(*start, WHITESPACES);
 		if (line[0] == "root")
+		{
+			if (line.size() > 2)
+			{
+				this->_is_error = true;
+				break;
+			}
 			this->_root = line[1];
+		}
 		else if (line[0] == "upload")
 			this->_upload = line[1];
 		else if (line[0] == "allow_method")
@@ -93,11 +100,32 @@ std::vector<std::string>::iterator Location::parse_location(std::vector<std::str
 				break;
 		}
 		else if (line[0] == "index")
+		{
+			if (line.size()> 2)
+			{
+				this->_is_error = true;
+				break;
+			}
 			this->_index = line[1];
+		}
 		else if (line[0] == "cgi_ext")
+		{
+			if (line.size()> 2)
+			{
+				this->_is_error = true;
+				break;
+			}
 			this->_cgi_ext = line[1];
+		}
 		else if (line[0] == "cgi_dir")
+		{
+			if (line.size()> 2)
+			{
+				this->_is_error = true;
+				break;
+			}
 			this->_cgi_dir = line[1];
+		}
 		else if (line[0] == "autoindex")
 		{
 			this->_is_error = check_auto(line);

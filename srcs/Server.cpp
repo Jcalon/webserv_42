@@ -139,6 +139,11 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 			this->_max_client_body_size = line[1];
 		else if (line[0] == "root")
 		{
+			if (line.size() > 2)
+			{
+				this->_is_error = true;
+				break;
+			}
 			this->_root = line[1];
 			if (this->_root.find(".") == std::string::npos && *this->_root.end() != '/' && this->_root.size() > 1)
 				this->_root.append("/");
@@ -150,11 +155,32 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 				break;
 		}
 		else if (line[0] == "cgi_ext")
+		{
+			if (line.size() > 2)
+			{
+				this->_is_error = true;
+				break;
+			}
 			this->_cgi_ext = line[1];
+		}
 		else if (line[0] == "cgi_dir")
+		{
+			if (line.size() > 2)
+			{
+				this->_is_error = true;
+				break;
+			}
 			this->_cgi_dir = line[1];
+		}
 		else if (line[0] == "index")
+		{
+			if (line.size() > 2)
+			{
+				this->_is_error = true;
+				break;
+			}
 			this->_index = line[1];
+		}
 		else if (line[0] == "location")
 		{
 			Location location(*this);
