@@ -165,7 +165,6 @@ std::vector<std::string>::iterator Server::parse_server(std::vector<std::string>
 				break;
 			}
 			start = location.parse_location(start, file);
-			std::cout << " ICI " << *start << std::endl;
 			this->_is_error = location.get_error();
 			if (this->_is_error == true)
 				break;

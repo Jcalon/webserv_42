@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 09:52:16 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/08 11:04:12 by jcalon           ###   ########.fr       */
+/*   Updated: 2022/12/08 11:41:59 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -541,8 +541,13 @@ std::string Response::get_index_path(std::string location) const
 			if (split_path.size() >= 2)
 			{
 				int i = 1;
+				// std::cout <<RED<< split_path[0] << " " << split_path[1] << RESET <<std::endl;
+				if (split_path[0] == split_path[1] + "/")
+					i = 2;
 				for (std::vector<std::string>::iterator itsplit = split_path.begin() + i; itsplit != split_path.end(); itsplit++)
 				{
+				std::cout <<YELLOW<< "path "<< path << " " << *itsplit  << RESET <<std::endl;
+
 					if (itsplit->rfind("/") != itsplit->length() - 1 && itsplit != --split_path.end() && itsplit->find(".") == std::string::npos)
 					{
 						path += *itsplit + "/";
