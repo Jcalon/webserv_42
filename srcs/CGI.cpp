@@ -80,7 +80,7 @@ char **CGI::mapEnvToTab(void)
 	{
 		tmp = it->first + "=" + it->second;
 		env[i] = new char[tmp.size() + 1];
-		env[i] = std::strcpy(env[i], tmp.c_str());
+		ft_strcpy(tmp.c_str(), env[i]);
 	}
 	env[i] = NULL;
 	return env;
@@ -93,7 +93,7 @@ std::string		CGI::interpreter(void)
 	int						std_fd[2];
 	char					tmp[BUFFER_SIZE + 1];
 	int						ret = 1;
-	std::cout << "CGI" << std::endl;
+
 	std_fd[0] = dup(STDIN_FILENO);
 	std_fd[1] = dup(STDOUT_FILENO);
 
@@ -104,6 +104,7 @@ std::string		CGI::interpreter(void)
 
 	write(input_fd, _inputbody.c_str(), _inputbody.length());
 	lseek(input_fd, 0, SEEK_SET);
+
 	pid = fork();
 	if (pid == -1)
 		return "500";
@@ -116,20 +117,19 @@ std::string		CGI::interpreter(void)
 		dup2(output_fd, STDOUT_FILENO);
 		dup2(input_fd, STDIN_FILENO);
 
-		strcpy(av[0], _binary.c_str());
-		strcpy(av[1], _target.c_str());
+		ft_strcpy(_binary.c_str(), av[0]);
+		ft_strcpy(_target.c_str(), av[1]);
 		av[2] = NULL;
 		execve(_binary.c_str(), av, mapEnvToTab());
-		write(1, "500", 9);
+		std::cout << "500";
 	}
 	else
 	{
 		waitpid(-1, NULL, 0);
 		lseek(output_fd, 0, SEEK_SET);
-
 		while (ret > 0)
 		{
-			memset(tmp, 0, BUFFER_SIZE);
+			ft_memset(tmp, 0, BUFFER_SIZE);
 			ret = read(output_fd, tmp, BUFFER_SIZE);
 			tmp[BUFFER_SIZE] = '\0';
 			body += tmp;
@@ -137,7 +137,6 @@ std::string		CGI::interpreter(void)
 
 		close(output_fd);
 		close(input_fd);
-
 		dup2(std_fd[0], STDIN_FILENO);
 		dup2(std_fd[1], STDOUT_FILENO);
 	}

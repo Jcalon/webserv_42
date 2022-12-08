@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/21 11:36:00 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 20:19:55 by mbascuna         ###   ########.fr       */
+/*   Created: 2022/12/08 10:01:10 by mbascuna          #+#    #+#             */
+/*   Updated: 2022/12/08 10:01:13 by mbascuna         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ class Server
 		std::map<int, std::string> 			get_error_pages(void) const;
 		std::string 						get_body_size(void) const;
 		std::string 						get_index(void) const;
-		std::string 						get_index_path(std::string location) const;
+		// std::string 						get_index_path(std::string location) const;
 		std::string 						get_cgi_dir(void) const;
 		bool 								get_autoindex(void) const;
 		std::string						 	get_cgi_ext(void) const;

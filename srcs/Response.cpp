@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Response.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbascuna <mbascuna@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jcalon <jcalon@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/07 09:52:16 by mbascuna          #+#    #+#             */
-/*   Updated: 2022/12/07 19:51:43 by mbascuna         ###   ########.fr       */
+/*   Updated: 2022/12/07 23:04:32 by jcalon           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ Response::Response(Request const &request, Server const &server): _server(server
 	this->_response = "\r\n";
 	this->_content_length = 0;
 	this->_content_location = request.getRequest()._target;
-	this->_path = server.get_index_path(request.getRequest()._target);
+	this->_path = get_index_path(request.getRequest()._target);
 	std::cout << _path << std::endl;
 	this->_code_status = allow_method(request, server, request.getRequest()._target);
 	this->_content_type = "";
@@ -301,10 +301,9 @@ void Response::run_get_method(void)
 		else
 		{
 			std::ifstream		ifs(_path.c_str());
-
-			struct stat check_bis;
-			lstat(_path.c_str(), &check_bis);
-			if ((!ifs.is_open() || S_ISDIR(check_bis.st_mode)))
+			DIR				*dir;
+			dir = opendir(_path.c_str());
+			if ((!ifs.is_open() || dir != NULL))
 				this->_code_status = find_pair(404);
 			if (access(_path.c_str(), F_OK) == 0 && access(_path.c_str(), R_OK) < 0)
 				this->_code_status = find_pair(403);
@@ -382,38 +381,48 @@ void Response::run_cgi_method(void)
 	CGI cgi(this->_request, this->_server, this->_binary, this->_path);
 	output = cgi.interpreter();
 
-	std::istringstream			stream(output);
-	std::string					line;
-	bool						header = true;
-	std::string					headerfromcgi = "";
-	this->_response = "";
-
-	while (std::getline(stream, line))
+	if (output != "500")
 	{
-		if (line == "\r")
-			header = false;
-		else
+		std::istringstream			stream(output);
+		std::string					line;
+		bool						header = true;
+		std::string					headerfromcgi = "";
+		this->_response = "";
+
+		while (std::getline(stream, line))
 		{
-			if (header && ft_cpp_split(line, ":").size() == 2)
-				headerfromcgi += line;
-			else if (!header)
-				this->_response += line;
+			if (line == "\r")
+				header = false;
+			else
+			{
+				if (header && ft_cpp_split(line, ":").size() == 2)
+					headerfromcgi += line;
+				else if (!header)
+					this->_response += line;
+			}
 		}
+		this->_content_length = _response.size();
+		this->_date = set_date();
+		set_header();
+		this->_header += headerfromcgi;
 	}
-	this->_content_length = _response.size();
-	this->_date = set_date();
-	set_header();
-	this->_header += headerfromcgi;
+	else
+	{
+		this->_code_status = find_pair(200);
+		load_error_pages();
+		this->_content_length = _response.size();
+		this->_content_type = init_mime_types(); // a modifier avec une fonction en fonction du ype
+		this->_date = set_date();
+		set_header();
+	}
 }
 
 
 void Response::run_put_method(void)
 {
-	struct stat check_dir;
-	lstat(_path.c_str(), &check_dir);
-	// if (is_readable(_path.c_str()))
-	// 	_code_status = find_pair(204);
-	if (S_ISDIR(check_dir.st_mode))
+	DIR				*dir;
+	dir = opendir(_path.c_str());
+	if (dir != NULL)
 		_code_status = find_pair(409);
 	if (_code_status.first == 201)
 	{
@@ -454,6 +463,125 @@ std::string	Response::set_date(void)
 	tm = gmtime(&tv.tv_sec);
 	strftime(buffer, 100, "%a, %d %b %Y %H:%M:%S GMT", tm);
 	return buffer;
+}
+
+std::string Response::get_index_path(std::string location) const
+{
+	std::vector<Location> 		locations = _server.get_location();
+	std::vector<std::string> 	split_path = ft_cpp_split(location, "/");
+	std::string 				path = _server.get_root();
+
+	if (path.find("./") == std::string::npos)
+		path.insert(0, "./");
+	if (split_path.size() < 1)
+	{
+		for (std::vector<Location>::iterator it = locations.begin(); it != locations.end(); it++)
+		{
+			if (it->get_name() == location)
+			{
+				if (it->get_root() != "")
+				{
+					path.clear();
+					if (it->get_root().find("./") == std::string::npos)
+						path = "./" + it->get_root();
+					else
+						path = it->get_root();
+				}
+				if (it->get_index() != "")
+					path += "/" + it->get_index();
+				if (path != "")
+					return path;
+			}
+		}
+		if (_server.get_root().rfind("/") != _server.get_root().length() - 1)
+			return _server.get_root() + "/" + _server.get_index();
+		return _server.get_root() + _server.get_index();
+	}
+	for (std::vector<std::string>::iterator it = split_path.begin(); it != split_path.end(); it++)
+		it->insert(0, "/");
+	if (split_path[0].find(".") == std::string::npos && split_path[0].rfind("/") != split_path[0].length() - 1)
+		split_path[0] += "/";
+	for (std::vector<Location>::iterator it = locations.begin(); it != locations.end(); it++)
+	{
+		if (it->get_name() == split_path[0])
+		{
+			if (it->get_root() != "")
+			{
+				path = it->get_root();
+			}
+			std::cout << "PATH= " << path << std::endl;
+			std::string loc;
+
+			if (path.rfind("/") == path.length() - 1)
+			{
+				loc = path + it->get_name().substr(1);
+				std::cout << "SAeeeeeLUT" << std::endl;
+			}
+			else
+			{
+				std::cout << "SALUT" << std::endl;
+				loc = path + it->get_name();
+			}
+			std::cout << "LOC" << loc << std::endl;
+			DIR				*dir;
+			dir = opendir(loc.c_str());
+			if (it->get_index() != "" && dir != NULL && split_path.size() < 2)
+			{
+				std::cout << "ACCESS OK" << std::endl;
+				if (path.rfind("/") == path.length() - 1)
+					path += it->get_name().substr(1) + it->get_index();
+				else
+					path += it->get_name() + it->get_index();
+				std::cout << "PATH3= " << path << std::endl;
+			}
+			else if (dir != NULL)
+			{
+				std::cout << "ACCESS OK" << std::endl;
+				if (path.rfind("/") == path.length() - 1)
+					path += it->get_name().substr(1);
+				else
+					path += it->get_name();
+				std::cout << "PATH2= " << path << std::endl;
+			}
+			std::cout << "PATH1= " << path << std::endl;
+			if (split_path.size() >= 2)
+			{
+				int i = 1;
+				for (std::vector<std::string>::iterator itsplit = split_path.begin() + i; itsplit != split_path.end(); itsplit++)
+				{
+					if (itsplit->rfind("/") != itsplit->length() - 1 && itsplit != --split_path.end() && itsplit->find(".") == std::string::npos)
+					{
+						path += *itsplit + "/";
+					}
+					else
+					{
+						if (path.rfind("/") == path.length() - 1)
+							path += itsplit->substr(1);
+						else
+							path += *itsplit;
+					}
+				}
+				DIR				*tst;
+				tst = opendir(path.c_str());
+				if (tst != NULL && it->get_index() != "")
+				{
+					if (path.rfind("/") != path.length() - 1)
+						path += "/";
+					path += it->get_index();
+				}
+			}
+			else if (dir == NULL && it->get_index() != "")
+			{
+				if (path.rfind("/") != path.length() - 1)
+				{
+					path += "/";
+				}
+				path += it->get_index();
+			}
+			return path;
+		}
+	}
+	return path + split_path[0];
 }
 
 const char *Response::FileNotOpen::what() const throw()
